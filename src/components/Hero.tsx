@@ -8,19 +8,23 @@ export default function Hero() {
         <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-black">
             <AntigravityScene />
 
-            <div className="relative z-10 container mx-auto px-6 text-center">
+            <div className="relative z-10 container mx-auto px-6 text-center flex flex-col items-center justify-center">
+
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="max-w-4xl mx-auto"
+                    transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+                    className="max-w-6xl mx-auto mt-10"
                 >
-                    <h1 className="text-5xl md:text-8xl font-display font-bold tracking-tighter mb-6 leading-tight">
-                        SYNTHESIZE <span className="text-glow">CHAOS</span>.<br />
-                        PREDICT <span className="text-white/40">CONTROL</span>.
+                    <h1 className="text-[12vw] md:text-[10rem] font-display font-black tracking-tighter mb-4 leading-none text-white drop-shadow-[0_0_80px_rgba(255,255,255,0.2)]">
+                        ISOMORPH
                     </h1>
 
-                    <p className="text-lg md:text-2xl text-white/60 mb-10 max-w-2xl mx-auto font-sans tracking-wide">
+                    <h2 className="text-2xl md:text-5xl font-display font-medium tracking-tight mb-8 text-white/80">
+                        SYNTHESIZE <span className="text-glow">CHAOS</span>. PREDICT <span className="text-white/40">CONTROL</span>.
+                    </h2>
+
+                    <p className="text-base md:text-xl text-white/50 mb-12 max-w-3xl mx-auto font-sans tracking-wide leading-relaxed">
                         Unified Data Intelligence & AI Forecasting for Enterprise.
                         The infrastructure of the future, suspended in precision.
                     </p>

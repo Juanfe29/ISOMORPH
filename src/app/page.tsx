@@ -1,6 +1,8 @@
 import Hero from "@/components/Hero";
+import VisionSection from "@/components/VisionSection";
 import GlassCard from "@/components/GlassCard";
 import IntegrationNodes from "@/components/IntegrationNodes";
+import InteractiveProducts from "@/components/InteractiveProducts";
 import { TrendingUp, Layers, Zap, Shield, BarChart3, Globe } from "lucide-react";
 
 const features = [
@@ -29,6 +31,9 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between selection:bg-white/10">
       <Hero />
 
+      {/* Narrative Section 0.5: Vision */}
+      <VisionSection />
+
       {/* Narrative Section 1: Features */}
       <section className="w-full py-32 bg-mesh relative">
         <div className="container mx-auto px-6">
@@ -43,6 +48,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Narrative Section 1.5: Interactive Products */}
+      <InteractiveProducts />
 
       {/* Narrative Section 2: Infrastructure / Integration */}
       <section className="w-full py-32 relative overflow-hidden">
