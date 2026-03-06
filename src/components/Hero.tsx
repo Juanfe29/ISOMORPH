@@ -3,11 +3,23 @@
 import { motion } from 'framer-motion';
 import AntigravityScene from './AntigravityScene';
 import IsomorphWordmark from './IsomorphWordmark';
+import LiquidChrome from './LiquidChrome';
 
 export default function Hero() {
     return (
         <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-black">
-            <AntigravityScene />
+            <div className="absolute inset-0 z-0">
+                <LiquidChrome
+                    baseColor={[0.1, 0.1, 0.1]}
+                    speed={1}
+                    amplitude={0.6}
+                    interactive={true}
+                />
+            </div>
+
+            <div className="relative z-1">
+                <AntigravityScene />
+            </div>
 
             <div className="relative z-10 container mx-auto px-6 text-center flex flex-col items-center justify-center">
 
