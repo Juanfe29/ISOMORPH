@@ -18,7 +18,7 @@ export default function VisionSection() {
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.8 }}
                     >
-                        <span className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-display mb-6 block">Our Vision</span>
+                        <span className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-mono mb-6 block">Our Vision</span>
 
                         <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-medium leading-tight tracking-tight mb-8 text-white/90">
                             Imaginamos una sociedad <span className="text-glow italic text-white">transformada</span> por la tecnología.

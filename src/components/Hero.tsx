@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import AntigravityScene from './AntigravityScene';
+import IsomorphWordmark from './IsomorphWordmark';
 
 export default function Hero() {
     return (
@@ -16,9 +17,13 @@ export default function Hero() {
                     transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
                     className="max-w-6xl mx-auto mt-10"
                 >
-                    <h1 className="text-[12vw] md:text-[10rem] font-display font-black tracking-tighter mb-4 leading-none text-white drop-shadow-[0_0_80px_rgba(255,255,255,0.2)]">
-                        ISOMORPH
-                    </h1>
+                    <IsomorphWordmark
+                        size="xl"
+                        dark={true}
+                        animated={true}
+                        className="mb-8"
+                        showSubtext={true}
+                    />
 
                     <h2 className="text-2xl md:text-5xl font-display font-medium tracking-tight mb-8 text-white/80">
                         SYNTHESIZE <span className="text-glow">CHAOS</span>. PREDICT <span className="text-white/40">CONTROL</span>.

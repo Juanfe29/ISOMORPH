@@ -3,6 +3,8 @@ import VisionSection from "@/components/VisionSection";
 import GlassCard from "@/components/GlassCard";
 import IntegrationNodes from "@/components/IntegrationNodes";
 import InteractiveProducts from "@/components/InteractiveProducts";
+import IsomorphWordmark from "@/components/IsomorphWordmark";
+import IsomorphLogo from "@/components/IsomorphLogo";
 import { TrendingUp, Layers, Zap, Shield, BarChart3, Globe } from "lucide-react";
 
 const features = [
@@ -94,8 +96,11 @@ export default function Home() {
       {/* Footer / Final CTA */}
       <footer className="w-full py-20 border-t border-white/5 bg-black">
         <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10">
-          <div className="font-display font-bold text-xl tracking-tighter">
-            ISOMORPH <span className="text-white/40">AI</span>
+          <div className="flex items-center gap-4">
+            <IsomorphLogo size={32} dark={true} animated={false} />
+            <div className="font-condensed font-bold text-xl tracking-widest uppercase text-white">
+              ISOMORPH <span className="text-white/40 font-mono">AI</span>
+            </div>
           </div>
 
           <div className="flex gap-8 text-[10px] uppercase tracking-[0.2em] font-display text-white/40">
@@ -105,7 +110,7 @@ export default function Home() {
             <a href="#" className="hover:text-white transition-colors">Access</a>
           </div>
 
-          <div className="text-[10px] text-white/20 font-sans tracking-widest">
+          <div className="text-[10px] text-white/20 font-mono tracking-widest uppercase">
             © 2026 ANTIGRAVITY ENGINE. PREDICT CONTROL.
           </div>
         </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Orbitron } from "next/font/google";
+import { Inter, Orbitron, DM_Mono, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -10,6 +10,18 @@ const inter = Inter({
 const orbitron = Orbitron({
   variable: "--font-orbitron",
   subsets: ["latin"],
+});
+
+const dmMono = DM_Mono({
+  variable: "--font-dm-mono",
+  subsets: ["latin"],
+  weight: ["300", "400"],
+});
+
+const barlowCondensed = Barlow_Condensed({
+  variable: "--font-barlow-condensed",
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -25,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${inter.variable} ${orbitron.variable} font-sans antialiased`}
+        className={`${inter.variable} ${orbitron.variable} ${dmMono.variable} ${barlowCondensed.variable} font-sans antialiased`}
       >
         {children}
       </body>

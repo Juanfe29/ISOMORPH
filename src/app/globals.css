@@ -3,6 +3,8 @@
 @theme {
   --font-sans: var(--font-inter);
   --font-display: var(--font-orbitron);
+  --font-mono: var(--font-dm-mono);
+  --font-condensed: var(--font-barlow-condensed);
 }
 
 :root {
