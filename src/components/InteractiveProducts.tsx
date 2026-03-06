@@ -66,16 +66,16 @@ export default function InteractiveProducts() {
     const ActiveComponent = active.component;
 
     return (
-        <section className="w-full py-32 bg-black relative border-t border-white/5">
+        <section className="w-full py-16 md:py-32 bg-black relative border-t border-white/5">
             <div className="container mx-auto px-6">
 
                 {/* Header */}
                 <div className="mb-16 md:mb-24">
                     <span className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-display mb-4 block">Product Ecosystem</span>
-                    <h2 className="text-4xl md:text-5xl font-display font-bold leading-tight flex items-center gap-4">
+                    <h2 className="text-3xl md:text-5xl font-display font-bold leading-tight flex flex-wrap items-center gap-3 md:gap-4">
                         AUTONOMOUS
                         <span className="text-white/40 italic flex items-center gap-2">
-                            <Zap className="w-8 h-8 text-white/40" />
+                            <Zap className="w-6 h-6 md:w-8 md:h-8 text-white/40" />
                             SOLUTIONS.
                         </span>
                     </h2>
@@ -122,7 +122,7 @@ export default function InteractiveProducts() {
                     </div>
 
                     {/* Main Display Area */}
-                    <div className="lg:col-span-8 relative min-h-[600px]">
+                    <div className="lg:col-span-8 relative min-h-[400px] lg:min-h-[600px]">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={activeProduct}

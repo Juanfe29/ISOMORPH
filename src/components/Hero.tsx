@@ -27,26 +27,26 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-                    className="max-w-6xl mx-auto mt-10"
+                    className="max-w-6xl mx-auto mt-4 md:mt-10"
                 >
                     <IsomorphWordmark
                         size="xl"
                         dark={true}
                         animated={true}
-                        className="mb-8"
+                        className="mb-6 md:mb-8"
                         showSubtext={true}
                     />
 
-                    <h2 className="text-2xl md:text-5xl font-display font-medium tracking-tight mb-8 text-white/80">
+                    <h2 className="text-xl md:text-5xl font-display font-medium tracking-tight mb-6 md:mb-8 text-white/80 px-2">
                         SYNTHESIZE <span className="text-glow">CHAOS</span>. PREDICT <span className="text-white/40">CONTROL</span>.
                     </h2>
 
-                    <p className="text-base md:text-xl text-white/50 mb-12 max-w-3xl mx-auto font-sans tracking-wide leading-relaxed">
+                    <p className="text-sm md:text-xl text-white/50 mb-8 md:mb-12 max-w-3xl mx-auto font-sans tracking-wide leading-relaxed px-4">
                         Unified Data Intelligence & AI Forecasting for Enterprise.
                         The infrastructure of the future, suspended in precision.
                     </p>
 
-                    <div className="flex flex-col md:flex-row items-center justify-center gap-6">
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 px-4">
                         <motion.button
                             whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(255,255,255,0.2)" }}
                             whileTap={{ scale: 0.95 }}

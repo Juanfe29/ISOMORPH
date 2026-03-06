@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import IsomorphLogo from './IsomorphLogo';
 
@@ -19,15 +20,26 @@ export default function IsomorphWordmark({
     showSubtext = false,
 }: IsomorphWordmarkProps) {
     const sizeMap = {
-        sm: { logo: 32, text: 'text-2xl', sub: 'text-[7px]' },
-        md: { logo: 48, text: 'text-4xl', sub: 'text-[8px]' },
-        lg: { logo: 64, text: 'text-6xl', sub: 'text-[9px]' },
-        xl: { logo: 80, text: 'text-7xl', sub: 'text-[10px]' },
+        sm: { logo: 32, mobileLogo: 32, text: 'text-2xl', sub: 'text-[7px]' },
+        md: { logo: 48, mobileLogo: 48, text: 'text-4xl', sub: 'text-[8px]' },
+        lg: { logo: 64, mobileLogo: 48, text: 'text-6xl', sub: 'text-[9px]' },
+        xl: { logo: 80, mobileLogo: 48, text: 'text-4xl md:text-7xl', sub: 'text-[8px] md:text-[10px]' },
     };
 
     const currentSize = sizeMap[size];
     const textColor = dark ? 'text-[#e8e4dc]' : 'text-[#0f0f0f]';
     const subColor = dark ? 'text-[#e8e4dc]/40' : 'text-[#0f0f0f]/40';
+
+    const [resolvedLogoSize, setResolvedLogoSize] = useState(currentSize.logo);
+
+    useEffect(() => {
+        const update = () => {
+            setResolvedLogoSize(window.innerWidth < 768 ? currentSize.mobileLogo : currentSize.logo);
+        };
+        update();
+        window.addEventListener('resize', update);
+        return () => window.removeEventListener('resize', update);
+    }, [currentSize.logo, currentSize.mobileLogo]);
 
     return (
         <div className={`flex flex-col items-center gap-2 ${className}`}>
@@ -42,7 +54,7 @@ export default function IsomorphWordmark({
                 </motion.span>
 
                 <IsomorphLogo
-                    size={currentSize.logo}
+                    size={resolvedLogoSize}
                     dark={dark}
                     animated={animated}
                     className="relative -top-1"
@@ -63,7 +75,7 @@ export default function IsomorphWordmark({
                     initial={animated ? { opacity: 0, y: 5 } : {}}
                     animate={animated ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.6, delay: 0.8 }}
-                    className={`font-mono uppercase tracking-[0.38em] whitespace-nowrap ${currentSize.sub} ${subColor}`}
+                    className={`hidden sm:block font-mono uppercase tracking-[0.38em] whitespace-nowrap ${currentSize.sub} ${subColor}`}
                 >
                     GRAPH INTELLIGENCE · TECHNOLOGY
                 </motion.div>

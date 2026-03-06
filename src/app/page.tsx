@@ -37,7 +37,7 @@ export default function Home() {
       <VisionSection />
 
       {/* Narrative Section 1: Features */}
-      <section className="w-full py-32 bg-mesh relative">
+      <section className="w-full py-16 md:py-32 bg-mesh relative">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {features.map((f, i) => (
@@ -55,11 +55,11 @@ export default function Home() {
       <InteractiveProducts />
 
       {/* Narrative Section 2: Infrastructure / Integration */}
-      <section className="w-full py-32 relative overflow-hidden">
-        <div className="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <section className="w-full py-16 md:py-32 relative overflow-hidden">
+        <div className="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
           <div>
             <span className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-display mb-4 block">Engineered Intelligence</span>
-            <h2 className="text-4xl md:text-6xl font-display font-bold mb-8 leading-tight">
+            <h2 className="text-3xl md:text-6xl font-display font-bold mb-6 md:mb-8 leading-tight">
               UNIFIED DATA<br />
               <span className="text-white/40 italic">ECOSYSTEM.</span>
             </h2>
@@ -103,7 +103,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex gap-8 text-[10px] uppercase tracking-[0.2em] font-display text-white/40">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-[10px] uppercase tracking-[0.2em] font-display text-white/40">
             <a href="#" className="hover:text-white transition-colors">Infrastructure</a>
             <a href="#" className="hover:text-white transition-colors">Technology</a>
             <a href="#" className="hover:text-white transition-colors">Intelligence</a>

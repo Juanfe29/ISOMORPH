@@ -5,7 +5,7 @@ import { Globe, Cpu, Building2, TrendingUp } from 'lucide-react';
 
 export default function VisionSection() {
     return (
-        <section className="relative w-full py-32 bg-black overflow-hidden border-t border-white/5">
+        <section className="relative w-full py-16 md:py-32 bg-black overflow-hidden border-t border-white/5">
             {/* Background elements */}
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:48px_48px]" />
@@ -24,7 +24,7 @@ export default function VisionSection() {
                             Imaginamos una sociedad <span className="text-glow italic text-white">transformada</span> por la tecnología.
                         </h2>
 
-                        <p className="text-lg md:text-2xl text-white/50 font-sans tracking-wide leading-relaxed mb-16">
+                        <p className="text-base md:text-2xl text-white/50 font-sans tracking-wide leading-relaxed mb-10 md:mb-16">
                             Optimizamos recursos y convertimos a la inteligencia artificial en una aliada estratégica para el desarrollo.
                             Implementando infraestructura predictiva para <span className="text-white/80">pequeños, medianos y grandes negocios</span>.
                         </p>
