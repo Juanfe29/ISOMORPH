@@ -2,6 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import './portfolio.css';
+import BoatyPhone3D from '../../components/BoatyPhone3D';
+import VisionMedia13D from '../../components/VisionMedia13D';
+import VisionMedia23D from '../../components/VisionMedia23D';
+import PrecisionBanking3D from '../../components/PrecisionBanking3D';
 
 export default function Portfolio() {
     const [lang, setLang] = useState<'es' | 'en'>('es');
@@ -243,129 +247,10 @@ export default function Portfolio() {
             hcAnimId = requestAnimationFrame(renderHc);
         }
 
-        // ─────────────────────────────────────────────
-        // VISION MEDIA 1.0 CANVAS (Instagram Control)
-        // ─────────────────────────────────────────────
-        let vm1AnimId: number;
-        const vm1Canvas = document.getElementById('vm1-canvas') as HTMLCanvasElement;
-        if (vm1Canvas) {
-            const ctx = vm1Canvas.getContext('2d')!;
-            const DPR = window.devicePixelRatio || 1;
-            const resize = () => { vm1Canvas.width = vm1Canvas.clientWidth * DPR; vm1Canvas.height = vm1Canvas.clientHeight * DPR; ctx.scale(DPR, DPR); };
-            new ResizeObserver(resize).observe(vm1Canvas); resize();
-            let T0 = 0;
-            const tokens = Array.from({ length: 22 }, (_, i) => ({
-                x: Math.random() * .45, y: Math.random(), spd: .008 + Math.random() * .012,
-                w: 18 + Math.random() * 28, delay: Math.random() * 2.5,
-                word: ['caption', 'brand', 'strategy', 'LLM', 'post', 'reel', 'story', 'AI', 'async', 'prompt'][i % 10]
-            }));
-            const render = (ts: number) => {
-                vm1AnimId = requestAnimationFrame(render); if (!T0) T0 = ts;
-                const elapsed = (ts - T0) / 1000; const W = vm1Canvas.clientWidth, H = vm1Canvas.clientHeight;
-                ctx.clearRect(0, 0, W, H);
-                const bx = W * .48, by = H * .5, pulse = 1 + Math.sin(elapsed * 2.2) * .06;
-                const g = ctx.createRadialGradient(bx, by, 0, bx, by, 38 * pulse);
-                g.addColorStop(0, 'rgba(200,82,42,.28)'); g.addColorStop(1, 'rgba(200,82,42,0)');
-                ctx.fillStyle = g; ctx.beginPath(); ctx.arc(bx, by, 38 * pulse, 0, Math.PI * 2); ctx.fill();
-                ctx.strokeStyle = 'rgba(200,82,42,.5)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(bx, by, 20, 0, Math.PI * 2); ctx.stroke();
-                tokens.forEach(t => {
-                    let age = elapsed - t.delay; if (age < 0) return; t.x += t.spd * .016; if (t.x > .52) { t.x = 0; t.delay = elapsed; }
-                    const cx = t.x * W * .46, cy = t.y * H, fa = Math.max(0, (.46 - t.x) / .46);
-                    ctx.save(); ctx.globalAlpha = fa * .65; ctx.font = `300 10px Archivo`; ctx.fillStyle = 'rgba(200,82,42,.8)'; ctx.fillText(t.word, cx, cy); ctx.restore();
-                });
-                const cDefs = [
-                    { x: .63, y: .15, w: .32, h: .34, label: 'POST', icon: '▣', color: '#c8522a', delay: 1.2 },
-                    { x: .63, y: .57, w: .14, h: .30, label: 'STORY', icon: '◉', color: '#4fb3d4', delay: 1.8 },
-                    { x: .80, y: .57, w: .14, h: .30, label: 'REEL', icon: '▶', color: '#8a64c8', delay: 2.5 },
-                ];
-                cDefs.forEach(cd => {
-                    const age = elapsed - cd.delay; if (age < 0) return; const p = Math.min(1, age * .8);
-                    const cx = cd.x * W, cy = cd.y * H, cw = cd.w * W, ch = cd.h * H;
-                    ctx.strokeStyle = cd.color; ctx.globalAlpha = p * .35; ctx.beginPath(); ctx.moveTo(bx + 20, by); ctx.lineTo(cx, cy + ch / 2); ctx.stroke();
-                    ctx.globalAlpha = p; ctx.strokeRect(cx, cy, cw * p, ch);
-                });
-            };
-            vm1AnimId = requestAnimationFrame(render);
-        }
-
-        // ─────────────────────────────────────────────
-        // VISION MEDIA 2.0 CANVAS (Email Automation)
-        // ─────────────────────────────────────────────
-        let vm2AnimId: number;
-        const vm2Canvas = document.getElementById('vm2-canvas') as HTMLCanvasElement;
-        if (vm2Canvas) {
-            const ctx = vm2Canvas.getContext('2d')!;
-            const DPR = window.devicePixelRatio || 1;
-            const resize = () => { vm2Canvas.width = vm2Canvas.clientWidth * DPR; vm2Canvas.height = vm2Canvas.clientHeight * DPR; ctx.scale(DPR, DPR); };
-            new ResizeObserver(resize).observe(vm2Canvas); resize();
-            let T0 = 0;
-            const segs = [
-                { label: 'SEG A', y: .20, color: '#2a6b8c' },
-                { label: 'SEG B', y: .45, color: '#4a9aba' },
-                { label: 'SEG C', y: .70, color: '#2a4a6a' },
-            ];
-            const envs = Array.from({ length: 12 }, (_, i) => ({ x: 0, y: .15 + Math.random() * .7, tx: .78, seg: i % 3, spd: .003 + Math.random() * .005, p: 0, delay: i * .18 + .8 }));
-            const render = (ts: number) => {
-                vm2AnimId = requestAnimationFrame(render); if (!T0) T0 = ts;
-                const elapsed = (ts - T0) / 1000, W = vm2Canvas.clientWidth, H = vm2Canvas.clientHeight;
-                ctx.clearRect(0, 0, W, H);
-                const sx = W * .14, sy = H * .5;
-                ctx.fillStyle = 'rgba(42,107,140,.2)'; ctx.beginPath(); ctx.arc(sx, sy, 25, 0, Math.PI * 2); ctx.fill();
-                segs.forEach(seg => {
-                    const nx = W * .82, ny = seg.y * H;
-                    ctx.strokeStyle = seg.color; ctx.beginPath(); ctx.arc(nx, ny, 12, 0, Math.PI * 2); ctx.stroke();
-                });
-                envs.forEach(env => {
-                    const age = elapsed - env.delay; if (age < 0) return; env.p = Math.min(1, env.p + env.spd);
-                    const ex = sx + (W * .82 - sx) * env.p, ey = sy + (segs[env.seg].y * H - sy) * env.p;
-                    ctx.strokeStyle = segs[env.seg].color; ctx.globalAlpha = Math.max(0, 1 - env.p);
-                    ctx.strokeRect(ex - 8, ey - 5, 16, 10);
-                    if (env.p >= 1) { env.p = 0; env.delay = elapsed; }
-                });
-            };
-            vm2AnimId = requestAnimationFrame(render);
-        }
-
-        // ─────────────────────────────────────────────
-        // PRECISION BANKING ML CANVAS
-        // ─────────────────────────────────────────────
-        let mlAnimId: number;
-        const mlCanvas = document.getElementById('ml-canvas') as HTMLCanvasElement;
-        if (mlCanvas) {
-            const ctx = mlCanvas.getContext('2d')!;
-            const DPR = window.devicePixelRatio || 1;
-            const resize = () => { mlCanvas.width = mlCanvas.clientWidth * DPR; mlCanvas.height = mlCanvas.clientHeight * DPR; ctx.scale(DPR, DPR); };
-            new ResizeObserver(resize).observe(mlCanvas); resize();
-            let T0 = 0;
-            const pts = Array.from({ length: 50 }, () => ({ x: Math.random() * .6, y: Math.random(), sub: Math.random() < .15, p: 0 }));
-            const render = (ts: number) => {
-                mlAnimId = requestAnimationFrame(render); if (!T0) T0 = ts;
-                const elapsed = (ts - T0) / 1000, W = mlCanvas.clientWidth, H = mlCanvas.clientHeight;
-                ctx.clearRect(0, 0, W, H);
-                pts.forEach(pt => {
-                    pt.p = Math.min(1, pt.p + .01);
-                    const px = pt.x * W * .5, py = pt.y * H;
-                    ctx.fillStyle = pt.sub ? '#3a6a3a' : 'rgba(255,255,255,.1)';
-                    ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI * 2); ctx.fill();
-                });
-                ctx.strokeStyle = 'rgba(200,82,42,.3)'; ctx.beginPath(); ctx.moveTo(W * .5, 0); ctx.lineTo(W * .55, H); ctx.stroke();
-            };
-            mlAnimId = requestAnimationFrame(render);
-        }
-
-        // ─────────────────────────────────────────────
-        // SCROLL REVEAL
-        // ─────────────────────────────────────────────
-        const rvObs = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: .07 });
-        document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
-
         return () => {
             document.removeEventListener('mousemove', onMouseMove);
             cancelAnimationFrame(animRingId);
             if (hcAnimId) cancelAnimationFrame(hcAnimId);
-            if (vm1AnimId) cancelAnimationFrame(vm1AnimId);
-            if (vm2AnimId) cancelAnimationFrame(vm2AnimId);
-            if (mlAnimId) cancelAnimationFrame(mlAnimId);
         };
     }, []);
 
@@ -400,8 +285,8 @@ export default function Portfolio() {
 
             {/* ── BOATY ── */}
             <section className="boaty-sec">
-                <div className="boaty-inner">
-                    <div className="rv">
+                <div className="boaty-inner flex flex-col md:flex-row items-center gap-12 max-w-7xl mx-auto px-6 py-20">
+                    <div className="rv flex-1">
                         <div className="b-tag">{lang === 'es' ? 'Producto Destacado · App Móvil & Web' : 'Featured Product · Mobile & Web'}</div>
                         <h2>BOATY</h2>
                         <p className="b-sub">{lang === 'es' ? 'La plataforma náutica on-demand. Como Uber, en el mar.' : 'The on-demand nautical platform. Like Uber, on the water.'}</p>
@@ -409,6 +294,9 @@ export default function Portfolio() {
                             {lang === 'es' ? 'Marketplace premium que conecta turistas de lujo con proveedores náuticos en tiempo real.' : 'Premium marketplace connecting luxury tourists with nautical providers in real time.'}
                         </p>
                         <a href="https://github.com/mapube16/Boaty" target="_blank" rel="noopener noreferrer" className="b-link">{lang === 'es' ? 'Ver en GitHub →' : 'View on GitHub →'}</a>
+                    </div>
+                    <div className="flex-1 w-full flex items-center justify-center">
+                        <BoatyPhone3D />
                     </div>
                 </div>
             </section>
@@ -428,7 +316,7 @@ export default function Portfolio() {
                                 <p className="p-dsc">
                                     {lang === 'es' ? 'Plataforma que genera y publica contenido en Instagram de forma autónoma.' : 'Platform that autonomously generates and publishes content on Instagram.'}
                                 </p>
-                                <div className="prod-canvas-wrap"><canvas id="vm1-canvas"></canvas></div>
+                                <div className="prod-canvas-wrap"><VisionMedia13D /></div>
                                 <a href="https://github.com/Juanfe29/Instagram-automation-AI-generated-content" target="_blank" rel="noopener noreferrer" className="p-lnk">{lang === 'es' ? 'Ver en GitHub →' : 'View on GitHub →'}</a>
                             </div>
                         </div>
@@ -443,7 +331,7 @@ export default function Portfolio() {
                                 <p className="p-dsc">
                                     {lang === 'es' ? 'Motor de email marketing generado por IA.' : 'AI-generated email marketing engine.'}
                                 </p>
-                                <div className="prod-canvas-wrap"><canvas id="vm2-canvas"></canvas></div>
+                                <div className="prod-canvas-wrap"><VisionMedia23D /></div>
                             </div>
                         </div>
                     </div>
@@ -457,7 +345,7 @@ export default function Portfolio() {
                                 <p className="p-dsc">
                                     {lang === 'es' ? 'Predictor de suscripciones bancarias con XGBoost.' : 'Banking subscription predictor with XGBoost.'}
                                 </p>
-                                <div className="prod-canvas-wrap"><canvas id="ml-canvas"></canvas></div>
+                                <div className="prod-canvas-wrap"><PrecisionBanking3D /></div>
                             </div>
                         </div>
                     </div>
