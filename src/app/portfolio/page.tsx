@@ -247,6 +247,20 @@ export default function Portfolio() {
             hcAnimId = requestAnimationFrame(renderHc);
         }
 
+        // ─────────────────────────────────────────────
+        // SCROLL REVEAL
+        // ─────────────────────────────────────────────
+        const rvObs = new IntersectionObserver(es => {
+            es.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    // Ensure the observer keeps running if needed or unobserve if one-time
+                }
+            });
+        }, { threshold: .07 });
+
+        document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
+
         return () => {
             document.removeEventListener('mousemove', onMouseMove);
             cancelAnimationFrame(animRingId);
