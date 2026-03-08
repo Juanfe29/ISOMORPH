@@ -1,58 +1,71 @@
 import Hero from "@/components/Hero";
-import VisionSection from "@/components/VisionSection";
-import GlassCard from "@/components/GlassCard";
-import IntegrationNodes from "@/components/IntegrationNodes";
-import InteractiveProducts from "@/components/InteractiveProducts";
-import IsomorphWordmark from "@/components/IsomorphWordmark";
 import IsomorphLogo from "@/components/IsomorphLogo";
-import { TrendingUp, Layers, Zap, Shield, BarChart3, Globe } from "lucide-react";
-
-const features = [
-  {
-    icon: TrendingUp,
-    title: "AI Forecasting",
-    desc: "Predictive models that transform historical volatility into prescriptive control.",
-    delay: 0.1
-  },
-  {
-    icon: Layers,
-    title: "Data Synthesis",
-    desc: "Unified intelligence layer connecting CRM, POS, and ERP data silos seamlessly.",
-    delay: 0.2
-  },
-  {
-    icon: Zap,
-    title: "Kinetic Physics",
-    desc: "Real-time data processing engine designed for high-frequency enterprise scale.",
-    delay: 0.3
-  }
-];
+import Link from "next/link";
+import { ArrowRight, FolderKanban, TerminalSquare, Info, Shield, BarChart3, Globe } from "lucide-react";
+import VisionSection from "@/components/VisionSection";
+import InteractiveProducts from "@/components/InteractiveProducts";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between selection:bg-white/10">
+    <main className="flex min-h-screen flex-col items-center justify-between selection:bg-white/10 relative">
       <Hero />
+
+      {/* Main Menu Section */}
+      <section className="w-full py-20 relative z-20 -mt-20">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto backdrop-blur-xl bg-white/5 border border-white/10 p-1 rounded-3xl shadow-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
+              <Link href="/portfolio" className="group relative overflow-hidden bg-black/40 hover:bg-white/5 p-10 rounded-[22px] transition-all duration-500 flex flex-col items-start justify-between min-h-[240px]">
+                <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <FolderKanban className="w-5 h-5 text-white/70 group-hover:text-white" />
+                </div>
+                <div>
+                  <h3 className="font-display text-2xl font-bold tracking-tight mb-2">PORTFOLIO</h3>
+                  <p className="font-sans text-sm text-white/40 group-hover:text-white/70 transition-colors">
+                    Explore our AI and software infrastructure products.
+                  </p>
+                </div>
+                <div className="absolute top-10 right-10 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all">
+                  <ArrowRight className="w-6 h-6" />
+                </div>
+              </Link>
+
+              <div className="group relative overflow-hidden bg-black/40 hover:bg-white/5 p-10 rounded-[22px] transition-all duration-500 flex flex-col items-start justify-between min-h-[240px] cursor-not-allowed opacity-70">
+                <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center mb-6">
+                  <TerminalSquare className="w-5 h-5 text-white/70" />
+                </div>
+                <div>
+                  <h3 className="font-display text-2xl font-bold tracking-tight mb-2">TERMINAL</h3>
+                  <p className="font-sans text-sm text-white/40">
+                    System access. (Coming soon)
+                  </p>
+                </div>
+              </div>
+
+              <div className="group relative overflow-hidden bg-black/40 hover:bg-white/5 p-10 rounded-[22px] transition-all duration-500 flex flex-col items-start justify-between min-h-[240px] cursor-not-allowed opacity-70">
+                <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center mb-6">
+                  <Info className="w-5 h-5 text-white/70" />
+                </div>
+                <div>
+                  <h3 className="font-display text-2xl font-bold tracking-tight mb-2">INTELLIGENCE</h3>
+                  <p className="font-sans text-sm text-white/40">
+                    Our philosophy and architecture.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Narrative Section 0.5: Vision */}
       <VisionSection />
 
       {/* Narrative Section 1: Features */}
       <section className="w-full py-16 md:py-32 bg-mesh relative">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((f, i) => (
-              <GlassCard key={i} delay={f.delay}>
-                <f.icon className="w-8 h-8 mb-6 text-white" />
-                <h3 className="text-xl font-display font-bold mb-4 tracking-tight">{f.title}</h3>
-                <p className="text-white/50 leading-relaxed font-sans">{f.desc}</p>
-              </GlassCard>
-            ))}
-          </div>
-        </div>
+        {/* Narrative Section 1.5: Interactive Products */}
+        <InteractiveProducts />
       </section>
-
-      {/* Narrative Section 1.5: Interactive Products */}
-      <InteractiveProducts />
 
       {/* Narrative Section 2: Infrastructure / Integration */}
       <section className="w-full py-16 md:py-32 relative overflow-hidden">
@@ -83,18 +96,11 @@ export default function Home() {
               ))}
             </div>
           </div>
-
-          <div className="relative">
-            <IntegrationNodes />
-            {/* Background elements */}
-            <div className="absolute -top-10 -right-10 w-64 h-64 bg-white/5 blur-[120px] rounded-full" />
-            <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-white/5 blur-[120px] rounded-full" />
-          </div>
         </div>
       </section>
 
       {/* Footer / Final CTA */}
-      <footer className="w-full py-20 border-t border-white/5 bg-black">
+      <footer className="w-full py-20 border-t border-white/5 bg-black mt-20 relative z-20">
         <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10">
           <div className="flex items-center gap-4">
             <IsomorphLogo size={32} dark={true} animated={false} />
@@ -104,10 +110,9 @@ export default function Home() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-4 md:gap-8 text-[10px] uppercase tracking-[0.2em] font-display text-white/40">
+            <Link href="/portfolio" className="hover:text-white transition-colors">Portfolio</Link>
             <a href="#" className="hover:text-white transition-colors">Infrastructure</a>
             <a href="#" className="hover:text-white transition-colors">Technology</a>
-            <a href="#" className="hover:text-white transition-colors">Intelligence</a>
-            <a href="#" className="hover:text-white transition-colors">Access</a>
           </div>
 
           <div className="text-[10px] text-white/20 font-mono tracking-widest uppercase">
