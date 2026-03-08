@@ -165,7 +165,9 @@ export default function GraphLandscape() {
         const speciesList = ['fern', 'crystal', 'willow']; // Removed bamboo for massive sprawling feel
 
         // SPATIAL DISTRIBUTION - Few, Massive, Foreground plants
-        // We only place ~8 plants, but very close to the camera (Z: 200 - 1500)
+        // Fixed start time for all plants to avoid random feel
+        const startTime = Date.now() + 500;
+
         for (let i = 0; i < 8; i++) {
             const t = speciesList[Math.floor(Math.random() * speciesList.length)];
 
@@ -184,8 +186,7 @@ export default function GraphLandscape() {
                 ...generated,
                 x: px,
                 z: pz,
-                // They start growing very shortly after page load
-                createdAt: Date.now() + (Math.random() * 2000),
+                createdAt: startTime,
                 baseScale: 1.5 + Math.random() * 1.5, // 2x-3x bigger overall scale multiplier
                 totalSteps: maxOrder
             });
@@ -212,12 +213,10 @@ export default function GraphLandscape() {
             const cx = width / 2;
             const cy = height / 2 + 100; // Horizon offset
 
-            // Draw Stars
+            // Draw Stars - NO TWINKLE
             ctx.fillStyle = '#ffffff';
             stars.forEach(s => {
-                // Slower smooth glow instead of rapid flicker
-                const twinkle = (Math.sin(time * 0.5 + s.a) + 1) * 0.5;
-                ctx.globalAlpha = Math.max(0, 0.1 + twinkle * 0.4);
+                ctx.globalAlpha = 0.3; // Stable, non-flickering alpha
                 ctx.beginPath();
                 ctx.arc(cx + s.x, cy + s.y, s.r, 0, Math.PI * 2);
                 ctx.fill();
@@ -228,19 +227,24 @@ export default function GraphLandscape() {
 
             // Draw Plants
             for (const p of plants) {
-                // We add a large virtual elapsed time so they start already grown upon page load
-                // The base creation time is negative now, simulating they've been growing for 30 seconds
                 const elapsed = now - p.createdAt;
                 if (elapsed < 0) continue;
 
-                // Exposure step dictates growth. Greatly sped up `growthSpeed` and base multiplier.
-                // Plants will zip to full form 3x faster.
-                const currentExposureStep = (elapsed / 16) * p.growthSpeed * 45;
+                // Height-based growth: reveal nodes by their Y coordinate (ly) from root up
+                const growthDuration = 3500; // 3.5 seconds to full height
+                const growthProgress = Math.min(1, elapsed / growthDuration);
+
+                // Find max height to normalize sweep
+                const maxHeight = Math.max(...p.nodes.map(n => n.ly));
+                const currentRevealHeight = maxHeight * growthProgress;
 
                 const swayOffset = Math.sin(time + p.x * 0.02) * 20;
 
                 const projNodes = p.nodes.map(n => {
-                    const individualGrowth = Math.max(0, Math.min(1, currentExposureStep - n.orderOfCreation));
+                    // Reveal based on height sweep
+                    const heightDiff = currentRevealHeight - n.ly;
+                    const individualGrowth = Math.max(0, Math.min(1, heightDiff / 25 + 0.5));
+
                     if (individualGrowth <= 0) return { p: null, id: n.id, growth: 0, isLeaf: n.isLeaf };
 
                     const ly = n.ly * p.baseScale;
@@ -251,7 +255,6 @@ export default function GraphLandscape() {
                     return { p: proj, id: n.id, growth: individualGrowth, isLeaf: n.isLeaf };
                 });
 
-                // Foreground plants don't fade into distance as much
                 const distFade = Math.max(0, Math.min(1, p.z / 6000));
                 ctx.globalAlpha = (1 - distFade) * 0.9;
                 if (ctx.globalAlpha <= 0) continue;
@@ -259,18 +262,16 @@ export default function GraphLandscape() {
                 ctx.strokeStyle = '#aaaaaa';
                 ctx.beginPath();
                 for (const edge of p.edges) {
-                    if (edge.orderOfCreation > currentExposureStep) continue;
-
                     const n1 = projNodes[edge.from];
                     const n2 = projNodes[edge.to];
 
-                    if (n1.p && n2.p && n1.growth > 0 && n2.growth > 0) {
+                    if (n1.p && n2.p && n1.growth > 0) {
                         ctx.globalAlpha = (1 - distFade) * 0.7 * n2.growth;
                         ctx.moveTo(n1.p.x, n1.p.y);
                         ctx.lineTo(n2.p.x, n2.p.y);
                     }
                 }
-                ctx.lineWidth = 1.5; // Thicker lines for massive structures
+                ctx.lineWidth = 1.5;
                 ctx.stroke();
 
                 // Draw Plant Data Nodes (Leaves)
@@ -280,7 +281,7 @@ export default function GraphLandscape() {
                         ctx.fillStyle = n.isLeaf ? '#ffffff' : '#999999';
                         ctx.globalAlpha = (1 - distFade) * (n.isLeaf ? 1.0 : 0.7) * n.growth;
 
-                        const sizeMult = n.isLeaf ? 3.0 : 1.5; // Bigger leaves for massive plants
+                        const sizeMult = n.isLeaf ? 3.0 : 1.5;
 
                         ctx.moveTo(n.p.x, n.p.y);
                         ctx.arc(n.p.x, n.p.y, Math.max(0.5, sizeMult * n.p.scale * n.growth), 0, Math.PI * 2);
@@ -289,11 +290,11 @@ export default function GraphLandscape() {
                 ctx.fill();
 
                 // Base anchor glow
-                const rootGrowth = Math.min(1, currentExposureStep);
+                const rootGrowth = Math.min(1, growthProgress * 5);
                 if (rootGrowth > 0) {
                     const root = project(p.x, 0, p.z, cx, cy);
                     if (root) {
-                        const rootRadius = 150 * root.scale * rootGrowth; // massive root glow
+                        const rootRadius = 150 * root.scale * rootGrowth;
                         const grd = ctx.createRadialGradient(root.x, root.y, 0, root.x, root.y, rootRadius);
                         const r = '255', g = '255', b = '255';
 
