@@ -65,9 +65,9 @@ export default function GraphLandscape() {
                 this.timer = immediate ? Math.random() * 100 : Math.random() * 800 + 400;
             }
             spawn() {
-                this.x = -100;
-                this.y = Math.random() * (height * 0.4);
-                this.vx = 18 + Math.random() * 12;
+                this.x = -150;
+                this.y = Math.random() * (height * 0.5);
+                this.vx = 15 + Math.random() * 15;
                 this.vy = 2 + Math.random() * 4;
                 this.active = true;
                 this.history = [];
@@ -79,21 +79,21 @@ export default function GraphLandscape() {
                     return;
                 }
                 this.history.push({ x: this.x, y: this.y });
-                if (this.history.length > 25) this.history.shift();
+                if (this.history.length > 20) this.history.shift();
                 this.x += this.vx;
                 this.y += this.vy;
                 if (this.x > width + 200 || this.y > height) {
                     this.active = false;
-                    this.timer = Math.random() * 1200 + 600;
+                    this.timer = Math.random() * 1500 + 500;
                 }
             }
             draw(ctx: CanvasRenderingContext2D) {
                 if (!this.active) return;
                 ctx.beginPath();
                 ctx.strokeStyle = "#FFF";
-                ctx.lineWidth = 1.2;
+                ctx.lineWidth = 1;
                 for (let i = 0; i < this.history.length - 1; i++) {
-                    ctx.globalAlpha = (i / this.history.length) * 0.7;
+                    ctx.globalAlpha = (i / this.history.length) * 0.4;
                     ctx.moveTo(this.history[i].x, this.history[i].y);
                     ctx.lineTo(this.history[i + 1].x, this.history[i + 1].y);
                 }
@@ -102,42 +102,46 @@ export default function GraphLandscape() {
         }
 
         class MountainRange {
-            nodes: { x: number, y: number, isInternal?: boolean }[] = [];
+            nodes: { x: number, y: number, row: number, col: number }[] = [];
             yBase: number; opacity: number; color: string;
 
-            constructor(yBase: number, maxHeight: number, seed: number, opacity: number, color: string) {
+            constructor(yBase: number, maxHeight: number, seed: number, opacity: number, color: string, detail: number) {
                 this.yBase = yBase;
                 this.opacity = opacity;
                 this.color = color;
-                const steps = 30;
+                const steps = detail;
                 const stepW = width / steps;
+
                 for (let i = 0; i <= steps; i++) {
                     const nx = i * stepW;
                     const noise = Math.sin(i * 0.2 + seed) * (maxHeight * 0.5) + Math.sin(i * 0.6 + seed) * (maxHeight * 0.2);
-                    const ny = yBase - (maxHeight * 0.5 + noise);
-                    this.nodes.push({ x: nx, y: ny });
-                    for (let j = 1; j <= 2; j++) {
-                        this.nodes.push({ x: nx + (Math.random() - 0.5) * stepW, y: ny + (yBase - ny) * (j / 3), isInternal: true });
+                    const peakY = yBase - (maxHeight * 0.4 + noise);
+
+                    const layers = 4;
+                    for (let j = 0; j <= layers; j++) {
+                        const ty = peakY + (yBase - peakY) * (j / layers);
+                        const tx = nx + (j > 0 ? (Math.random() - 0.5) * stepW * 0.8 : 0);
+                        this.nodes.push({ x: tx, y: ty, row: i, col: j });
                     }
                 }
             }
             draw(ctx: CanvasRenderingContext2D) {
                 ctx.strokeStyle = this.color;
-                ctx.beginPath();
-                ctx.fillStyle = this.color;
-                ctx.globalAlpha = this.opacity * 0.15;
-                ctx.moveTo(0, this.yBase);
-                this.nodes.filter(n => !n.isInternal).forEach(n => ctx.lineTo(n.x, n.y));
-                ctx.lineTo(width, this.yBase);
-                ctx.fill();
-                ctx.lineWidth = 1.2;
+                ctx.lineWidth = 1;
                 for (let i = 0; i < this.nodes.length; i++) {
-                    for (let j = i + 1; j < Math.min(i + 12, this.nodes.length); j++) {
-                        const n1 = this.nodes[i], n2 = this.nodes[j];
-                        const d = Math.hypot(n1.x - n2.x, n1.y - n2.y);
-                        if (d < width / 6) {
-                            ctx.globalAlpha = (1 - d / (width / 6)) * this.opacity;
-                            ctx.beginPath(); ctx.moveTo(n1.x, n1.y); ctx.lineTo(n2.x, n2.y); ctx.stroke();
+                    const n1 = this.nodes[i];
+                    for (let j = i + 1; j < Math.min(i + 20, this.nodes.length); j++) {
+                        const n2 = this.nodes[j];
+                        const dx = Math.abs(n1.row - n2.row);
+                        const dy = Math.abs(n1.col - n2.col);
+                        if ((dx <= 1 && dy <= 1) && !(dx === 0 && dy === 0)) {
+                            const dist = Math.hypot(n1.x - n2.x, n1.y - n2.y);
+                            const heightFactor = 1 - (n1.y / (this.yBase + 50));
+                            ctx.globalAlpha = heightFactor * this.opacity * (1 - dist / 150);
+                            ctx.beginPath();
+                            ctx.moveTo(n1.x, n1.y);
+                            ctx.lineTo(n2.x, n2.y);
+                            ctx.stroke();
                         }
                     }
                 }
@@ -355,8 +359,8 @@ export default function GraphLandscape() {
         for (let i = 0; i < 8; i++) meteors.push(new Meteor(true));
         for (let i = 0; i < CONFIG.ffCount; i++) fireflies.push(new Firefly());
 
-        mountains.push(new MountainRange(height, 650, 0, 0.55, "#888"));
-        mountains.push(new MountainRange(height, 380, 50, 0.65, "#AAA"));
+        mountains.push(new MountainRange(height, 650, 0, 0.45, "#888", 25));
+        mountains.push(new MountainRange(height, 380, 50, 0.55, "#AAA", 35));
 
         const species = ['oak', 'poplar', 'willow', 'bush'];
         for (let i = 0; i < 25; i++) {
@@ -391,6 +395,9 @@ export default function GraphLandscape() {
                 m.draw(ctx);
             });
 
+            // Moon
+            moon.draw(ctx, time, width, height);
+
             // Mountains
             mountains.forEach(m => m.draw(ctx));
 
@@ -402,20 +409,17 @@ export default function GraphLandscape() {
             ctx.globalAlpha = 1;
             ctx.fillRect(0, height - 220, width, 220);
 
-            // Moon
-            moon.draw(ctx, time, width, height);
-
-            // Fireflies
-            fireflies.forEach(f => {
-                f.update();
-                f.draw(ctx, time);
-            });
-
             // Plants
             const wind = Math.sin(time * 0.6) * CONFIG.breeze;
             plantsFinal.forEach(p => {
                 p.update(p.root, wind, mouseX, mouseY);
                 p.draw(ctx, p.root, p.x, p.y);
+            });
+
+            // Fireflies
+            fireflies.forEach(f => {
+                f.update();
+                f.draw(ctx, time);
             });
 
             animationFrameId = requestAnimationFrame(render);
