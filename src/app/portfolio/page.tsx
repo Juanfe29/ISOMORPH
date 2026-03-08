@@ -309,43 +309,156 @@ export default function Portfolio() {
 
                     {/* VISION MEDIA 1.0 */}
                     <div className="proj-detail rv" style={{ marginTop: '4rem' }}>
+                        <div className="pd-accent-bar" style={{ background: 'linear-gradient(90deg,rgba(200,82,42,.6),rgba(232,133,26,.4))' }}></div>
                         <div className="pd-grid">
                             <div>
                                 <div className="p-num">02 — AI · Social Media Automation</div>
                                 <div className="p-ttl" style={{ fontSize: '2rem' }}>VISION MEDIA <span style={{ color: 'rgba(200,82,42,.7)' }}>1.0</span></div>
+                                <p style={{ fontSize: '.8rem', color: 'rgba(200,82,42,.7)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '1.2rem' }}>
+                                    {lang === 'es' ? 'Motor de contenido social impulsado por IA' : 'AI-powered social content engine'}
+                                </p>
                                 <p className="p-dsc">
-                                    {lang === 'es' ? 'Plataforma que genera y publica contenido en Instagram de forma autónoma.' : 'Platform that autonomously generates and publishes content on Instagram.'}
+                                    {lang === 'es'
+                                        ? 'Plataforma end-to-end que genera, programa y publica contenido multi-formato (Posts, Stories, Reels) en Instagram de forma autónoma. LLMs (Gemini/GPT) alimentados por una Estrategia Maestra de marca producen captions e image prompts on-brand a escala. Clean Architecture, FastAPI async, adaptador social modular, PostgreSQL, Docker.'
+                                        : 'End-to-end platform that autonomously generates, schedules and publishes multi-format content on Instagram. LLMs fed by a Master Brand Strategy produce on-brand captions at scale. Clean Architecture, async FastAPI, modular social adapter, PostgreSQL, Docker.'}
                                 </p>
                                 <div className="prod-canvas-wrap"><VisionMedia13D /></div>
-                                <a href="https://github.com/Juanfe29/Instagram-automation-AI-generated-content" target="_blank" rel="noopener noreferrer" className="p-lnk">{lang === 'es' ? 'Ver en GitHub →' : 'View on GitHub →'}</a>
+                                <div className="pd-arch">
+                                    <div className="pd-arch-lbl">{lang === 'es' ? 'Arquitectura' : 'Architecture'}</div>
+                                    <p className="pd-arch-txt">
+                                        Clean Architecture · Async generation · Social adapter (social_adapter.py) · API docs /docs · Roadmap: Runway/Luma Reels, Analytics Dashboard, Multi-Tenant
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <div className="pd-feat">{lang === 'es' ? 'Características clave' : 'Key features'}</div>
+                                <ul className="pd-list">
+                                    <li className="pd-li">
+                                        <span className="pd-arrow" style={{ color: 'rgba(200,82,42,.5)' }}>→</span>
+                                        <span>{lang === 'es' ? 'Generación multi-formato: Feed Posts, Stories y Reels' : 'Multi-format generation: Feed Posts, Stories and Reels'}</span>
+                                    </li>
+                                    <li className="pd-li">
+                                        <span className="pd-arrow" style={{ color: 'rgba(200,82,42,.5)' }}>→</span>
+                                        <span>{lang === 'es' ? 'Dashboard React para gestión visual de campañas' : 'React dashboard for visual campaign management'}</span>
+                                    </li>
+                                    <li className="pd-li">
+                                        <span className="pd-arrow" style={{ color: 'rgba(200,82,42,.5)' }}>→</span>
+                                        <span>{lang === 'es' ? 'Adaptadores modulares: Instagram Graph API + Ayrshare' : 'Modular adapters: Instagram Graph API + Ayrshare'}</span>
+                                    </li>
+                                    <li className="pd-li">
+                                        <span className="pd-arrow" style={{ color: 'rgba(200,82,42,.5)' }}>→</span>
+                                        <span>{lang === 'es' ? 'Tasks asíncronas en background — UI siempre ágil' : 'Async background tasks — UI always responsive'}</span>
+                                    </li>
+                                    <li className="pd-li">
+                                        <span className="pd-arrow" style={{ color: 'rgba(200,82,42,.5)' }}>→</span>
+                                        <span>{lang === 'es' ? 'PostgreSQL para posts, campañas y tokens' : 'PostgreSQL for posts, campaigns and tokens'}</span>
+                                    </li>
+                                </ul>
+                                <div className="p-tags" style={{ marginBottom: '1.2rem' }}>
+                                    <span className="p-tag">Python</span><span className="p-tag">FastAPI</span><span className="p-tag">AsyncPG</span>
+                                    <span className="p-tag">React</span><span className="p-tag">Vite</span><span className="p-tag">TailwindCSS</span>
+                                    <span className="p-tag">PostgreSQL</span><span className="p-tag">Docker</span><span className="p-tag">Gemini API</span><span className="p-tag">Pydantic</span>
+                                </div>
+                                <a href="https://github.com/Juanfe29/Instagram-automation-AI-generated-content" target="_blank" rel="noopener noreferrer" className="p-lnk">
+                                    {lang === 'es' ? 'Ver en GitHub →' : 'View on GitHub →'}
+                                </a>
                             </div>
                         </div>
                     </div>
 
                     {/* VISION MEDIA 2.0 */}
                     <div className="proj-detail rv" style={{ marginTop: '1px' }}>
+                        <div className="pd-accent-bar" style={{ background: 'linear-gradient(90deg,rgba(58,138,184,.6),rgba(80,180,210,.4))' }}></div>
                         <div className="pd-grid">
                             <div>
                                 <div className="p-num">03 — AI · Email Marketing Automation</div>
                                 <div className="p-ttl" style={{ fontSize: '2rem' }}>VISION MEDIA <span style={{ color: 'rgba(58,138,184,.7)' }}>2.0</span></div>
+                                <p style={{ fontSize: '.8rem', color: 'rgba(58,138,184,.7)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '1.2rem' }}>
+                                    {lang === 'es' ? 'Segmentación dinámica y personalización a escala' : 'Dynamic segmentation & personalized outreach at scale'}
+                                </p>
                                 <p className="p-dsc">
-                                    {lang === 'es' ? 'Motor de email marketing generado por IA.' : 'AI-generated email marketing engine.'}
+                                    {lang === 'es'
+                                        ? 'Evolución de la suite Vision Media enfocada en automatización de correos electrónicos fríos o newsletters hiper-segmentadas. El motor de IA analiza bases de datos de clientes y redacta emails únicos para cada lead, adaptando el tono y la oferta a su perfil psicológico.'
+                                        : 'Evolution of the Vision Media suite focused on cold email automation and hyper-segmented newsletters. The AI engine analyzes customer databases and writes unique emails for each lead, adapting tone and offer to their psychological profile.'}
                                 </p>
                                 <div className="prod-canvas-wrap"><VisionMedia23D /></div>
+                                <div className="pd-arch">
+                                    <div className="pd-arch-lbl">{lang === 'es' ? 'Arquitectura' : 'Architecture'}</div>
+                                    <p className="pd-arch-txt">
+                                        Serverless Functions · LangChain · Vector Database (Pinecone) · SendGrid/Resend API Integration
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <div className="pd-feat">{lang === 'es' ? 'Características clave' : 'Key features'}</div>
+                                <ul className="pd-list">
+                                    <li className="pd-li">
+                                        <span className="pd-arrow" style={{ color: 'rgba(58,138,184,.5)' }}>→</span>
+                                        <span>{lang === 'es' ? 'Micro-segmentación basada en LLMs' : 'LLM-based micro-segmentation'}</span>
+                                    </li>
+                                    <li className="pd-li">
+                                        <span className="pd-arrow" style={{ color: 'rgba(58,138,184,.5)' }}>→</span>
+                                        <span>{lang === 'es' ? 'A/B Testing autónomos generados por IA' : 'Autonomous AI-generated A/B Testing'}</span>
+                                    </li>
+                                    <li className="pd-li">
+                                        <span className="pd-arrow" style={{ color: 'rgba(58,138,184,.5)' }}>→</span>
+                                        <span>{lang === 'es' ? 'Sistema anti-spam y rotación de IPs' : 'Anti-spam system & IP rotation'}</span>
+                                    </li>
+                                </ul>
+                                <div className="p-tags" style={{ marginBottom: '1.2rem' }}>
+                                    <span className="p-tag">TypeScript</span><span className="p-tag">Next.js</span><span className="p-tag">LangChain</span>
+                                    <span className="p-tag">Pinecone</span><span className="p-tag">SendGrid</span><span className="p-tag">OpenAI</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     {/* PRECISION BANKING */}
                     <div className="proj-detail rv" style={{ marginTop: '1px' }}>
+                        <div className="pd-accent-bar" style={{ background: 'linear-gradient(90deg,rgba(80,160,80,.6),rgba(60,180,100,.4))' }}></div>
                         <div className="pd-grid">
                             <div>
                                 <div className="p-num">04 — Machine Learning · Fintech</div>
                                 <div className="p-ttl" style={{ fontSize: '2rem' }}>PRECISION <span style={{ color: 'rgba(80,160,80,.7)' }}>BANKING</span></div>
+                                <p style={{ fontSize: '.8rem', color: 'rgba(80,160,80,.7)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '1.2rem' }}>
+                                    {lang === 'es' ? 'Predictor de Depósitos a Plazo Fijo' : 'Term Deposit Prediction Engine'}
+                                </p>
                                 <p className="p-dsc">
-                                    {lang === 'es' ? 'Predictor de suscripciones bancarias con XGBoost.' : 'Banking subscription predictor with XGBoost.'}
+                                    {lang === 'es'
+                                        ? 'Modelo de Machine Learning optimizado con XGBoost que predice con precisión si un cliente de banco se suscribirá a un depósito a plazo fijo tras una campaña de marketing. La aplicación completa incluye análisis exploratorio interactivo (EDA) y una UI predictiva construida en Streamlit.'
+                                        : 'XGBoost-optimized Machine Learning model that accurately predicts whether a bank client will subscribe to a term deposit following a marketing campaign. The full application includes interactive exploratory data analysis (EDA) and a predictive UI built in Streamlit.'}
                                 </p>
                                 <div className="prod-canvas-wrap"><PrecisionBanking3D /></div>
+                                <div className="pd-arch">
+                                    <div className="pd-arch-lbl">{lang === 'es' ? 'Arquitectura' : 'Architecture'}</div>
+                                    <p className="pd-arch-txt">
+                                        Scikit-Learn Pipeline · XGBoost Classifier · Streamlit UI · Pandas/Seaborn Analytics · CI/CD (GitHub Actions)
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <div className="pd-feat">{lang === 'es' ? 'Características clave' : 'Key features'}</div>
+                                <ul className="pd-list">
+                                    <li className="pd-li">
+                                        <span className="pd-arrow" style={{ color: 'rgba(80,160,80,.5)' }}>→</span>
+                                        <span>{lang === 'es' ? 'Modelo XGBoost con Hyperparameter Tuning (GridSearch)' : 'XGBoost Model with Hyperparameter Tuning (GridSearch)'}</span>
+                                    </li>
+                                    <li className="pd-li">
+                                        <span className="pd-arrow" style={{ color: 'rgba(80,160,80,.5)' }}>→</span>
+                                        <span>{lang === 'es' ? 'SMOTE para balanceo de clases (Alta precisión en "Sí")' : 'SMOTE for class balancing (High precision on "Yes")'}</span>
+                                    </li>
+                                    <li className="pd-li">
+                                        <span className="pd-arrow" style={{ color: 'rgba(80,160,80,.5)' }}>→</span>
+                                        <span>{lang === 'es' ? 'Dashboard en tiempo real para analistas de marketing' : 'Real-time dashboard for marketing analysts'}</span>
+                                    </li>
+                                </ul>
+                                <div className="p-tags" style={{ marginBottom: '1.2rem' }}>
+                                    <span className="p-tag">Python</span><span className="p-tag">Scikit-Learn</span><span className="p-tag">XGBoost</span>
+                                    <span className="p-tag">Streamlit</span><span className="p-tag">Pandas</span><span className="p-tag">Matplotlib</span>
+                                </div>
+                                <a href="https://github.com/Juanfe29/Precision-Banking-ML-Prediction/tree/main" target="_blank" rel="noopener noreferrer" className="p-lnk">
+                                    {lang === 'es' ? 'Ver en GitHub →' : 'View on GitHub →'}
+                                </a>
                             </div>
                         </div>
                     </div>
