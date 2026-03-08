@@ -31,10 +31,10 @@ export default function GraphLandscape() {
         // --- CONFIG ---
         const CONFIG = {
             moonRadius: 100,
-            ffCount: 45,
+            ffCount: 40,
             starCount: 200,
             clearance: 0.35,
-            breeze: 0.03
+            breeze: 0.035
         };
 
         // --- CLASSES ---
@@ -126,22 +126,31 @@ export default function GraphLandscape() {
                 }
             }
             draw(ctx: CanvasRenderingContext2D) {
-                ctx.strokeStyle = this.color;
-                ctx.lineWidth = 1;
+                // 1. Fill silhouette (Dark)
+                ctx.beginPath();
+                ctx.fillStyle = "#111";
+                ctx.globalAlpha = this.opacity;
+                ctx.moveTo(0, this.yBase);
+                for (let i = 0; i <= this.nodes.length / 5 - 1; i++) {
+                    const n = this.nodes[i * 5];
+                    ctx.lineTo(n.x, n.y);
+                }
+                ctx.lineTo(width, this.yBase);
+                ctx.fill();
+
+                // 2. Draw graph mesh (White lines)
+                ctx.strokeStyle = "#FFF";
+                ctx.lineWidth = 0.5;
                 for (let i = 0; i < this.nodes.length; i++) {
                     const n1 = this.nodes[i];
                     for (let j = i + 1; j < Math.min(i + 20, this.nodes.length); j++) {
                         const n2 = this.nodes[j];
                         const dx = Math.abs(n1.row - n2.row);
                         const dy = Math.abs(n1.col - n2.col);
-                        if ((dx <= 1 && dy <= 1) && !(dx === 0 && dy === 0)) {
-                            const dist = Math.hypot(n1.x - n2.x, n1.y - n2.y);
-                            const heightFactor = 1 - (n1.y / (this.yBase + 50));
-                            ctx.globalAlpha = heightFactor * this.opacity * (1 - dist / 150);
-                            ctx.beginPath();
-                            ctx.moveTo(n1.x, n1.y);
-                            ctx.lineTo(n2.x, n2.y);
-                            ctx.stroke();
+                        if (dx <= 1 && dy <= 1) {
+                            const hFade = 1 - (n1.y / (this.yBase + 50));
+                            ctx.globalAlpha = hFade * this.opacity * 0.5;
+                            ctx.beginPath(); ctx.moveTo(n1.x, n1.y); ctx.lineTo(n2.x, n2.y); ctx.stroke();
                         }
                     }
                 }
@@ -165,15 +174,11 @@ export default function GraphLandscape() {
                 if (this.x < 0 || this.x > width || this.y < height * 0.3 || this.y > height) this.init();
             }
             draw(ctx: CanvasRenderingContext2D, time: number) {
-                const pulse = 0.2 + Math.abs(Math.sin(time * 3 + this.x * 0.1)) * 0.8;
-                ctx.globalAlpha = pulse * 0.8;
+                const pulse = Math.abs(Math.sin(time * 2 + this.x * 0.1));
+                ctx.globalAlpha = pulse * 0.6;
                 ctx.fillStyle = "#FFF";
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalAlpha = pulse * 0.2;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size * 4, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, 1.2, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
@@ -324,7 +329,7 @@ export default function GraphLandscape() {
                 }
             }
             draw(ctx: CanvasRenderingContext2D, time: number, w: number, h: number) {
-                const rx = time * 0.03, ry = time * 0.05, cx = w / 2, cy = h * 0.18;
+                const rx = time * 0.03, ry = time * 0.05, cx = w / 2, cy = h * 0.2;
                 const proj = this.pts.map(p => {
                     let x = p.ox * p.r, y = p.oy * p.r, z = p.oz * p.r;
                     let ty = y * Math.cos(rx) - z * Math.sin(rx), tz = y * Math.sin(rx) + z * Math.cos(rx);
@@ -386,37 +391,33 @@ export default function GraphLandscape() {
             ctx.globalAlpha = 1;
             ctx.fillRect(0, 0, width, height);
 
-            // Stars
+            // LAYER 1: Stars and Meteors (Deep Background)
             starsFinal.forEach(s => s.draw(ctx, time));
-
-            // Meteor Shower
             meteors.forEach(m => {
                 m.update();
                 m.draw(ctx);
             });
 
-            // Moon
+            // LAYER 2: Moon (Occludes Stars/Meteors)
             moon.draw(ctx, time, width, height);
 
-            // Mountains
+            // LAYER 3: Mountains (Occludes Moon/Stars/Meteors)
             mountains.forEach(m => m.draw(ctx));
 
-            // Fog Gradient
+            // LAYER 4: Horizon Fog
             const fog = ctx.createLinearGradient(0, height - 220, 0, height);
             fog.addColorStop(0, "rgba(0,0,0,0)");
-            fog.addColorStop(1, "rgba(0,0,0,0.95)");
+            fog.addColorStop(1, "rgba(0,0,0,1)");
             ctx.fillStyle = fog;
             ctx.globalAlpha = 1;
             ctx.fillRect(0, height - 220, width, 220);
 
-            // Plants
+            // LAYER 5: Trees and Fireflies (Foreground)
             const wind = Math.sin(time * 0.6) * CONFIG.breeze;
             plantsFinal.forEach(p => {
                 p.update(p.root, wind, mouseX, mouseY);
                 p.draw(ctx, p.root, p.x, p.y);
             });
-
-            // Fireflies
             fireflies.forEach(f => {
                 f.update();
                 f.draw(ctx, time);
