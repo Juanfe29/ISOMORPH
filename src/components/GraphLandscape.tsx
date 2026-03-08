@@ -31,8 +31,8 @@ export default function GraphLandscape() {
         const gridCols = 60;
         const gridRows = 40;
 
-        const fov = 350;
-        const viewZ = 250;
+        const fov = 800;
+        const viewZ = 600;
 
         const initNodes = () => {
             nodes = [];
@@ -55,15 +55,15 @@ export default function GraphLandscape() {
 
                     // Mountains rising on the sides and far back
                     if (distFromCenter > 0.3 || depthFactor > 0.6) {
-                        const mntZ = Math.sin(pz * 0.003) * 600 * (depthFactor * 1.5);
-                        const mntX = (Math.pow(distFromCenter, 2)) * 800; // quadratic rise on edges
+                        const mntZ = Math.sin(pz * 0.003) * 500 * (depthFactor * 1.5);
+                        const mntX = (Math.pow(distFromCenter, 2)) * 600; // quadratic rise on edges
                         // Add some noise to mountains
-                        const noise = (Math.sin(px * 0.01) * Math.cos(pz * 0.01)) * 150;
+                        const noise = (Math.sin(px * 0.01) * Math.cos(pz * 0.01)) * 100;
                         elevation += Math.max(0, mntZ + mntX + noise);
                     }
 
                     // Negative Y because 3D Y is up, but we want ground below us.
-                    const py = -150 - elevation;
+                    const py = -100 - elevation;
 
                     nodes.push({
                         // Start scattered high above or far away
@@ -71,8 +71,8 @@ export default function GraphLandscape() {
                         y: Math.random() * 4000 + 1000,
                         z: (Math.random()) * 4000 + 1000,
 
-                        tx: px, ty: py, tz: pz + 400, // +400 pushes the whole grid slightly back
-                        bx: px, by: py, bz: pz + 400,
+                        tx: px, ty: py, tz: pz,
+                        bx: px, by: py, bz: pz,
                         type: 'terrain',
                         // Earthy/Tech colors. Bright green near camera, fading to white/grey far away
                         color: depthFactor < 0.4 ? (Math.random() > 0.5 ? '#7de05c' : '#ffffff') : '#888888',
@@ -88,13 +88,13 @@ export default function GraphLandscape() {
                 // Form a sphere shape near the horizon line dead center
                 const theta = Math.random() * Math.PI * 2;
                 const phi = Math.acos(2 * Math.random() - 1);
-                const r = 150;
+                const r = 100;
                 const px = r * Math.sin(phi) * Math.cos(theta);
-                const py = r * Math.sin(phi) * Math.sin(theta) + 300; // Horizon height
-                const pz = r * Math.cos(phi) + 2600; // Far back
+                const py = r * Math.sin(phi) * Math.sin(theta) + 200; // Horizon height
+                const pz = r * Math.cos(phi) + 2000; // Far back
 
                 nodes.push({
-                    x: (Math.random() - 0.5) * 8000, y: Math.random() * 8000, z: Math.random() * 8000,
+                    x: (Math.random() - 0.5) * 6000, y: Math.random() * 6000, z: Math.random() * 6000,
                     tx: px, ty: py, tz: pz, bx: px, by: py, bz: pz,
                     type: 'sun',
                     color: '#ff9d00', // Sun orange
@@ -109,14 +109,14 @@ export default function GraphLandscape() {
                 // Random points strictly in upper hemisphere
                 const theta = Math.random() * Math.PI; // 0 to PI (Arching over)
                 const phi = Math.random() * Math.PI;
-                const r = 2500; // Huge dome radius
+                const r = 2000; // Huge dome radius
 
                 const px = r * Math.cos(phi);
-                const py = Math.abs(r * Math.sin(phi) * Math.sin(theta)) + 400; // Ensure it's above horizon
+                const py = Math.abs(r * Math.sin(phi) * Math.sin(theta)) + 300; // Ensure it's above horizon
                 const pz = r * Math.sin(phi) * Math.cos(theta) + 1200;
 
                 nodes.push({
-                    x: (Math.random() - 0.5) * 8000, y: Math.random() * 8000, z: Math.random() * 8000,
+                    x: (Math.random() - 0.5) * 6000, y: Math.random() * 6000, z: Math.random() * 6000,
                     tx: px, ty: py, tz: pz, bx: px, by: py, bz: pz,
                     type: 'sky',
                     color: Math.random() > 0.8 ? '#7de05c' : '#ffffff',
@@ -135,6 +135,7 @@ export default function GraphLandscape() {
         window.addEventListener('resize', handleResize);
         initNodes();
 
+        // Used to ease nodes from starting chaos to Target Pos
         const lerp = (start: number, end: number, amt: number) => {
             return (1 - amt) * start + amt * end;
         };
