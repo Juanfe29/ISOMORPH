@@ -197,21 +197,26 @@ export default function GraphLandscape() {
                     const currentX = inCollisionPhase ? startX * (1 - collisionProgress) : 0;
                     const scatterMulti = inExplosionPhase ? 1 + explosionProgress * 40 : 1;
 
-                    // Draw a massive glowing halo around the colliding stars
-                    if (inCollisionPhase) {
-                        const clusterCenter = project(currentX, 0, 2500, cx, cy);
-                        if (clusterCenter) {
-                            const haloAlpha = collisionProgress * 0.8;
-                            const grd = ctx.createRadialGradient(clusterCenter.x, clusterCenter.y, 10, clusterCenter.x, clusterCenter.y, 400 * clusterCenter.scale);
-                            // Hacky rgb parse for halo
-                            const rgb = isSun ? '255, 157, 0' : '125, 224, 92';
-                            grd.addColorStop(0, `rgba(${rgb}, ${haloAlpha})`);
-                            grd.addColorStop(1, `rgba(${rgb}, 0)`);
-                            ctx.fillStyle = grd;
-                            ctx.beginPath();
-                            ctx.arc(clusterCenter.x, clusterCenter.y, 400 * clusterCenter.scale, 0, Math.PI * 2);
-                            ctx.fill();
-                        }
+                    const clusterCenter = project(currentX, 0, 2000, cx, cy);
+
+                    // Draw the core of the colliding star
+                    if (inCollisionPhase && clusterCenter) {
+                        // Solid Core
+                        ctx.fillStyle = color;
+                        ctx.beginPath();
+                        ctx.arc(clusterCenter.x, clusterCenter.y, 40 * clusterCenter.scale, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Glowing Halo
+                        const haloAlpha = collisionProgress * 1.5;
+                        const grd = ctx.createRadialGradient(clusterCenter.x, clusterCenter.y, 10, clusterCenter.x, clusterCenter.y, 500 * clusterCenter.scale);
+                        const rgb = isSun ? '255, 157, 0' : '125, 224, 92';
+                        grd.addColorStop(0, `rgba(${rgb}, ${haloAlpha})`);
+                        grd.addColorStop(1, `rgba(${rgb}, 0)`);
+                        ctx.fillStyle = grd;
+                        ctx.beginPath();
+                        ctx.arc(clusterCenter.x, clusterCenter.y, 500 * clusterCenter.scale, 0, Math.PI * 2);
+                        ctx.fill();
                     }
 
                     nodes.forEach(sn => {
@@ -223,7 +228,6 @@ export default function GraphLandscape() {
                         );
                         if (p) {
                             ctx.fillStyle = color;
-                            // Make particles much larger and brighter during the chaos
                             const sizeBoost = inExplosionPhase ? (1 - explosionProgress) * 5 + 1 : 2;
                             ctx.globalAlpha = Math.max(0, 1 - (inExplosionPhase ? explosionProgress : 0));
                             ctx.beginPath();
@@ -238,23 +242,35 @@ export default function GraphLandscape() {
                 drawCluster(rightStart, '#ff9d00', true);
             }
 
-            // Draw expanding shockwave during explosion
+            // Draw expanding supernova core and shockwaves
             if (inExplosionPhase) {
                 const shockCenterX = width / 2;
                 const shockCenterY = height / 2;
-                const maxRadius = Math.max(width, height) * 1.5;
+                const maxRadius = Math.max(width, height) * 2;
                 const currentRadius = explosionProgress * maxRadius;
 
-                ctx.strokeStyle = `rgba(255, 157, 0, ${1 - explosionProgress})`;
-                ctx.lineWidth = 10 * (1 - explosionProgress);
+                // Solid intense white/orange core expanding and fading
+                const coreAlpha = Math.max(0, 1 - explosionProgress * 1.5);
+                const coreGrd = ctx.createRadialGradient(shockCenterX, shockCenterY, 0, shockCenterX, shockCenterY, currentRadius);
+                coreGrd.addColorStop(0, `rgba(255, 255, 255, ${coreAlpha})`);
+                coreGrd.addColorStop(0.5, `rgba(255, 157, 0, ${coreAlpha * 0.8})`);
+                coreGrd.addColorStop(1, `rgba(255, 157, 0, 0)`);
+                ctx.fillStyle = coreGrd;
+                ctx.beginPath();
+                ctx.arc(shockCenterX, shockCenterY, currentRadius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Shockwave rings
+                ctx.strokeStyle = `rgba(255, 255, 255, ${1 - explosionProgress})`;
+                ctx.lineWidth = 15 * (1 - explosionProgress);
                 ctx.beginPath();
                 ctx.arc(shockCenterX, shockCenterY, currentRadius, 0, Math.PI * 2);
                 ctx.stroke();
 
-                ctx.strokeStyle = `rgba(125, 224, 92, ${(1 - explosionProgress) * 0.5})`;
-                ctx.lineWidth = 20 * (1 - explosionProgress);
+                ctx.strokeStyle = `rgba(125, 224, 92, ${(1 - explosionProgress) * 0.8})`;
+                ctx.lineWidth = 30 * (1 - explosionProgress);
                 ctx.beginPath();
-                ctx.arc(shockCenterX, shockCenterY, currentRadius * 0.8, 0, Math.PI * 2);
+                ctx.arc(shockCenterX, shockCenterY, currentRadius * 0.85, 0, Math.PI * 2);
                 ctx.stroke();
             }
 
@@ -359,7 +375,7 @@ export default function GraphLandscape() {
                 renderSphere(sunNodes, 0, 100, 2500, '#ff9d00', 150);
 
                 // Draw Moon (High up, left side)
-                renderSphere(moonNodes, -2800, 2000, 3200, '#7de05c', 160);
+                renderSphere(moonNodes, -1500, 900, 2000, '#7de05c', 160);
 
                 // --- THE EARTH (TERRAIN GRID) ---
                 // Calculate moving offset to make it feel like "flying forward"
