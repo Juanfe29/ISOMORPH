@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import './portfolio.css';
 import BoatyPhone3D from '../../components/BoatyPhone3D';
 import VisionMedia13D from '../../components/VisionMedia13D';
@@ -277,7 +278,12 @@ export default function Portfolio() {
             </button>
 
             <nav className="portfolio-nav">
-                <div className="n-logo">ISOMORPH</div>
+                <div className="flex items-center gap-6">
+                    <div className="n-logo">ISOMORPH</div>
+                    <Link href="/" className="text-white/40 hover:text-white transition-colors text-xs tracking-widest uppercase font-display flex items-center gap-2">
+                        ← {lang === 'es' ? 'Inicio' : 'Home'}
+                    </Link>
+                </div>
                 <ul className="n-links">
                     <li><a href="#work">{lang === 'es' ? 'Proyectos' : 'Projects'}</a></li>
                     <li><a href="#svc">{lang === 'es' ? 'Servicios' : 'Services'}</a></li>

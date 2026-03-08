@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import AntigravityScene from './AntigravityScene';
 import IsomorphWordmark from './IsomorphWordmark';
 import LiquidChrome from './LiquidChrome';
@@ -38,29 +39,33 @@ export default function Hero() {
                     />
 
                     <h2 className="text-xl md:text-5xl font-display font-medium tracking-tight mb-6 md:mb-8 text-white/80 px-2">
-                        SYNTHESIZE <span className="text-glow">CHAOS</span>. PREDICT <span className="text-white/40">CONTROL</span>.
+                        OUR VISION: <span className="text-glow">REDEFINE</span> DIGITAL <span className="text-white/40">EVOLUTION</span>.
                     </h2>
 
                     <p className="text-sm md:text-xl text-white/50 mb-8 md:mb-12 max-w-3xl mx-auto font-sans tracking-wide leading-relaxed px-4">
-                        Unified Data Intelligence & AI Forecasting for Enterprise.
-                        The infrastructure of the future, suspended in precision.
+                        We don't just build software. We craft intelligent, autonomous ecosystems.
+                        Our mission is to push the boundaries of what's possible with AI, seamless data integration, and future-proof architectures.
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 px-4">
-                        <motion.button
-                            whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(255,255,255,0.2)" }}
-                            whileTap={{ scale: 0.95 }}
-                            className="px-8 py-4 bg-white text-black font-display font-bold text-sm tracking-widest uppercase"
-                        >
-                            SEE THE INFRASTRUCTURE
-                        </motion.button>
+                        <Link href="/portfolio">
+                            <motion.button
+                                whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(255,255,255,0.2)" }}
+                                whileTap={{ scale: 0.95 }}
+                                className="px-8 py-4 bg-white text-black font-display font-bold text-sm tracking-widest uppercase cursor-pointer"
+                            >
+                                EXPLORE PORTFOLIO
+                            </motion.button>
+                        </Link>
 
-                        <motion.button
-                            whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.1)" }}
-                            className="px-8 py-4 border border-white/20 font-display font-bold text-sm tracking-widest uppercase backdrop-blur-sm"
-                        >
-                            OUR TECHNOLOGY
-                        </motion.button>
+                        <a href="#vision">
+                            <motion.button
+                                whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.1)" }}
+                                className="px-8 py-4 border border-white/20 font-display font-bold text-sm tracking-widest uppercase backdrop-blur-sm cursor-pointer"
+                            >
+                                READ OUR VISION
+                            </motion.button>
+                        </a>
                     </div>
                 </motion.div>
             </div>
