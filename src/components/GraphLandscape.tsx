@@ -55,11 +55,11 @@ export default function GraphLandscape() {
             }
             return arr;
         };
-        const moonNodes = createSphere(80, 160); 
+        const moonNodes = createSphere(100, 160); // Denser moon
 
-        // --- HIGH-RES STATIONARY GRAPH PLANTS ---
+        // --- HIGH-RES MONOCHROME STATIONARY GRAPH PLANTS ---
         // Building much denser networks with slower L-System branching
-        interface PlantNode { lx: number; ly: number; lz: number; id: number; level: number; orderOfCreation: number; }
+        interface PlantNode { lx: number; ly: number; lz: number; id: number; level: number; orderOfCreation: number; isLeaf: boolean; }
         interface PlantEdge { from: number; to: number; orderOfCreation: number; }
         interface Plant {
             x: number; z: number;
@@ -78,12 +78,26 @@ export default function GraphLandscape() {
             let idCounter = 0;
             let creationStep = 0;
             
-            nodes.push({lx: 0, ly: 0, lz: 0, id: idCounter++, level: 0, orderOfCreation: creationStep++});
+            nodes.push({lx: 0, ly: 0, lz: 0, id: idCounter++, level: 0, orderOfCreation: creationStep++, isLeaf: false});
             
             // Recursive fractal builder
-            // We use maxDepth+2 or more to make them much denser
             const branch = (parentId: number, startX: number, startY: number, startZ: number, angleY: number, angleX: number, length: number, depth: number, maxDepth: number, params: any) => {
-                if (depth >= maxDepth) return;
+                
+                // If we reach max depth, generate a "leaf cluster" of many tiny nodes connected to the end
+                if (depth >= maxDepth) {
+                     const numLeaves = 4 + Math.floor(Math.random() * 4); // Dense leaf clusters
+                     for(let l=0; l<numLeaves; l++) {
+                          const lx = startX + (Math.random() - 0.5) * length;
+                          const ly = startY + (Math.random() - 0.5) * length;
+                          const lz = startZ + (Math.random() - 0.5) * length;
+                          
+                          const leafId = idCounter++;
+                          const order = creationStep++;
+                          nodes.push({lx, ly, lz, id: leafId, level: depth + 1, orderOfCreation: order, isLeaf: true});
+                          edges.push({from: parentId, to: leafId, orderOfCreation: order});
+                     }
+                     return;
+                }
                 
                 const dx = Math.sin(angleY) * Math.cos(angleX) * length;
                 const dy = Math.sin(angleX) * length; 
@@ -95,7 +109,7 @@ export default function GraphLandscape() {
                 
                 const currentId = idCounter++;
                 const order = creationStep++;
-                nodes.push({lx: endX, ly: endY, lz: endZ, id: currentId, level: depth + 1, orderOfCreation: order});
+                nodes.push({lx: endX, ly: endY, lz: endZ, id: currentId, level: depth + 1, orderOfCreation: order, isLeaf: false});
                 edges.push({from: parentId, to: currentId, orderOfCreation: order});
                 
                 const numBranches = params.branchesPerNode(depth);
@@ -112,13 +126,14 @@ export default function GraphLandscape() {
                 }
             };
 
-            let color = '#7de05c';
-            let growthSpeed = 0.5; // lower is slower build
+            // Pure White/Gray Palette
+            let color = '#ffffff';
+            let growthSpeed = 0.5; 
             
+            // All species are white now, just structural differences
             if (type === 'fern') {
-                color = '#7de05c'; 
                 growthSpeed = 0.05; // dense fern grows slow
-                branch(0, 0, 0, 0, 0, Math.PI/2, 100, 0, 7, { // Increased depth to 7 for HIGH detial
+                branch(0, 0, 0, 0, 0, Math.PI/2, 100, 0, 7, { // depth 7 = very detailed stems, depth 8 leaves
                     branchesPerNode: (d:number) => d === 0 ? 1 : (d < 5 ? 3 : 2),
                     spreadY: (i:number, n:number) => {
                         if (n === 1) return 0;
@@ -128,27 +143,24 @@ export default function GraphLandscape() {
                     lengthDecay: 0.8
                 });
             } else if (type === 'crystal') {
-                color = '#ff9d00'; 
                 growthSpeed = 0.02; // very slow methodical build
-                branch(0, 0, 0, 0, 0, Math.PI/2, 50, 0, 6, {
+                branch(0, 0, 0, 0, 0, Math.PI/2, 50, 0, 6, { // radial burst
                      branchesPerNode: (d:number) => d === 0 ? 6 : (d < 3 ? 3 : 2),
                      spreadY: (i:number, n:number, d:number) => d === 0 ? (i/n) * Math.PI * 2 : (i === 0 ? -0.5 : 0.5),
                      spreadX: (i:number, n:number, d:number) => d === 0 ? -0.8 : 0.3, 
                      lengthDecay: 0.85
                 });
             } else if (type === 'bamboo') {
-                color = '#00f0ff'; 
                 growthSpeed = 0.08; 
-                branch(0, 0, 0, 0, 0, Math.PI/2, 60, 0, 10, { // Deeply segmented
+                branch(0, 0, 0, 0, 0, Math.PI/2, 60, 0, 10, { // Deeply segmented, tall
                      branchesPerNode: (d:number) => (d > 0 && d % 2 === 0) ? 4 : 1, 
                      spreadY: (i:number, n:number) => i === 0 ? 0 : (i/n) * Math.PI * 2,
                      spreadX: (i:number) => i === 0 ? 0 : -0.9, 
                      lengthDecay: 0.95
                 });
             } else if (type === 'willow') {
-                 color = '#b05cff'; 
                  growthSpeed = 0.04;
-                 branch(0, 0, 0, 0, 0, Math.PI/2, 160, 0, 8, {
+                 branch(0, 0, 0, 0, 0, Math.PI/2, 160, 0, 9, { // massive drooping tree
                       branchesPerNode: (d:number) => d===0 ? 1 : (d<4 ? 2 : 4),
                       spreadY: (i:number, n:number) => (i - (n-1)/2) * 1.5,
                       spreadX: (i:number, n:number, d:number) => (d < 3 ? 0.2 : -0.9), // dramatic drop
@@ -162,19 +174,16 @@ export default function GraphLandscape() {
         let plants: Plant[] = [];
         const speciesList = ['fern', 'crystal', 'bamboo', 'willow'];
 
-        // SPATIAL DISTRIBUTION
-        // We want a static forest around the camera in a wide semicricle.
-        // Left, right, and deep forward, leaving the center clear to render.
-        for(let i=0; i<35; i++) {
+        // SPATIAL DISTRIBUTION - denser forest
+        for(let i=0; i<45; i++) {
              const t = speciesList[Math.floor(Math.random() * speciesList.length)];
              
-             // Keep them out of the middle lane (-800 to 800 x) where the text goes, 
-             // but fill the sides and deep background 
+             // Keep middle lane clear for text reading
              let px = (Math.random() - 0.5) * 6000;
-             if (px > -1000 && px < 0) px -= 1500;
-             if (px < 1000 && px > 0) px += 1500;
+             if (px > -1200 && px < 0) px -= 1800;
+             if (px < 1200 && px > 0) px += 1800;
              
-             let pz = 1500 + Math.random() * 4500;
+             let pz = 1200 + Math.random() * 5000;
 
              const generated = buildDetailedTree(t);
              const maxOrder = Math.max(...generated.nodes.map(n => n.orderOfCreation));
@@ -183,9 +192,9 @@ export default function GraphLandscape() {
                  ...generated,
                  x: px,
                  z: pz,
-                 // Stagger their birth times so they don't all finish growing at once
+                 // Stagger their birth times 
                  createdAt: Date.now() + (Math.random() * 8000), 
-                 baseScale: 0.7 + Math.random() * 0.8,
+                 baseScale: 0.6 + Math.random() * 0.9,
                  totalSteps: maxOrder
              });
         }
@@ -214,14 +223,14 @@ export default function GraphLandscape() {
             ctx.fillStyle = '#ffffff';
             stars.forEach(s => {
                 const twinkle = (Math.sin(time * 2 + s.a) + 1) * 0.5;
-                ctx.globalAlpha = Math.max(0, 0.1 + twinkle * 0.6);
+                ctx.globalAlpha = Math.max(0, 0.1 + twinkle * 0.5);
                 ctx.beginPath();
                 ctx.arc(cx + s.x, cy + s.y, s.r, 0, Math.PI * 2);
                 ctx.fill();
             });
             ctx.globalAlpha = 1.0;
 
-            // Draw Moon
+            // Draw Moon (Monochrome/White)
             const renderSphere = (nodesArray: SphereNode[], finalWorldX: number, finalWorldY: number, finalWorldZ: number, mainColor: string, radiusGlow: number) => {
                 const finalProj = project(finalWorldX, finalWorldY, finalWorldZ, cx, cy);
                 if (!finalProj) return;
@@ -232,7 +241,7 @@ export default function GraphLandscape() {
                 const projectedNodes = nodesArray.map(sn => {
                     const rx = sn.x * Math.cos(time * 0.5) - sn.z * Math.sin(time * 0.5);
                     const rz = sn.x * Math.sin(time * 0.5) + sn.z * Math.cos(time * 0.5);
-                    const ry = sn.y + Math.sin(time * 1.5 + sn.phase) * 15; // Deeper breathing
+                    const ry = sn.y + Math.sin(time * 1.5 + sn.phase) * 15; 
                     
                     const fX = finalWorldX + rx;
                     const fY = finalWorldY + ry;
@@ -247,7 +256,7 @@ export default function GraphLandscape() {
                     if (!p1) continue;
                     
                     ctx.fillStyle = mainColor;
-                    ctx.globalAlpha = 1.0;
+                    ctx.globalAlpha = 0.9;
                     ctx.moveTo(p1.x, p1.y);
                     ctx.arc(p1.x, p1.y, Math.max(0.1, 2.5 * p1.scale), 0, Math.PI * 2);
 
@@ -255,22 +264,21 @@ export default function GraphLandscape() {
                         const p2 = projectedNodes[j];
                         if (!p2) continue;
                         const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-                        // Dense interior connections for the moon
-                        if (dist < 50 * p1.scale) {
+                        if (dist < 45 * p1.scale) {
                             ctx.moveTo(p1.x, p1.y);
                             ctx.lineTo(p2.x, p2.y);
                         }
                     }
                 }
                 ctx.fill();
-                ctx.globalAlpha = 0.5;
+                ctx.globalAlpha = 0.3; // dimmer edges for depth
                 ctx.stroke();
                 
-                const glowAlpha = 0.4;
+                const glowAlpha = 0.2; // softer white glow
                 const radius = Math.max(1, radiusGlow * finalProj.scale);
                 const grd = ctx.createRadialGradient(finalProj.x, finalProj.y, 10, finalProj.x, finalProj.y, radius);
                 
-                const rgb = '125, 224, 92'; 
+                const rgb = '255, 255, 255'; 
                 grd.addColorStop(0, `rgba(${rgb}, ${glowAlpha})`);
                 grd.addColorStop(1, `rgba(${rgb}, 0)`);
                 ctx.fillStyle = grd;
@@ -279,93 +287,87 @@ export default function GraphLandscape() {
                 ctx.fill();
             };
             
-            // Render Green Moon hovering Left
-            renderSphere(moonNodes, -1800, 700, 2200, '#7de05c', 180);
+            // Render White Moon hovering Left
+            renderSphere(moonNodes, -1800, 700, 2200, '#ffffff', 200);
 
-            // Sort Plants (Painters algorithm for 3D depth, completely stationary plants)
             plants.sort((a,b) => b.z - a.z);
 
             // Draw Plants
             for(const p of plants) {
-                // Growth mechanics: 
-                // Plant stays completely still in XYZ space.
-                // We sequentially reveal its nodes from root (order 0) to leaf over time.
                 const elapsed = now - p.createdAt;
-                if (elapsed < 0) continue; // Hasn't sprouted yet
+                if (elapsed < 0) continue; 
 
-                // Which creation step are we currently exposing?
-                const currentExposureStep = (elapsed / 16) * p.growthSpeed * 20; 
+                // Exposure step dictates growth. Much smoother multiplier.
+                // It builds node by node over many seconds.
+                const currentExposureStep = (elapsed / 16) * p.growthSpeed * 15; 
                 
-                // Add a subtle majestic sway relative to time
                 const swayOffset = Math.sin(time + p.x * 0.02) * 20;
 
                 const projNodes = p.nodes.map(n => {
-                    // Check if this specific node has "grown" enough to be visible
-                    // 0 = invisible, 1 = fully formed
                     const individualGrowth = Math.max(0, Math.min(1, currentExposureStep - n.orderOfCreation));
-                    if (individualGrowth <= 0) return { p: null, id: n.id, growth: 0 };
+                    if (individualGrowth <= 0) return { p: null, id: n.id, growth: 0, isLeaf: n.isLeaf };
 
                     const ly = n.ly * p.baseScale;
                     const lx = n.lx * p.baseScale + (swayOffset * (ly / 500)); 
                     const lz = n.lz * p.baseScale;
 
                     const proj = project(p.x + lx, ly, p.z + lz, cx, cy);
-                    return { p: proj, id: n.id, growth: individualGrowth };
+                    return { p: proj, id: n.id, growth: individualGrowth, isLeaf: n.isLeaf };
                 });
 
                 const distFade = Math.max(0, Math.min(1, p.z / 5000));
-                ctx.globalAlpha = (1 - distFade) * 0.9; 
+                ctx.globalAlpha = (1 - distFade) * 0.8; 
                 if (ctx.globalAlpha <= 0) continue;
 
-                // Draw Plant Graph Edges mapping out sequentially
-                ctx.strokeStyle = p.color;
+                ctx.strokeStyle = '#aaaaaa'; // stems are gray for contrast with white leaves
                 ctx.beginPath();
                 for (const edge of p.edges) {
-                     if (edge.orderOfCreation > currentExposureStep) continue; // Line hasn't formed yet
+                     if (edge.orderOfCreation > currentExposureStep) continue; 
 
                      const n1 = projNodes[edge.from];
                      const n2 = projNodes[edge.to];
                      
                      if (n1.p && n2.p && n1.growth > 0 && n2.growth > 0) {
-                         // Line opacity based on the target node's formation, so lines draw in smoothly rather than popping
-                         ctx.globalAlpha = (1 - distFade) * 0.9 * n2.growth;
+                         ctx.globalAlpha = (1 - distFade) * 0.6 * n2.growth;
                          ctx.moveTo(n1.p.x, n1.p.y);
                          ctx.lineTo(n2.p.x, n2.p.y);
                      }
                 }
-                ctx.lineWidth = 1; // Thinner lines for high-res look
+                ctx.lineWidth = 1; 
                 ctx.stroke();
 
                 // Draw Plant Data Nodes (Leaves)
-                ctx.fillStyle = p.color;
                 ctx.beginPath();
                 for (const n of projNodes) {
                      if (n.p && n.growth > 0) {
-                         ctx.globalAlpha = (1 - distFade) * 0.9 * n.growth;
+                         // Leaves are white, stems are grey
+                         ctx.fillStyle = n.isLeaf ? '#ffffff' : '#888888';
+                         ctx.globalAlpha = (1 - distFade) * (n.isLeaf ? 0.9 : 0.6) * n.growth;
+                         
+                         // Leaves are slightly larger spheres
+                         const sizeMult = n.isLeaf ? 2.5 : 1.2;
+                         
                          ctx.moveTo(n.p.x, n.p.y);
-                         ctx.arc(n.p.x, n.p.y, Math.max(0.3, 1.5 * n.p.scale * n.growth), 0, Math.PI * 2);
+                         ctx.arc(n.p.x, n.p.y, Math.max(0.3, sizeMult * n.p.scale * n.growth), 0, Math.PI * 2);
                      }
                 }
                 ctx.fill();
                 
-                // Base anchor glow (grows as the plant roots step 0)
+                // Base anchor glow
                 const rootGrowth = Math.min(1, currentExposureStep);
                 if (rootGrowth > 0) {
                     const root = project(p.x, 0, p.z, cx, cy);
                     if (root) {
-                        const grd = ctx.createRadialGradient(root.x, root.y, 0, root.x, root.y, 80 * root.scale * rootGrowth);
-                        let r='0', g='0', b='0';
-                        if (p.color === '#7de05c') { r='125'; g='224'; b='92'; }
-                        else if (p.color === '#ff9d00') { r='255'; g='157'; b='0'; }
-                        else if (p.color === '#00f0ff') { r='0'; g='240'; b='255'; }
-                        else if (p.color === '#b05cff') { r='176'; g='92'; b='255'; }
+                        const rootRadius = 90 * root.scale * rootGrowth;
+                        const grd = ctx.createRadialGradient(root.x, root.y, 0, root.x, root.y, rootRadius);
+                        const r='255', g='255', b='255';
                         
-                        grd.addColorStop(0, `rgba(${r},${g},${b},${(1-distFade)*0.4*rootGrowth})`);
+                        grd.addColorStop(0, `rgba(${r},${g},${b},${(1-distFade)*0.2*rootGrowth})`);
                         grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
                         ctx.globalAlpha = 1;
                         ctx.fillStyle = grd;
                         ctx.beginPath();
-                        ctx.arc(root.x, root.y, 80 * root.scale * rootGrowth, 0, Math.PI * 2);
+                        ctx.arc(root.x, root.y, rootRadius, 0, Math.PI * 2);
                         ctx.fill();
                     }
                 }
@@ -388,7 +390,7 @@ export default function GraphLandscape() {
             <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full" />
             
             <div className="absolute inset-0 z-0 opacity-50 pointer-events-none mix-blend-screen"
-                style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0) 45%, rgba(125,224,92,0.06) 50%, rgba(125,224,92,0.02) 60%, rgba(0,0,0,0) 100%)' }} />
+                style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0) 45%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.01) 60%, rgba(0,0,0,0) 100%)' }} />
 
             <div className="absolute top-0 w-full h-1/4 bg-gradient-to-b from-black to-transparent z-10" />
 
@@ -396,4 +398,3 @@ export default function GraphLandscape() {
         </div>
     );
 }
-
