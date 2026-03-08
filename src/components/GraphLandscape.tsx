@@ -19,8 +19,8 @@ export default function GraphLandscape() {
         let time = 0;
 
         // Camera perspective
-        const fov = 400; 
-        const camY = 300; 
+        const fov = 400;
+        const camY = 300;
 
         const handleResize = () => {
             width = canvas.width = window.innerWidth;
@@ -34,8 +34,8 @@ export default function GraphLandscape() {
         const stars: Star[] = [];
         for (let i = 0; i < 200; i++) {
             stars.push({
-                x: Math.random() * 3000 - 1500, 
-                y: Math.random() * -1000 - 100, 
+                x: Math.random() * 3000 - 1500,
+                y: Math.random() * -1000 - 100,
                 r: Math.random() * 1.5 + 0.5,
                 a: Math.random() * Math.PI * 2
             });
@@ -55,7 +55,7 @@ export default function GraphLandscape() {
             }
             return arr;
         };
-        const moonNodes = createSphere(100, 160); 
+        const moonNodes = createSphere(100, 160);
 
         // --- MASSIVE FOREGROUND MONOCHROME GRAPH PLANTS ---
         interface PlantNode { lx: number; ly: number; lz: number; id: number; level: number; orderOfCreation: number; isLeaf: boolean; }
@@ -67,52 +67,52 @@ export default function GraphLandscape() {
             color: string;
             createdAt: number;
             baseScale: number;
-            growthSpeed: number; 
+            growthSpeed: number;
             totalSteps: number;
         }
 
-        const buildDetailedTree = (type: string): {nodes: PlantNode[], edges: PlantEdge[], color: string, growthSpeed: number} => {
+        const buildDetailedTree = (type: string): { nodes: PlantNode[], edges: PlantEdge[], color: string, growthSpeed: number } => {
             const nodes: PlantNode[] = [];
             const edges: PlantEdge[] = [];
             let idCounter = 0;
             let creationStep = 0;
-            
-            nodes.push({lx: 0, ly: 0, lz: 0, id: idCounter++, level: 0, orderOfCreation: creationStep++, isLeaf: false});
-            
+
+            nodes.push({ lx: 0, ly: 0, lz: 0, id: idCounter++, level: 0, orderOfCreation: creationStep++, isLeaf: false });
+
             // Recursive fractal builder
             const branch = (parentId: number, startX: number, startY: number, startZ: number, angleY: number, angleX: number, length: number, depth: number, maxDepth: number, params: any) => {
-                
+
                 // Leaf clusters
                 if (depth >= maxDepth) {
-                     const numLeaves = 4 + Math.floor(Math.random() * 6); // More leaves for foreground
-                     for(let l=0; l<numLeaves; l++) {
-                          const lx = startX + (Math.random() - 0.5) * length * 1.5;
-                          const ly = startY + (Math.random() - 0.5) * length * 1.5;
-                          const lz = startZ + (Math.random() - 0.5) * length * 1.5;
-                          
-                          const leafId = idCounter++;
-                          const order = creationStep++;
-                          nodes.push({lx, ly, lz, id: leafId, level: depth + 1, orderOfCreation: order, isLeaf: true});
-                          edges.push({from: parentId, to: leafId, orderOfCreation: order});
-                     }
-                     return;
+                    const numLeaves = 4 + Math.floor(Math.random() * 6); // More leaves for foreground
+                    for (let l = 0; l < numLeaves; l++) {
+                        const lx = startX + (Math.random() - 0.5) * length * 1.5;
+                        const ly = startY + (Math.random() - 0.5) * length * 1.5;
+                        const lz = startZ + (Math.random() - 0.5) * length * 1.5;
+
+                        const leafId = idCounter++;
+                        const order = creationStep++;
+                        nodes.push({ lx, ly, lz, id: leafId, level: depth + 1, orderOfCreation: order, isLeaf: true });
+                        edges.push({ from: parentId, to: leafId, orderOfCreation: order });
+                    }
+                    return;
                 }
-                
+
                 const dx = Math.sin(angleY) * Math.cos(angleX) * length;
-                const dy = Math.sin(angleX) * length; 
+                const dy = Math.sin(angleX) * length;
                 const dz = Math.cos(angleY) * Math.cos(angleX) * length;
-                
+
                 const endX = startX + dx;
                 const endY = startY + dy;
                 const endZ = startZ + dz;
-                
+
                 const currentId = idCounter++;
                 const order = creationStep++;
-                nodes.push({lx: endX, ly: endY, lz: endZ, id: currentId, level: depth + 1, orderOfCreation: order, isLeaf: false});
-                edges.push({from: parentId, to: currentId, orderOfCreation: order});
-                
+                nodes.push({ lx: endX, ly: endY, lz: endZ, id: currentId, level: depth + 1, orderOfCreation: order, isLeaf: false });
+                edges.push({ from: parentId, to: currentId, orderOfCreation: order });
+
                 const numBranches = params.branchesPerNode(depth);
-                for(let i=0; i<numBranches; i++) {
+                for (let i = 0; i < numBranches; i++) {
                     const newAngleY = angleY + params.spreadY(i, numBranches, depth);
                     const newAngleX = angleX + params.spreadX(i, numBranches, depth);
                     const newLength = length * params.lengthDecay;
@@ -120,45 +120,45 @@ export default function GraphLandscape() {
 
                     // Dense cross connections
                     if (depth > 1 && i > 0 && Math.random() > 0.3) {
-                        edges.push({from: parentId, to: currentId, orderOfCreation: creationStep++});
+                        edges.push({ from: parentId, to: currentId, orderOfCreation: creationStep++ });
                     }
                 }
             };
 
             let color = '#ffffff';
-            let growthSpeed = 0.5; 
-            
+            let growthSpeed = 0.5;
+
             // MASSIVE structure scales (Lengths are doubled/tripled)
             if (type === 'fern') {
-                growthSpeed = 0.05; 
-                branch(0, 0, 0, 0, 0, Math.PI/2, 250, 0, 7, { 
-                    branchesPerNode: (d:number) => d === 0 ? 1 : (d < 4 ? 3 : 2),
-                    spreadY: (i:number, n:number) => {
+                growthSpeed = 0.05;
+                branch(0, 0, 0, 0, 0, Math.PI / 2, 250, 0, 7, {
+                    branchesPerNode: (d: number) => d === 0 ? 1 : (d < 4 ? 3 : 2),
+                    spreadY: (i: number, n: number) => {
                         if (n === 1) return 0;
-                        return (i === 0) ? 0 : (i === 1 ? -1 : 1); 
+                        return (i === 0) ? 0 : (i === 1 ? -1 : 1);
                     },
-                    spreadX: (i:number) => (i === 0 ? 0.05 : -0.4), 
+                    spreadX: (i: number) => (i === 0 ? 0.05 : -0.4),
                     lengthDecay: 0.8
                 });
             } else if (type === 'crystal') {
-                growthSpeed = 0.02; 
-                branch(0, 0, 0, 0, 0, Math.PI/2, 150, 0, 6, { 
-                     branchesPerNode: (d:number) => d === 0 ? 6 : (d < 3 ? 3 : 2),
-                     spreadY: (i:number, n:number, d:number) => d === 0 ? (i/n) * Math.PI * 2 : (i === 0 ? -0.5 : 0.5),
-                     spreadX: (i:number, n:number, d:number) => d === 0 ? -0.8 : 0.4, 
-                     lengthDecay: 0.75
+                growthSpeed = 0.02;
+                branch(0, 0, 0, 0, 0, Math.PI / 2, 150, 0, 6, {
+                    branchesPerNode: (d: number) => d === 0 ? 6 : (d < 3 ? 3 : 2),
+                    spreadY: (i: number, n: number, d: number) => d === 0 ? (i / n) * Math.PI * 2 : (i === 0 ? -0.5 : 0.5),
+                    spreadX: (i: number, n: number, d: number) => d === 0 ? -0.8 : 0.4,
+                    lengthDecay: 0.75
                 });
             } else if (type === 'willow') {
-                 growthSpeed = 0.04;
-                 branch(0, 0, 0, 0, 0, Math.PI/2, 350, 0, 8, { 
-                      branchesPerNode: (d:number) => d===0 ? 1 : (d<4 ? 2 : 4),
-                      spreadY: (i:number, n:number) => (i - (n-1)/2) * 1.5,
-                      spreadX: (i:number, n:number, d:number) => (d < 3 ? 0.2 : -0.9), 
-                      lengthDecay: 0.7
-                 });
+                growthSpeed = 0.04;
+                branch(0, 0, 0, 0, 0, Math.PI / 2, 350, 0, 8, {
+                    branchesPerNode: (d: number) => d === 0 ? 1 : (d < 4 ? 2 : 4),
+                    spreadY: (i: number, n: number) => (i - (n - 1) / 2) * 1.5,
+                    spreadX: (i: number, n: number, d: number) => (d < 3 ? 0.2 : -0.9),
+                    lengthDecay: 0.7
+                });
             }
 
-            return {nodes, edges, color, growthSpeed};
+            return { nodes, edges, color, growthSpeed };
         }
 
         let plants: Plant[] = [];
@@ -166,28 +166,28 @@ export default function GraphLandscape() {
 
         // SPATIAL DISTRIBUTION - Few, Massive, Foreground plants
         // We only place ~8 plants, but very close to the camera (Z: 200 - 1500)
-        for(let i=0; i<8; i++) {
-             const t = speciesList[Math.floor(Math.random() * speciesList.length)];
-             
-             // Plants are massive, so push them to the sides drastically
-             let px = (Math.random() - 0.5) * 4000;
-             if (px > -1500 && px < 0) px -= 2000;
-             if (px < 1500 && px > 0) px += 2000;
-             
-             // Very close Z index (foreground)
-             let pz = 400 + Math.random() * 1200;
+        for (let i = 0; i < 8; i++) {
+            const t = speciesList[Math.floor(Math.random() * speciesList.length)];
 
-             const generated = buildDetailedTree(t);
-             const maxOrder = Math.max(...generated.nodes.map(n => n.orderOfCreation));
+            // Plants are massive, so push them to the sides drastically
+            let px = (Math.random() - 0.5) * 4000;
+            if (px > -1500 && px < 0) px -= 2000;
+            if (px < 1500 && px > 0) px += 2000;
 
-             plants.push({
-                 ...generated,
-                 x: px,
-                 z: pz,
-                 createdAt: Date.now() + (Math.random() * 3000), // They start growing sooner
-                 baseScale: 1.5 + Math.random() * 1.5, // 2x-3x bigger overall scale multiplier
-                 totalSteps: maxOrder
-             });
+            // Very close Z index (foreground)
+            let pz = 400 + Math.random() * 1200;
+
+            const generated = buildDetailedTree(t);
+            const maxOrder = Math.max(...generated.nodes.map(n => n.orderOfCreation));
+
+            plants.push({
+                ...generated,
+                x: px,
+                z: pz,
+                createdAt: Date.now() - 60000 - (Math.random() * 10000), // Start immediately fully grown
+                baseScale: 1.5 + Math.random() * 1.5, // 2x-3x bigger overall scale multiplier
+                totalSteps: maxOrder
+            });
         }
 
         // Project 3D -> 2D
@@ -196,16 +196,16 @@ export default function GraphLandscape() {
             const scale = fov / z;
             return {
                 x: cx + x * scale,
-                y: cy - (y - camY) * scale, 
+                y: cy - (y - camY) * scale,
                 scale
             };
         };
 
         const render = () => {
-            time += 0.015; 
+            time += 0.015;
             const now = Date.now();
-            
-            ctx.fillStyle = '#020305'; 
+
+            ctx.fillStyle = '#020305';
             ctx.fillRect(0, 0, width, height);
 
             const cx = width / 2;
@@ -214,84 +214,28 @@ export default function GraphLandscape() {
             // Draw Stars
             ctx.fillStyle = '#ffffff';
             stars.forEach(s => {
-                const twinkle = (Math.sin(time * 2 + s.a) + 1) * 0.5;
-                ctx.globalAlpha = Math.max(0, 0.1 + twinkle * 0.5);
+                // Slower smooth glow instead of rapid flicker
+                const twinkle = (Math.sin(time * 0.5 + s.a) + 1) * 0.5;
+                ctx.globalAlpha = Math.max(0, 0.1 + twinkle * 0.4);
                 ctx.beginPath();
                 ctx.arc(cx + s.x, cy + s.y, s.r, 0, Math.PI * 2);
                 ctx.fill();
             });
             ctx.globalAlpha = 1.0;
 
-            // Draw Moon (White)
-            const renderSphere = (nodesArray: SphereNode[], finalWorldX: number, finalWorldY: number, finalWorldZ: number, mainColor: string, radiusGlow: number) => {
-                const finalProj = project(finalWorldX, finalWorldY, finalWorldZ, cx, cy);
-                if (!finalProj) return;
-
-                ctx.strokeStyle = mainColor;
-                ctx.lineWidth = 1;
-
-                const projectedNodes = nodesArray.map(sn => {
-                    const rx = sn.x * Math.cos(time * 0.5) - sn.z * Math.sin(time * 0.5);
-                    const rz = sn.x * Math.sin(time * 0.5) + sn.z * Math.cos(time * 0.5);
-                    const ry = sn.y + Math.sin(time * 1.5 + sn.phase) * 15; 
-                    
-                    const fX = finalWorldX + rx;
-                    const fY = finalWorldY + ry;
-                    const fZ = finalWorldZ + rz;
-
-                    return project(fX, fY, fZ, cx, cy);
-                });
-
-                ctx.beginPath();
-                for (let i = 0; i < projectedNodes.length; i++) {
-                    const p1 = projectedNodes[i];
-                    if (!p1) continue;
-                    
-                    ctx.fillStyle = mainColor;
-                    ctx.globalAlpha = 0.9;
-                    ctx.moveTo(p1.x, p1.y);
-                    ctx.arc(p1.x, p1.y, Math.max(0.1, 2.5 * p1.scale), 0, Math.PI * 2);
-
-                    for (let j = i + 1; j < projectedNodes.length; j++) {
-                        const p2 = projectedNodes[j];
-                        if (!p2) continue;
-                        const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-                        if (dist < 45 * p1.scale) {
-                            ctx.moveTo(p1.x, p1.y);
-                            ctx.lineTo(p2.x, p2.y);
-                        }
-                    }
-                }
-                ctx.fill();
-                ctx.globalAlpha = 0.3; // dimmer edges for depth
-                ctx.stroke();
-                
-                const glowAlpha = 0.2; // softer white glow
-                const radius = Math.max(1, radiusGlow * finalProj.scale);
-                const grd = ctx.createRadialGradient(finalProj.x, finalProj.y, 10, finalProj.x, finalProj.y, radius);
-                
-                const rgb = '255, 255, 255'; 
-                grd.addColorStop(0, `rgba(${rgb}, ${glowAlpha})`);
-                grd.addColorStop(1, `rgba(${rgb}, 0)`);
-                ctx.fillStyle = grd;
-                ctx.beginPath();
-                ctx.arc(finalProj.x, finalProj.y, radius, 0, Math.PI * 2);
-                ctx.fill();
-            };
-            
-            // Render White Moon hovering Left
-            renderSphere(moonNodes, -1800, 700, 2200, '#ffffff', 200);
-
-            plants.sort((a,b) => b.z - a.z);
+            plants.sort((a, b) => b.z - a.z);
 
             // Draw Plants
-            for(const p of plants) {
+            for (const p of plants) {
+                // We add a large virtual elapsed time so they start already grown upon page load
+                // The base creation time is negative now, simulating they've been growing for 30 seconds
                 const elapsed = now - p.createdAt;
-                if (elapsed < 0) continue; 
+                if (elapsed < 0) continue;
 
-                // Exposure step dictates growth. Much smoother multiplier.
-                const currentExposureStep = (elapsed / 16) * p.growthSpeed * 15; 
-                
+                // Exposure step dictates growth. Greatly sped up `growthSpeed` and base multiplier.
+                // Plants will zip to full form 3x faster.
+                const currentExposureStep = (elapsed / 16) * p.growthSpeed * 45;
+
                 const swayOffset = Math.sin(time + p.x * 0.02) * 20;
 
                 const projNodes = p.nodes.map(n => {
@@ -299,7 +243,7 @@ export default function GraphLandscape() {
                     if (individualGrowth <= 0) return { p: null, id: n.id, growth: 0, isLeaf: n.isLeaf };
 
                     const ly = n.ly * p.baseScale;
-                    const lx = n.lx * p.baseScale + (swayOffset * (ly / 500)); 
+                    const lx = n.lx * p.baseScale + (swayOffset * (ly / 500));
                     const lz = n.lz * p.baseScale;
 
                     const proj = project(p.x + lx, ly, p.z + lz, cx, cy);
@@ -308,22 +252,22 @@ export default function GraphLandscape() {
 
                 // Foreground plants don't fade into distance as much
                 const distFade = Math.max(0, Math.min(1, p.z / 6000));
-                ctx.globalAlpha = (1 - distFade) * 0.9; 
+                ctx.globalAlpha = (1 - distFade) * 0.9;
                 if (ctx.globalAlpha <= 0) continue;
 
-                ctx.strokeStyle = '#aaaaaa'; 
+                ctx.strokeStyle = '#aaaaaa';
                 ctx.beginPath();
                 for (const edge of p.edges) {
-                     if (edge.orderOfCreation > currentExposureStep) continue; 
+                    if (edge.orderOfCreation > currentExposureStep) continue;
 
-                     const n1 = projNodes[edge.from];
-                     const n2 = projNodes[edge.to];
-                     
-                     if (n1.p && n2.p && n1.growth > 0 && n2.growth > 0) {
-                         ctx.globalAlpha = (1 - distFade) * 0.7 * n2.growth;
-                         ctx.moveTo(n1.p.x, n1.p.y);
-                         ctx.lineTo(n2.p.x, n2.p.y);
-                     }
+                    const n1 = projNodes[edge.from];
+                    const n2 = projNodes[edge.to];
+
+                    if (n1.p && n2.p && n1.growth > 0 && n2.growth > 0) {
+                        ctx.globalAlpha = (1 - distFade) * 0.7 * n2.growth;
+                        ctx.moveTo(n1.p.x, n1.p.y);
+                        ctx.lineTo(n2.p.x, n2.p.y);
+                    }
                 }
                 ctx.lineWidth = 1.5; // Thicker lines for massive structures
                 ctx.stroke();
@@ -331,18 +275,18 @@ export default function GraphLandscape() {
                 // Draw Plant Data Nodes (Leaves)
                 ctx.beginPath();
                 for (const n of projNodes) {
-                     if (n.p && n.growth > 0) {
-                         ctx.fillStyle = n.isLeaf ? '#ffffff' : '#999999';
-                         ctx.globalAlpha = (1 - distFade) * (n.isLeaf ? 1.0 : 0.7) * n.growth;
-                         
-                         const sizeMult = n.isLeaf ? 3.0 : 1.5; // Bigger leaves for massive plants
-                         
-                         ctx.moveTo(n.p.x, n.p.y);
-                         ctx.arc(n.p.x, n.p.y, Math.max(0.5, sizeMult * n.p.scale * n.growth), 0, Math.PI * 2);
-                     }
+                    if (n.p && n.growth > 0) {
+                        ctx.fillStyle = n.isLeaf ? '#ffffff' : '#999999';
+                        ctx.globalAlpha = (1 - distFade) * (n.isLeaf ? 1.0 : 0.7) * n.growth;
+
+                        const sizeMult = n.isLeaf ? 3.0 : 1.5; // Bigger leaves for massive plants
+
+                        ctx.moveTo(n.p.x, n.p.y);
+                        ctx.arc(n.p.x, n.p.y, Math.max(0.5, sizeMult * n.p.scale * n.growth), 0, Math.PI * 2);
+                    }
                 }
                 ctx.fill();
-                
+
                 // Base anchor glow
                 const rootGrowth = Math.min(1, currentExposureStep);
                 if (rootGrowth > 0) {
@@ -350,9 +294,9 @@ export default function GraphLandscape() {
                     if (root) {
                         const rootRadius = 150 * root.scale * rootGrowth; // massive root glow
                         const grd = ctx.createRadialGradient(root.x, root.y, 0, root.x, root.y, rootRadius);
-                        const r='255', g='255', b='255';
-                        
-                        grd.addColorStop(0, `rgba(${r},${g},${b},${(1-distFade)*0.15*rootGrowth})`);
+                        const r = '255', g = '255', b = '255';
+
+                        grd.addColorStop(0, `rgba(${r},${g},${b},${(1 - distFade) * 0.15 * rootGrowth})`);
                         grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
                         ctx.globalAlpha = 1;
                         ctx.fillStyle = grd;
@@ -366,7 +310,7 @@ export default function GraphLandscape() {
             ctx.globalAlpha = 1.0;
             animationFrameId = requestAnimationFrame(render);
         };
-        
+
         animationFrameId = requestAnimationFrame(render);
 
         return () => {
@@ -378,7 +322,7 @@ export default function GraphLandscape() {
     return (
         <div className="absolute inset-0 z-0 bg-black overflow-hidden pointer-events-none">
             <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full" />
-            
+
             <div className="absolute inset-0 z-0 opacity-50 pointer-events-none mix-blend-screen"
                 style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0) 45%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 60%, rgba(0,0,0,0) 100%)' }} />
 
