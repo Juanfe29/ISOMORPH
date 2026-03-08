@@ -184,7 +184,8 @@ export default function GraphLandscape() {
                 ...generated,
                 x: px,
                 z: pz,
-                createdAt: Date.now() - 60000 - (Math.random() * 10000), // Start immediately fully grown
+                // They start growing very shortly after page load
+                createdAt: Date.now() + (Math.random() * 2000),
                 baseScale: 1.5 + Math.random() * 1.5, // 2x-3x bigger overall scale multiplier
                 totalSteps: maxOrder
             });
