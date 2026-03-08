@@ -16,16 +16,16 @@ export default function GraphLandscape() {
 
         let animationFrameId: number;
         let time = 0; // Total time
-        const startupTime = Date.now(); // Used for the intro sequence
+        // const startupTime = Date.now(); // Used for the intro sequence
 
         // Intro Sequence Phases configuration
         // Phase 1 (0-2s): Two stars rush to center
         // Phase 2 (2-3s): Supernova flash and explosion
         // Phase 3 (3-5.5s): Nodes travel to their landscape positions
         // Phase 4 (5.5s+): Normal breathing landscape
-        const PHASE_1_DURATION = 2000;
-        const PHASE_2_DURATION = 1000;
-        const PHASE_3_DURATION = 2500;
+        const PHASE_1_DURATION = 4000; // Stars rush in
+        const PHASE_2_DURATION = 1500; // Supernova flash
+        const PHASE_3_DURATION = 4500; // Build the landscape
 
         // Camera perspective
         const fov = 400; // Field of view
@@ -77,8 +77,8 @@ export default function GraphLandscape() {
 
                 // Intro starting positions (Colliding stars starting far apart)
                 // Left star (becomes moon), Right star (becomes sun)
-                const startX = isSun ? 3000 + Math.random() * 500 : -3000 - Math.random() * 500;
-                const startY = Math.random() * 500 - 250;
+                const startX = isSun ? 4000 + Math.random() * 500 : -4000 - Math.random() * 500;
+                const startY = Math.random() * 1000 - 500;
                 const startZ = 2000 + Math.random() * 500;
 
                 arr.push({ x: rx, y: ry, z: rz, phase: Math.random() * Math.PI * 2, startX, startY, startZ });
@@ -86,8 +86,8 @@ export default function GraphLandscape() {
             return arr;
         };
 
-        const sunNodes = createSphere(60, 180, true);
-        const moonNodes = createSphere(45, 120, false); // Smaller moon
+        const sunNodes = createSphere(80, 200, true);
+        const moonNodes = createSphere(60, 140, false); // Moon
 
         // Generate Terrain Nodes data strictly for mapping the intro explosion back to the grid
         interface TerrainNode {
@@ -141,9 +141,11 @@ export default function GraphLandscape() {
             return 1 - (1 - x) * (1 - x);
         };
 
-        const render = () => {
-            const now = Date.now();
-            const elapsedMs = now - startupTime;
+        let startTimestamp: number | null = null;
+
+        const render = (timestamp: number) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const elapsedMs = timestamp - startTimestamp;
             time += 0.015; // Animation speed
 
             ctx.fillStyle = '#020305'; // Deep space black
@@ -165,15 +167,15 @@ export default function GraphLandscape() {
             if (elapsedMs < PHASE_1_DURATION) {
                 // Phase 1: Two stars rushing in
                 inCollisionPhase = true;
-                collisionProgress = easeInQuad(elapsedMs / PHASE_1_DURATION);
+                collisionProgress = Math.min(1, easeInQuad(elapsedMs / PHASE_1_DURATION));
             } else if (elapsedMs < (PHASE_1_DURATION + PHASE_2_DURATION)) {
                 // Phase 2: BOOM Flash and initial scatter
                 inExplosionPhase = true;
-                explosionProgress = easeOutQuad((elapsedMs - PHASE_1_DURATION) / PHASE_2_DURATION);
+                explosionProgress = Math.min(1, easeOutQuad((elapsedMs - PHASE_1_DURATION) / PHASE_2_DURATION));
 
                 // Flash goes 0 -> 1 -> 0
                 if (explosionProgress < 0.2) flashAlpha = explosionProgress * 5;
-                else flashAlpha = 1 - ((explosionProgress - 0.2) / 0.8);
+                else flashAlpha = Math.max(0, 1 - ((explosionProgress - 0.2) / 0.8));
 
                 showLandscape = true; // start showing elements flying out
                 introProgress = 0; // Lock to start of outward flight
@@ -181,7 +183,7 @@ export default function GraphLandscape() {
                 // Phase 3: Settling into landscape
                 showLandscape = true;
                 const p3Time = elapsedMs - (PHASE_1_DURATION + PHASE_2_DURATION);
-                introProgress = easeOutExpo(Math.min(1, p3Time / PHASE_3_DURATION));
+                introProgress = Math.min(1, easeOutExpo(p3Time / PHASE_3_DURATION));
             } else {
                 // Phase 4: Normal
                 showLandscape = true;
@@ -206,18 +208,18 @@ export default function GraphLandscape() {
                         );
                         if (p) {
                             ctx.fillStyle = color;
-                            ctx.globalAlpha = 1 - (inExplosionPhase ? explosionProgress : 0);
+                            ctx.globalAlpha = Math.max(0, 1 - (inExplosionPhase ? explosionProgress : 0));
                             ctx.beginPath();
-                            ctx.arc(p.x, p.y, 2 * p.scale, 0, Math.PI * 2);
+                            ctx.arc(p.x, p.y, Math.max(0.1, 2 * p.scale), 0, Math.PI * 2);
                             ctx.fill();
                         }
                     });
                 };
 
                 // Draw the two colliding stars
-                let leftStart = -2000, rightStart = 2000;
-                drawCluster(leftStart, '#7de05c', false); // Greenish 'moon' star
-                drawCluster(rightStart, '#ff9d00', true); // Orange 'sun' star
+                let leftStart = -3000, rightStart = 3000;
+                drawCluster(leftStart, '#7de05c', false); // Greenish 'moon'
+                drawCluster(rightStart, '#ff9d00', true); // Orange 'sun'
             }
 
 
@@ -229,7 +231,7 @@ export default function GraphLandscape() {
                     stars.forEach(s => {
                         const twinkle = (Math.sin(time * 2 + s.a) + 1) * 0.5;
                         const starFadeIn = Math.min(1, (introProgress - 0.5) * 2);
-                        ctx.globalAlpha = (0.1 + twinkle * 0.6) * starFadeIn;
+                        ctx.globalAlpha = Math.max(0, (0.1 + twinkle * 0.6) * starFadeIn);
                         ctx.beginPath();
                         ctx.arc(cx + s.x, cy + s.y, s.r, 0, Math.PI * 2);
                         ctx.fill();
@@ -267,9 +269,9 @@ export default function GraphLandscape() {
                         let currentZ = sZ + (fZ - sZ) * introProgress;
 
                         if (introProgress < 0.1 && explosionProgress > 0) {
-                            currentX += (Math.random() - 0.5) * explosionProgress * 10000;
-                            currentY += (Math.random() - 0.5) * explosionProgress * 10000;
-                            currentZ += (Math.random() - 0.5) * explosionProgress * 10000;
+                            currentX += (Math.random() - 0.5) * explosionProgress * 15000;
+                            currentY += (Math.random() - 0.5) * explosionProgress * 15000;
+                            currentZ += (Math.random() - 0.5) * explosionProgress * 15000;
                         }
 
                         return project(currentX, currentY, currentZ, cx, cy);
@@ -283,9 +285,9 @@ export default function GraphLandscape() {
 
                         // Node
                         ctx.fillStyle = mainColor;
-                        ctx.globalAlpha = introProgress;
+                        ctx.globalAlpha = Math.max(0, introProgress);
                         ctx.beginPath();
-                        ctx.arc(p1.x, p1.y, 2 * p1.scale, 0, Math.PI * 2);
+                        ctx.arc(p1.x, p1.y, Math.max(0.1, 2 * p1.scale), 0, Math.PI * 2);
                         ctx.fill();
 
                         // Connect
@@ -299,29 +301,30 @@ export default function GraphLandscape() {
                             }
                         }
                     }
-                    ctx.globalAlpha = introProgress * 0.4;
+                    ctx.globalAlpha = Math.max(0, introProgress * 0.4);
                     ctx.stroke();
 
                     // Outer glow
                     if (introProgress > 0.5) {
-                        const glowAlpha = (introProgress - 0.5) * 2 * 0.15;
-                        const grd = ctx.createRadialGradient(finalProj.x, finalProj.y, 10, finalProj.x, finalProj.y, radiusGlow * finalProj.scale);
+                        const glowAlpha = Math.max(0, (introProgress - 0.5) * 2 * 0.15);
+                        const radius = Math.max(1, radiusGlow * finalProj.scale);
+                        const grd = ctx.createRadialGradient(finalProj.x, finalProj.y, 10, finalProj.x, finalProj.y, radius);
                         // Hacky way to parse rgba from hex for gradient, hardcoded for ease:
                         const rgb = mainColor === '#ff9d00' ? '255, 157, 0' : '125, 224, 92';
                         grd.addColorStop(0, `rgba(${rgb}, ${glowAlpha})`);
                         grd.addColorStop(1, `rgba(${rgb}, 0)`);
                         ctx.fillStyle = grd;
                         ctx.beginPath();
-                        ctx.arc(finalProj.x, finalProj.y, radiusGlow * finalProj.scale, 0, Math.PI * 2);
+                        ctx.arc(finalProj.x, finalProj.y, radius, 0, Math.PI * 2);
                         ctx.fill();
                     }
                 };
 
                 // Draw Sun (Center Horizon)
-                renderSphere(sunNodes, 0, 0, 2500, '#ff9d00', 150);
+                renderSphere(sunNodes, 0, 100, 2500, '#ff9d00', 150);
 
                 // Draw Moon (High up, left side)
-                renderSphere(moonNodes, -1500, 1000, 2200, '#7de05c', 100);
+                renderSphere(moonNodes, -2800, 2000, 3200, '#7de05c', 160);
 
                 // --- THE EARTH (TERRAIN GRID) ---
                 // Calculate moving offset to make it feel like "flying forward"
@@ -406,7 +409,7 @@ export default function GraphLandscape() {
             animationFrameId = requestAnimationFrame(render);
         };
 
-        render();
+        animationFrameId = requestAnimationFrame(render);
 
         return () => {
             window.removeEventListener('resize', handleResize);
