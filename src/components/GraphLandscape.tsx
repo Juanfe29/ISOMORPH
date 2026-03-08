@@ -57,8 +57,8 @@ export default function GraphLandscape() {
         };
         const moonNodes = createSphere(100, 160);
 
-        // --- MASSIVE FOREGROUND MONOCHROME GRAPH PLANTS ---
-        interface PlantNode { lx: number; ly: number; lz: number; id: number; level: number; orderOfCreation: number; isLeaf: boolean; }
+        // Building much denser networks with slower L-System branching
+        interface PlantNode { lx: number; ly: number; lz: number; id: number; level: number; orderOfCreation: number; isLeaf: boolean; parentId: number | null; }
         interface PlantEdge { from: number; to: number; orderOfCreation: number; }
         interface Plant {
             x: number; z: number;
@@ -77,7 +77,7 @@ export default function GraphLandscape() {
             let idCounter = 0;
             let creationStep = 0;
 
-            nodes.push({ lx: 0, ly: 0, lz: 0, id: idCounter++, level: 0, orderOfCreation: creationStep++, isLeaf: false });
+            nodes.push({ lx: 0, ly: 0, lz: 0, id: idCounter++, level: 0, orderOfCreation: creationStep++, isLeaf: false, parentId: null });
 
             // Recursive fractal builder
             const branch = (parentId: number, startX: number, startY: number, startZ: number, angleY: number, angleX: number, length: number, depth: number, maxDepth: number, params: any) => {
@@ -92,7 +92,7 @@ export default function GraphLandscape() {
 
                         const leafId = idCounter++;
                         const order = creationStep++;
-                        nodes.push({ lx, ly, lz, id: leafId, level: depth + 1, orderOfCreation: order, isLeaf: true });
+                        nodes.push({ lx, ly, lz, id: leafId, level: depth + 1, orderOfCreation: order, isLeaf: true, parentId });
                         edges.push({ from: parentId, to: leafId, orderOfCreation: order });
                     }
                     return;
@@ -108,7 +108,7 @@ export default function GraphLandscape() {
 
                 const currentId = idCounter++;
                 const order = creationStep++;
-                nodes.push({ lx: endX, ly: endY, lz: endZ, id: currentId, level: depth + 1, orderOfCreation: order, isLeaf: false });
+                nodes.push({ lx: endX, ly: endY, lz: endZ, id: currentId, level: depth + 1, orderOfCreation: order, isLeaf: false, parentId });
                 edges.push({ from: parentId, to: currentId, orderOfCreation: order });
 
                 const numBranches = params.branchesPerNode(depth);
@@ -171,10 +171,10 @@ export default function GraphLandscape() {
         for (let i = 0; i < 8; i++) {
             const t = speciesList[Math.floor(Math.random() * speciesList.length)];
 
-            // Plants are massive, so push them to the sides drastically
-            let px = (Math.random() - 0.5) * 4000;
-            if (px > -1500 && px < 0) px -= 2000;
-            if (px < 1500 && px > 0) px += 2000;
+            // Plants are massive, but pull them slightly more towards center than before
+            let px = (Math.random() - 0.5) * 1500;
+            if (px < 0) px -= 1200;
+            else px += 1200;
 
             // Very close Z index (foreground)
             let pz = 400 + Math.random() * 1200;
@@ -230,21 +230,33 @@ export default function GraphLandscape() {
                 const elapsed = now - p.createdAt;
                 if (elapsed < 0) continue;
 
-                // Height-based growth: reveal nodes by their Y coordinate (ly) from root up
-                const growthDuration = 3500; // 3.5 seconds to full height
-                const growthProgress = Math.min(1, elapsed / growthDuration);
+                // Recursive Organic Growth: child only grows if parent is mature enough
+                const growthDuration = 4000;
+                const globalProgress = Math.min(1, elapsed / growthDuration);
+
+                const growthMap = new Map<number, number>();
 
                 // Find max height to normalize sweep
                 const maxHeight = Math.max(...p.nodes.map(n => n.ly));
-                const currentRevealHeight = maxHeight * growthProgress;
-
                 const swayOffset = Math.sin(time + p.x * 0.02) * 20;
 
                 const projNodes = p.nodes.map(n => {
-                    // Reveal based on height sweep
-                    const heightDiff = currentRevealHeight - n.ly;
-                    const individualGrowth = Math.max(0, Math.min(1, heightDiff / 25 + 0.5));
+                    // Base potential growth from height sweep
+                    const currentRevealHeight = maxHeight * globalProgress;
+                    const heightRef = currentRevealHeight - n.ly;
 
+                    let nodePotential = Math.max(0, Math.min(1, heightRef / 40 + 0.5));
+
+                    // Rule: Cannot grow more than parent + a little bit of independence
+                    if (n.parentId !== null) {
+                        const parentGrowth = growthMap.get(n.parentId) || 0;
+                        // Child starts growing when parent hits 40%, but finishes shortly after parent
+                        nodePotential = Math.min(nodePotential, Math.max(0, parentGrowth * 1.2 - 0.4));
+                    }
+
+                    growthMap.set(n.id, nodePotential);
+
+                    const individualGrowth = nodePotential;
                     if (individualGrowth <= 0) return { p: null, id: n.id, growth: 0, isLeaf: n.isLeaf };
 
                     const ly = n.ly * p.baseScale;
@@ -290,7 +302,7 @@ export default function GraphLandscape() {
                 ctx.fill();
 
                 // Base anchor glow
-                const rootGrowth = Math.min(1, growthProgress * 5);
+                const rootGrowth = Math.min(1, globalProgress * 5);
                 if (rootGrowth > 0) {
                     const root = project(p.x, 0, p.z, cx, cy);
                     if (root) {
