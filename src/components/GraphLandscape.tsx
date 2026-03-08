@@ -57,6 +57,13 @@ export default function GraphLandscape() {
         };
         const moonNodes = createSphere(100, 160);
 
+        let mouseX = 0; let mouseY = 0;
+        const handleMouseMove = (e: MouseEvent) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+
         // Building much denser networks with slower L-System branching
         interface PlantNode { lx: number; ly: number; lz: number; id: number; level: number; orderOfCreation: number; isLeaf: boolean; parentId: number | null; }
         interface PlantEdge { from: number; to: number; orderOfCreation: number; }
@@ -131,30 +138,30 @@ export default function GraphLandscape() {
             // MASSIVE structure scales (Lengths are doubled/tripled)
             if (type === 'fern') {
                 growthSpeed = 0.05;
-                branch(0, 0, 0, 0, 0, Math.PI / 2, 250, 0, 7, {
-                    branchesPerNode: (d: number) => d === 0 ? 1 : (d < 4 ? 3 : 2),
+                branch(0, 0, 0, 0, 0, Math.PI / 2, 280, 0, 7, {
+                    branchesPerNode: (d: number) => d === 0 ? 1 : (d < 5 ? 3 : 2),
                     spreadY: (i: number, n: number) => {
                         if (n === 1) return 0;
-                        return (i === 0) ? 0 : (i === 1 ? -1 : 1);
+                        return (i === 0) ? 0 : (i === 1 ? -1.2 : 1.2);
                     },
-                    spreadX: (i: number) => (i === 0 ? 0.05 : -0.4),
+                    spreadX: (i: number) => (i === 0 ? 0.08 : -0.5),
                     lengthDecay: 0.8
                 });
             } else if (type === 'crystal') {
                 growthSpeed = 0.02;
-                branch(0, 0, 0, 0, 0, Math.PI / 2, 150, 0, 6, {
-                    branchesPerNode: (d: number) => d === 0 ? 6 : (d < 3 ? 3 : 2),
-                    spreadY: (i: number, n: number, d: number) => d === 0 ? (i / n) * Math.PI * 2 : (i === 0 ? -0.5 : 0.5),
-                    spreadX: (i: number, n: number, d: number) => d === 0 ? -0.8 : 0.4,
-                    lengthDecay: 0.75
+                branch(0, 0, 0, 0, 0, Math.PI / 2, 180, 0, 6, {
+                    branchesPerNode: (d: number) => d === 0 ? 8 : (d < 3 ? 4 : 2),
+                    spreadY: (i: number, n: number, d: number) => d === 0 ? (i / n) * Math.PI * 2 : (i === 0 ? -0.6 : 0.6),
+                    spreadX: (i: number, n: number, d: number) => d === 0 ? -0.9 : 0.5,
+                    lengthDecay: 0.8
                 });
             } else if (type === 'willow') {
                 growthSpeed = 0.04;
-                branch(0, 0, 0, 0, 0, Math.PI / 2, 350, 0, 8, {
-                    branchesPerNode: (d: number) => d === 0 ? 1 : (d < 4 ? 2 : 4),
-                    spreadY: (i: number, n: number) => (i - (n - 1) / 2) * 1.5,
-                    spreadX: (i: number, n: number, d: number) => (d < 3 ? 0.2 : -0.9),
-                    lengthDecay: 0.7
+                branch(0, 0, 0, 0, 0, Math.PI / 2, 400, 0, 8, {
+                    branchesPerNode: (d: number) => d === 0 ? 2 : (d < 5 ? 3 : 4),
+                    spreadY: (i: number, n: number) => (i - (n - 1) / 2) * 1.8,
+                    spreadX: (i: number, n: number, d: number) => (d < 4 ? 0.3 : -1.0),
+                    lengthDecay: 0.72
                 });
             }
 
@@ -256,15 +263,23 @@ export default function GraphLandscape() {
 
                     growthMap.set(n.id, nodePotential);
 
-                    const individualGrowth = nodePotential;
-                    if (individualGrowth <= 0) return { p: null, id: n.id, growth: 0, isLeaf: n.isLeaf };
-
                     const ly = n.ly * p.baseScale;
-                    const lx = n.lx * p.baseScale + (swayOffset * (ly / 500));
+
+                    // Wind Interaction
+                    const worldP = { x: p.x + n.lx * p.baseScale, y: ly, z: p.z + n.lz * p.baseScale };
+                    const prjS = project(worldP.x, worldP.y, worldP.z, cx, cy);
+                    let iOff = 0;
+                    if (prjS) {
+                        const dx = mouseX - prjS.x; const dy = mouseY - prjS.y;
+                        const d2 = dx * dx + dy * dy;
+                        if (d2 < 160000) iOff = - (dx * 0.15) * (1 - Math.sqrt(d2) / 400) * (ly / 800);
+                    }
+
+                    const lx = n.lx * p.baseScale + iOff + (swayOffset * (ly / 500));
                     const lz = n.lz * p.baseScale;
 
                     const proj = project(p.x + lx, ly, p.z + lz, cx, cy);
-                    return { p: proj, id: n.id, growth: individualGrowth, isLeaf: n.isLeaf };
+                    return { p: proj, id: n.id, growth: nodePotential, isLeaf: n.isLeaf };
                 });
 
                 const distFade = Math.max(0, Math.min(1, p.z / 6000));
@@ -329,6 +344,7 @@ export default function GraphLandscape() {
 
         return () => {
             window.removeEventListener('resize', handleResize);
+            window.removeEventListener('mousemove', handleMouseMove);
             cancelAnimationFrame(animationFrameId);
         };
     }, []);
