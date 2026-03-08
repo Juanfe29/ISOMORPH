@@ -42,7 +42,7 @@ export default function Portfolio() {
         animRing();
 
         // ─────────────────────────────────────────────
-        // HERO CANVAS — K5 logo · nature background · real leaves
+        // HERO CANVAS
         // ─────────────────────────────────────────────
         let hcAnimId: number;
         let hcT0: number | null = null;
@@ -80,9 +80,6 @@ export default function Portfolio() {
             let hcMouseX = 0, hcMouseY = 0;
             const onHcMouse = (e: MouseEvent) => { hcMouseX = e.clientX / innerWidth - .5; hcMouseY = e.clientY / innerHeight - .5; };
             document.addEventListener('mousemove', onHcMouse);
-
-            const visObs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { hcT0 = null; hcPARTICLES = null; } }, { threshold: 0.05 });
-            visObs.observe(canvas);
 
             const radGlow = (x: number, y: number, r: number, col: string, alpha: number) => {
                 if (!ctx) return;
@@ -152,56 +149,28 @@ export default function Portfolio() {
                 const c1x = icx + nx * wid * 0.85, c1y = icy + ny * wid * 0.85;
                 const c2x = icx - nx * wid * 0.85, c2y = icy - ny * wid * 0.85;
 
-                ctx.save();
-                ctx.globalAlpha = alpha * eOut3(p);
+                ctx.save(); ctx.globalAlpha = alpha * eOut3(p);
                 const leafGrad = ctx.createLinearGradient(ox, oy, ipx, ipy);
                 leafGrad.addColorStop(0, `hsla(${hue},30%,60%,0.18)`);
                 leafGrad.addColorStop(0.4, `hsla(${hue},38%,54%,0.28)`);
                 leafGrad.addColorStop(1, `hsla(${hue},22%,68%,0.08)`);
                 ctx.fillStyle = leafGrad;
-                ctx.shadowColor = `hsla(${hue},28%,45%,0.4)`;
-                ctx.shadowBlur = R * 0.04;
-                ctx.beginPath();
-                ctx.moveTo(ox, oy);
-                ctx.quadraticCurveTo(c1x, c1y, ipx, ipy);
-                ctx.quadraticCurveTo(c2x, c2y, ox, oy);
-                ctx.closePath();
-                ctx.fill();
-
-                ctx.strokeStyle = `hsla(${hue},28%,45%,0.55)`;
-                ctx.lineWidth = R * 0.007;
-                ctx.shadowBlur = R * 0.02;
-                ctx.beginPath();
-                ctx.moveTo(ox, oy);
-                ctx.quadraticCurveTo(c1x, c1y, ipx, ipy);
-                ctx.quadraticCurveTo(c2x, c2y, ox, oy);
-                ctx.closePath();
-                ctx.stroke();
-
-                ctx.strokeStyle = `hsla(${hue},25%,40%,0.45)`;
-                ctx.lineWidth = R * 0.009;
-                ctx.lineCap = 'round';
-                ctx.shadowBlur = 0;
-                ctx.beginPath();
-                ctx.moveTo(ox, oy);
-                ctx.quadraticCurveTo(icx, icy, ipx, ipy);
-                ctx.stroke();
-
+                ctx.shadowColor = `hsla(${hue},28%,45%,0.4)`; ctx.shadowBlur = R * 0.04;
+                ctx.beginPath(); ctx.moveTo(ox, oy); ctx.quadraticCurveTo(c1x, c1y, ipx, ipy); ctx.quadraticCurveTo(c2x, c2y, ox, oy); ctx.closePath(); ctx.fill();
+                ctx.strokeStyle = `hsla(${hue},28%,45%,0.55)`; ctx.lineWidth = R * 0.007; ctx.shadowBlur = R * 0.02;
+                ctx.beginPath(); ctx.moveTo(ox, oy); ctx.quadraticCurveTo(c1x, c1y, ipx, ipy); ctx.quadraticCurveTo(c2x, c2y, ox, oy); ctx.closePath(); ctx.stroke();
+                ctx.strokeStyle = `hsla(${hue},25%,40%,0.45)`; ctx.lineWidth = R * 0.009; ctx.lineCap = 'round'; ctx.shadowBlur = 0;
+                ctx.beginPath(); ctx.moveTo(ox, oy); ctx.quadraticCurveTo(icx, icy, ipx, ipy); ctx.stroke();
                 const vCount = 4;
                 for (let i = 1; i <= vCount; i++) {
-                    const t = i / (vCount + 1);
-                    const mt = 1 - t;
+                    const t = i / (vCount + 1), mt = 1 - t;
                     const mx2 = mt * mt * ox + 2 * mt * t * icx + t * t * ipx;
                     const my2 = mt * mt * oy + 2 * mt * t * icy + t * t * ipy;
-                    const vFrac = 0.4 * (1 - t * t) * p;
-                    const va = 0.4 + i * 0.15;
-
+                    const vFrac = 0.4 * (1 - t * t) * p, va = 0.4 + i * 0.15;
                     [1, -1].forEach(side => {
                         const vex = mx2 + nx * wid * vFrac * side * Math.cos(va) - ny * wid * vFrac * side * 0.3;
                         const vey = my2 + ny * wid * vFrac * side * Math.cos(va) + nx * wid * vFrac * side * 0.3;
-                        ctx.globalAlpha = alpha * eOut3(p) * 0.22;
-                        ctx.strokeStyle = `hsla(${hue},25%,38%,1)`;
-                        ctx.lineWidth = R * 0.004;
+                        ctx.globalAlpha = alpha * eOut3(p) * 0.22; ctx.strokeStyle = `hsla(${hue},25%,38%,1)`; ctx.lineWidth = R * 0.004;
                         ctx.beginPath(); ctx.moveTo(mx2, my2); ctx.lineTo(vex, vey); ctx.stroke();
                     });
                 }
@@ -210,81 +179,24 @@ export default function Portfolio() {
 
             const drawBackground = (cW: number, cH: number, elapsed: number, sunProgress: number) => {
                 if (!ctx) return;
-                const sp = Math.min(sunProgress * 1.8, 1);
-                if (sp < 0.02) return;
-
-                ctx.save();
-                ctx.globalAlpha = sp;
-                ctx.fillStyle = '#020305';
-                ctx.fillRect(0, 0, cW, cH);
-
+                const sp = Math.min(sunProgress * 1.8, 1); if (sp < 0.02) return;
+                ctx.save(); ctx.globalAlpha = sp; ctx.fillStyle = '#020305'; ctx.fillRect(0, 0, cW, cH);
                 const t = elapsed * 0.12;
                 const ribbons = [
                     { ax: 0.1, ay: 0.2, bx: 0.9, by: 0.8, cp1x: 0.6, cp1y: 0.05, cp2x: 0.2, cp2y: 0.95, col: 'rgba(255,255,255,', w: cH * 0.45, a: 0.028 },
                     { ax: 0.0, ay: 0.6, bx: 1.0, by: 0.3, cp1x: 0.7, cp1y: 0.9, cp2x: 0.3, cp2y: 0.1, col: 'rgba(220,225,235,', w: cH * 0.30, a: 0.022 },
-                    { ax: 0.3, ay: 0.0, bx: 0.6, by: 1.0, cp1x: 0.95, cp1y: 0.4, cp2x: 0.05, cp2y: 0.6, col: 'rgba(255,255,255,', w: cH * 0.25, a: 0.018 },
-                    { ax: 0.8, ay: 0.1, bx: 0.1, by: 0.9, cp1x: 0.05, cp1y: 0.3, cp2x: 0.9, cp2y: 0.65, col: 'rgba(200,210,225,', w: cH * 0.20, a: 0.015 },
-                    { ax: 0.0, ay: 0.9, bx: 1.0, by: 0.1, cp1x: 0.55, cp1y: 0.98, cp2x: 0.45, cp2y: 0.02, col: 'rgba(255,255,255,', w: cH * 0.18, a: 0.014 },
                 ];
                 ribbons.forEach((r, ri) => {
                     const phase = t + ri * 1.3;
-                    const ox = Math.sin(phase * 0.7 + ri) * cW * 0.12;
-                    const oy = Math.cos(phase * 0.5 + ri * 0.8) * cH * 0.10;
-                    const x1 = (r.ax * cW) + ox, y1 = (r.ay * cH) + oy;
-                    const x2 = (r.bx * cW) - ox, y2 = (r.by * cH) - oy;
-                    const cpx1 = (r.cp1x * cW) + Math.sin(phase + 0.5) * cW * 0.08;
-                    const cpy1 = (r.cp1y * cH) + Math.cos(phase + 1.0) * cH * 0.08;
-                    const cpx2 = (r.cp2x * cW) + Math.sin(phase + 1.5) * cW * 0.08;
-                    const cpy2 = (r.cp2y * cH) + Math.cos(phase + 2.0) * cH * 0.08;
-
-                    ctx.save();
-                    ctx.globalAlpha = sp * r.a * 0.5;
-                    ctx.strokeStyle = r.col + '1)';
-                    ctx.lineWidth = r.w;
-                    ctx.lineCap = 'round';
-                    ctx.filter = `blur(${r.w * 0.8}px)`;
-                    ctx.beginPath();
-                    ctx.moveTo(x1, y1);
-                    ctx.bezierCurveTo(cpx1, cpy1, cpx2, cpy2, x2, y2);
-                    ctx.stroke();
-                    ctx.filter = 'none';
-
-                    ctx.globalAlpha = sp * r.a * 1.8;
-                    ctx.lineWidth = r.w * 0.08;
-                    ctx.strokeStyle = r.col + '1)';
-                    ctx.shadowColor = r.col + '0.6)';
-                    ctx.shadowBlur = r.w * 0.15;
-                    ctx.beginPath();
-                    ctx.moveTo(x1, y1);
-                    ctx.bezierCurveTo(cpx1, cpy1, cpx2, cpy2, x2, y2);
-                    ctx.stroke();
-                    ctx.restore();
+                    const ox = Math.sin(phase * 0.7 + ri) * cW * 0.12, oy = Math.cos(phase * 0.5 + ri * 0.8) * cH * 0.10;
+                    const x1 = (r.ax * cW) + ox, y1 = (r.ay * cH) + oy, x2 = (r.bx * cW) - ox, y2 = (r.by * cH) - oy;
+                    const cpx1 = (r.cp1x * cW) + Math.sin(phase + 0.5) * cW * 0.08, cpy1 = (r.cp1y * cH) + Math.cos(phase + 1.0) * cH * 0.08;
+                    const cpx2 = (r.cp2x * cW) + Math.sin(phase + 1.5) * cW * 0.08, cpy2 = (r.cp2y * cH) + Math.cos(phase + 2.0) * cH * 0.08;
+                    ctx.save(); ctx.globalAlpha = sp * r.a * 0.5; ctx.strokeStyle = r.col + '1)'; ctx.lineWidth = r.w; ctx.lineCap = 'round';
+                    ctx.filter = `blur(${r.w * 0.8}px)`; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.bezierCurveTo(cpx1, cpy1, cpx2, cpy2, x2, y2); ctx.stroke(); ctx.filter = 'none';
+                    ctx.globalAlpha = sp * r.a * 1.8; ctx.lineWidth = r.w * 0.08; ctx.strokeStyle = r.col + '1)'; ctx.shadowColor = r.col + '0.6)'; ctx.shadowBlur = r.w * 0.15;
+                    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.bezierCurveTo(cpx1, cpy1, cpx2, cpy2, x2, y2); ctx.stroke(); ctx.restore();
                 });
-
-                for (let fi = 0; fi < 6; fi++) {
-                    const ft = t * 1.4 + fi * 1.07;
-                    const fx1 = Math.sin(ft + fi * 0.9) * cW * 0.4 + cW * 0.5;
-                    const fy1 = Math.cos(ft * 0.8 + fi) * cH * 0.4 + cH * 0.5;
-                    const fx2 = Math.sin(ft + fi * 0.9 + 2.1) * cW * 0.4 + cW * 0.5;
-                    const fy2 = Math.cos(ft * 0.8 + fi + 1.8) * cH * 0.4 + cH * 0.5;
-                    ctx.save();
-                    ctx.globalAlpha = sp * 0.015;
-                    ctx.strokeStyle = 'rgba(255,255,255,1)';
-                    ctx.lineWidth = 1.5 + Math.sin(ft + fi) * 0.8;
-                    ctx.lineCap = 'round';
-                    ctx.shadowColor = 'rgba(255,255,255,0.4)';
-                    ctx.shadowBlur = 6;
-                    ctx.beginPath();
-                    ctx.moveTo(fx1, fy1);
-                    ctx.quadraticCurveTo(
-                        cW * 0.5 + Math.cos(ft * 0.6 + fi) * cW * 0.3,
-                        cH * 0.5 + Math.sin(ft * 0.6 + fi) * cH * 0.3,
-                        fx2, fy2
-                    );
-                    ctx.stroke();
-                    ctx.restore();
-                }
-
                 ctx.restore();
             };
 
@@ -295,23 +207,13 @@ export default function Portfolio() {
                 const elapsed = (ts - hcT0) / 1000;
                 const cW = canvas.clientWidth, cH = canvas.clientHeight;
                 ctx.clearRect(0, 0, cW, cH);
-
                 const R = Math.min(cW, cH) * .20;
                 const ox = cW * .67 + hcMouseX * 14, oy = cH * .50 + hcMouseY * 10;
-
                 const bgP = phase(elapsed, 0, 2.0);
                 drawBackground(cW, cH, elapsed, bgP);
-
-                ctx.save();
-                ctx.translate(ox, oy);
-                if (elapsed > 5.8) {
-                    const b = 1 + Math.sin((elapsed - 5.8) * .85) * .011;
-                    ctx.scale(b, b);
-                }
-
-                const pts = buildPts(R), v0 = pts[0], v2 = pts[2];
-                const pSun = phase(elapsed, 0, 1.4);
-
+                ctx.save(); ctx.translate(ox, oy);
+                if (elapsed > 5.8) { const b = 1 + Math.sin((elapsed - 5.8) * .85) * .011; ctx.scale(b, b); }
+                const pts = buildPts(R), v0 = pts[0], v2 = pts[2], pSun = phase(elapsed, 0, 1.4);
                 if (pSun > .3) {
                     const ambP = phase(elapsed, .5, .9);
                     for (let d = 0; d < 8; d++) {
@@ -319,122 +221,151 @@ export default function Portfolio() {
                         drawSunRay(v0.x, v0.y, v0.x + Math.cos(ang) * R * .75, v0.y + Math.sin(ang) * R * .75, ambP, .5);
                     }
                 }
-                [1, 2, 3, 4].forEach((ti, i) => {
-                    const p = phase(elapsed, 1.4 + i * .12, .6);
-                    drawSunRay(v0.x, v0.y, pts[ti].x, pts[ti].y, p, .9);
-                });
-
-                const sunE = EDGES.filter(([a, b]) => a === 0 || b === 0);
-                const othE = EDGES.filter(([a, b]) => a !== 0 && b !== 0);
-                [...sunE, ...othE].forEach(([a, b], i) => {
-                    const { thick, faint } = eClass(a, b);
-                    const p = phase(elapsed, 1.35 + i * .14, .65);
-                    const lw = thick ? R * .014 : faint ? R * .004 : R * .007;
-                    const al = thick ? .82 : faint ? .20 : .50;
+                [1, 2, 3, 4].forEach((ti, i) => { const p = phase(elapsed, 1.4 + i * .12, .6); drawSunRay(v0.x, v0.y, pts[ti].x, pts[ti].y, p, .9); });
+                EDGES.forEach(([a, b], i) => {
+                    const { thick, faint } = eClass(a, b); const p = phase(elapsed, 1.35 + i * .14, .65);
+                    const lw = thick ? R * .014 : faint ? R * .004 : R * .007; const al = thick ? .82 : faint ? .20 : .50;
                     const col = (a === 0 || b === 0) ? 'rgba(255,220,150,1)' : 'rgba(180,185,200,1)';
                     drawEdge(pts[a].x, pts[a].y, pts[b].x, pts[b].y, p, lw, al, col);
                 });
-
-                pts.forEach((pt, i) => {
-                    if (i === 0) drawSunNode(pt.x, pt.y, R, pSun, elapsed);
-                    else drawRegularNode(pt.x, pt.y, R, phase(elapsed, 3.2 + i * .15, .45));
-                });
-
-                const stemP = phase(elapsed, 4.2, .7);
-                const leafLP = phase(elapsed, 4.75, 1.0);
-                const leafRP = phase(elapsed, 5.05, 1.0);
-
+                pts.forEach((pt, i) => { if (i === 0) drawSunNode(pt.x, pt.y, R, pSun, elapsed); else drawRegularNode(pt.x, pt.y, R, phase(elapsed, 3.2 + i * .15, .45)); });
+                const stemP = phase(elapsed, 4.2, .7), leafLP = phase(elapsed, 4.75, 1.0), leafRP = phase(elapsed, 5.05, 1.0);
                 if (stemP > 0) {
-                    const stemLen = R * .32 * stemP;
-                    ctx.save();
-                    ctx.globalAlpha = .70 * eOut3(stemP);
-                    const stemGrad = ctx.createLinearGradient(v2.x, v2.y, v2.x, v2.y + stemLen);
-                    stemGrad.addColorStop(0, 'rgba(160,175,140,.75)');
-                    stemGrad.addColorStop(1, 'rgba(120,140,100,.50)');
-                    ctx.strokeStyle = stemGrad;
-                    ctx.lineWidth = R * .018; ctx.lineCap = 'round';
-                    ctx.shadowColor = 'rgba(90,80,55,.3)'; ctx.shadowBlur = 3;
-                    ctx.beginPath();
-                    ctx.moveTo(v2.x, v2.y);
-                    ctx.quadraticCurveTo(v2.x + R * .04, v2.y + stemLen * .55, v2.x, v2.y + stemLen);
-                    ctx.stroke();
-                    ctx.restore();
+                    const stemLen = R * .32 * stemP; ctx.save(); ctx.globalAlpha = .70 * eOut3(stemP); ctx.strokeStyle = 'rgba(120,140,100,.50)'; ctx.lineWidth = R * .018; ctx.lineCap = 'round';
+                    ctx.beginPath(); ctx.moveTo(v2.x, v2.y); ctx.quadraticCurveTo(v2.x + R * .04, v2.y + stemLen * .55, v2.x, v2.y + stemLen); ctx.stroke(); ctx.restore();
                 }
-
                 drawRealLeaf(v2.x, v2.y, v2.x - R * .92, v2.y - R * .60, v2.x - R * .38, v2.y + R * .08, leafLP, R, .82, 82);
                 drawRealLeaf(v2.x, v2.y, v2.x + R * 1.08, v2.y - R * .24, v2.x + R * .42, v2.y + R * .08, leafRP, R, .70, 90);
-
-                const annotP = phase(elapsed, 5.8, 1.2);
-                if (annotP > .05) {
-                    ctx.save(); ctx.globalAlpha = annotP * .50;
-                    ctx.font = `300 ${R * .085}px Archivo,sans-serif`;
-                    ctx.fillStyle = '#c8522a';
-                    ctx.fillText('SUN', v0.x + R * .10, v0.y - R * .20);
-                    ctx.font = `300 ${R * .060}px Archivo,sans-serif`;
-                    ctx.fillStyle = 'rgba(255,255,255,.25)';
-                    ctx.fillText('v0 · origen', v0.x + R * .10, v0.y - R * .10);
-                    ctx.fillStyle = 'rgba(120,200,100,0.85)';
-                    ctx.font = `300 ${R * .085}px Archivo,sans-serif`;
-                    ctx.fillText('PLANT', v2.x + R * .05, v2.y + R * .38);
-                    ctx.font = `300 ${R * .060}px Archivo,sans-serif`;
-                    ctx.fillStyle = 'rgba(255,255,255,.25)';
-                    ctx.fillText('v2 · raíz', v2.x + R * .05, v2.y + R * .50);
-                    ctx.restore();
-                }
-                const graphP = phase(elapsed, 6.5, .8);
-                if (graphP > .05) {
-                    ctx.save(); ctx.globalAlpha = graphP * .18;
-                    ctx.font = `700 ${R * .11}px 'Bebas Neue',sans-serif`; ctx.fillStyle = 'rgba(255,255,255,.5)';
-                    ctx.fillText('K5', -R * .06, -R * .73);
-                    ctx.font = `300 ${R * .055}px Archivo,sans-serif`;
-                    ctx.fillText('grafo completo · isomorfismo', -R * .38, -R * .59);
-                    ctx.restore();
-                }
-
-                if (!hcPARTICLES) hcPARTICLES = Array.from({ length: 70 }, () => ({
-                    x: (Math.random() - .5) * R * 6, y: (Math.random() - .5) * R * 6,
-                    vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25,
-                    r: Math.random() * 1.4 + .2, op: Math.random() * .14 + .02
-                }));
-                hcPARTICLES.forEach(p => {
-                    p.x += p.vx * .07; p.y += p.vy * .07;
-                    ctx.save(); ctx.globalAlpha = p.op * Math.min(elapsed / 2, 1);
-                    ctx.fillStyle = 'rgba(200,200,210,.8)';
-                    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-                });
-
+                if (!hcPARTICLES) hcPARTICLES = Array.from({ length: 70 }, () => ({ x: (Math.random() - .5) * R * 6, y: (Math.random() - .5) * R * 6, vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25, r: Math.random() * 1.4 + .2, op: Math.random() * .14 + .02 }));
+                hcPARTICLES.forEach(p => { p.x += p.vx * .07; p.y += p.vy * .07; ctx.save(); ctx.globalAlpha = p.op * Math.min(elapsed / 2, 1); ctx.fillStyle = 'rgba(200,200,210,.8)'; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); ctx.restore(); });
                 ctx.restore();
             };
             hcAnimId = requestAnimationFrame(renderHc);
-
-            // Scroll Reveal Logic
-            const rvObs = new IntersectionObserver(es => {
-                es.forEach(e => {
-                    if (e.isIntersecting) e.target.classList.add('visible');
-                });
-            }, { threshold: .07 });
-
-            document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
-
-            document.querySelectorAll('.proj-detail').forEach((el: any, i) => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(24px)';
-                el.style.transition = `opacity .65s ease ${i * .1}s,transform .65s ease ${i * .1}s,background .3s`;
-                const o = new IntersectionObserver(([e]) => {
-                    if (e.isIntersecting) {
-                        el.style.opacity = '1';
-                        el.style.transform = 'none';
-                        o.disconnect();
-                    }
-                }, { threshold: .04 });
-                o.observe(el);
-            });
         }
+
+        // ─────────────────────────────────────────────
+        // VISION MEDIA 1.0 CANVAS (Instagram Control)
+        // ─────────────────────────────────────────────
+        let vm1AnimId: number;
+        const vm1Canvas = document.getElementById('vm1-canvas') as HTMLCanvasElement;
+        if (vm1Canvas) {
+            const ctx = vm1Canvas.getContext('2d')!;
+            const DPR = window.devicePixelRatio || 1;
+            const resize = () => { vm1Canvas.width = vm1Canvas.clientWidth * DPR; vm1Canvas.height = vm1Canvas.clientHeight * DPR; ctx.scale(DPR, DPR); };
+            new ResizeObserver(resize).observe(vm1Canvas); resize();
+            let T0 = 0;
+            const tokens = Array.from({ length: 22 }, (_, i) => ({
+                x: Math.random() * .45, y: Math.random(), spd: .008 + Math.random() * .012,
+                w: 18 + Math.random() * 28, delay: Math.random() * 2.5,
+                word: ['caption', 'brand', 'strategy', 'LLM', 'post', 'reel', 'story', 'AI', 'async', 'prompt'][i % 10]
+            }));
+            const render = (ts: number) => {
+                vm1AnimId = requestAnimationFrame(render); if (!T0) T0 = ts;
+                const elapsed = (ts - T0) / 1000; const W = vm1Canvas.clientWidth, H = vm1Canvas.clientHeight;
+                ctx.clearRect(0, 0, W, H);
+                const bx = W * .48, by = H * .5, pulse = 1 + Math.sin(elapsed * 2.2) * .06;
+                const g = ctx.createRadialGradient(bx, by, 0, bx, by, 38 * pulse);
+                g.addColorStop(0, 'rgba(200,82,42,.28)'); g.addColorStop(1, 'rgba(200,82,42,0)');
+                ctx.fillStyle = g; ctx.beginPath(); ctx.arc(bx, by, 38 * pulse, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = 'rgba(200,82,42,.5)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(bx, by, 20, 0, Math.PI * 2); ctx.stroke();
+                tokens.forEach(t => {
+                    let age = elapsed - t.delay; if (age < 0) return; t.x += t.spd * .016; if (t.x > .52) { t.x = 0; t.delay = elapsed; }
+                    const cx = t.x * W * .46, cy = t.y * H, fa = Math.max(0, (.46 - t.x) / .46);
+                    ctx.save(); ctx.globalAlpha = fa * .65; ctx.font = `300 10px Archivo`; ctx.fillStyle = 'rgba(200,82,42,.8)'; ctx.fillText(t.word, cx, cy); ctx.restore();
+                });
+                const cDefs = [
+                    { x: .63, y: .15, w: .32, h: .34, label: 'POST', icon: '▣', color: '#c8522a', delay: 1.2 },
+                    { x: .63, y: .57, w: .14, h: .30, label: 'STORY', icon: '◉', color: '#4fb3d4', delay: 1.8 },
+                    { x: .80, y: .57, w: .14, h: .30, label: 'REEL', icon: '▶', color: '#8a64c8', delay: 2.5 },
+                ];
+                cDefs.forEach(cd => {
+                    const age = elapsed - cd.delay; if (age < 0) return; const p = Math.min(1, age * .8);
+                    const cx = cd.x * W, cy = cd.y * H, cw = cd.w * W, ch = cd.h * H;
+                    ctx.strokeStyle = cd.color; ctx.globalAlpha = p * .35; ctx.beginPath(); ctx.moveTo(bx + 20, by); ctx.lineTo(cx, cy + ch / 2); ctx.stroke();
+                    ctx.globalAlpha = p; ctx.strokeRect(cx, cy, cw * p, ch);
+                });
+            };
+            vm1AnimId = requestAnimationFrame(render);
+        }
+
+        // ─────────────────────────────────────────────
+        // VISION MEDIA 2.0 CANVAS (Email Automation)
+        // ─────────────────────────────────────────────
+        let vm2AnimId: number;
+        const vm2Canvas = document.getElementById('vm2-canvas') as HTMLCanvasElement;
+        if (vm2Canvas) {
+            const ctx = vm2Canvas.getContext('2d')!;
+            const DPR = window.devicePixelRatio || 1;
+            const resize = () => { vm2Canvas.width = vm2Canvas.clientWidth * DPR; vm2Canvas.height = vm2Canvas.clientHeight * DPR; ctx.scale(DPR, DPR); };
+            new ResizeObserver(resize).observe(vm2Canvas); resize();
+            let T0 = 0;
+            const segs = [
+                { label: 'SEG A', y: .20, color: '#2a6b8c' },
+                { label: 'SEG B', y: .45, color: '#4a9aba' },
+                { label: 'SEG C', y: .70, color: '#2a4a6a' },
+            ];
+            const envs = Array.from({ length: 12 }, (_, i) => ({ x: 0, y: .15 + Math.random() * .7, tx: .78, seg: i % 3, spd: .003 + Math.random() * .005, p: 0, delay: i * .18 + .8 }));
+            const render = (ts: number) => {
+                vm2AnimId = requestAnimationFrame(render); if (!T0) T0 = ts;
+                const elapsed = (ts - T0) / 1000, W = vm2Canvas.clientWidth, H = vm2Canvas.clientHeight;
+                ctx.clearRect(0, 0, W, H);
+                const sx = W * .14, sy = H * .5;
+                ctx.fillStyle = 'rgba(42,107,140,.2)'; ctx.beginPath(); ctx.arc(sx, sy, 25, 0, Math.PI * 2); ctx.fill();
+                segs.forEach(seg => {
+                    const nx = W * .82, ny = seg.y * H;
+                    ctx.strokeStyle = seg.color; ctx.beginPath(); ctx.arc(nx, ny, 12, 0, Math.PI * 2); ctx.stroke();
+                });
+                envs.forEach(env => {
+                    const age = elapsed - env.delay; if (age < 0) return; env.p = Math.min(1, env.p + env.spd);
+                    const ex = sx + (W * .82 - sx) * env.p, ey = sy + (segs[env.seg].y * H - sy) * env.p;
+                    ctx.strokeStyle = segs[env.seg].color; ctx.globalAlpha = Math.max(0, 1 - env.p);
+                    ctx.strokeRect(ex - 8, ey - 5, 16, 10);
+                    if (env.p >= 1) { env.p = 0; env.delay = elapsed; }
+                });
+            };
+            vm2AnimId = requestAnimationFrame(render);
+        }
+
+        // ─────────────────────────────────────────────
+        // PRECISION BANKING ML CANVAS
+        // ─────────────────────────────────────────────
+        let mlAnimId: number;
+        const mlCanvas = document.getElementById('ml-canvas') as HTMLCanvasElement;
+        if (mlCanvas) {
+            const ctx = mlCanvas.getContext('2d')!;
+            const DPR = window.devicePixelRatio || 1;
+            const resize = () => { mlCanvas.width = mlCanvas.clientWidth * DPR; mlCanvas.height = mlCanvas.clientHeight * DPR; ctx.scale(DPR, DPR); };
+            new ResizeObserver(resize).observe(mlCanvas); resize();
+            let T0 = 0;
+            const pts = Array.from({ length: 50 }, () => ({ x: Math.random() * .6, y: Math.random(), sub: Math.random() < .15, p: 0 }));
+            const render = (ts: number) => {
+                mlAnimId = requestAnimationFrame(render); if (!T0) T0 = ts;
+                const elapsed = (ts - T0) / 1000, W = mlCanvas.clientWidth, H = mlCanvas.clientHeight;
+                ctx.clearRect(0, 0, W, H);
+                pts.forEach(pt => {
+                    pt.p = Math.min(1, pt.p + .01);
+                    const px = pt.x * W * .5, py = pt.y * H;
+                    ctx.fillStyle = pt.sub ? '#3a6a3a' : 'rgba(255,255,255,.1)';
+                    ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI * 2); ctx.fill();
+                });
+                ctx.strokeStyle = 'rgba(200,82,42,.3)'; ctx.beginPath(); ctx.moveTo(W * .5, 0); ctx.lineTo(W * .55, H); ctx.stroke();
+            };
+            mlAnimId = requestAnimationFrame(render);
+        }
+
+        // ─────────────────────────────────────────────
+        // SCROLL REVEAL
+        // ─────────────────────────────────────────────
+        const rvObs = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, { threshold: .07 });
+        document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
 
         return () => {
             document.removeEventListener('mousemove', onMouseMove);
             cancelAnimationFrame(animRingId);
             if (hcAnimId) cancelAnimationFrame(hcAnimId);
+            if (vm1AnimId) cancelAnimationFrame(vm1AnimId);
+            if (vm2AnimId) cancelAnimationFrame(vm2AnimId);
+            if (mlAnimId) cancelAnimationFrame(mlAnimId);
         };
     }, []);
 
@@ -449,15 +380,9 @@ export default function Portfolio() {
             <nav className="portfolio-nav">
                 <div className="n-logo">ISOMORPH</div>
                 <ul className="n-links">
-                    <li>
-                        <a href="#work">{lang === 'es' ? 'Proyectos' : 'Projects'}</a>
-                    </li>
-                    <li>
-                        <a href="#svc">{lang === 'es' ? 'Servicios' : 'Services'}</a>
-                    </li>
-                    <li>
-                        <a href="#us">{lang === 'es' ? 'Nosotros' : 'About'}</a>
-                    </li>
+                    <li><a href="#work">{lang === 'es' ? 'Proyectos' : 'Projects'}</a></li>
+                    <li><a href="#svc">{lang === 'es' ? 'Servicios' : 'Services'}</a></li>
+                    <li><a href="#us">{lang === 'es' ? 'Nosotros' : 'About'}</a></li>
                 </ul>
             </nav>
 
@@ -466,143 +391,24 @@ export default function Portfolio() {
                 <canvas id="hc"></canvas>
                 <div className="h-txt">
                     <div className="h-eye">Graph Intelligence · Software Studio · AI</div>
-                    <h1>
-                        SYNTHESIZE<br />
-                        <em>{lang === 'es' ? 'caos → estructura → control' : 'chaos → structure → control'}</em>
-                        CONTROL
-                    </h1>
+                    <h1>SYNTHESIZE<br /><em>{lang === 'es' ? 'caos → estructura → control' : 'chaos → structure → control'}</em>CONTROL</h1>
                     <p className="h-sub">
-                        {lang === 'es'
-                            ? 'ISOMORPH construye infraestructura de software con inteligencia artificial — productos digitales que piensan, se adaptan y escalan.'
-                            : 'ISOMORPH builds AI-powered software infrastructure — digital products that think, adapt, and scale.'}
+                        {lang === 'es' ? 'ISOMORPH construye infraestructura de software con inteligencia artificial — productos digitales que piensan, se adaptan y escalan.' : 'ISOMORPH builds AI-powered software infrastructure — digital products that think, adapt, and scale.'}
                     </p>
-                </div>
-                <div className="logo-ctx">
-                    <div className="lc-badge">
-                        {lang === 'es' ? '☀ v0 — origen · energía · visión' : '☀ v0 — origin · energy · vision'}
-                    </div>
-                    <div className="lc-badge">
-                        {lang === 'es' ? '✦ K5 — grafo completo · 5 nodos · 10 aristas' : '✦ K5 — complete graph · 5 nodes · 10 edges'}
-                    </div>
-                    <div className="lc-badge">
-                        {lang === 'es' ? '❧ v2 — raíz · crecimiento · estructura' : '❧ v2 — root · growth · structure'}
-                    </div>
-                </div>
-                <div className="h-scroll">
-                    <span className="s-line"></span>
-                    <span>{lang === 'es' ? 'Scroll to Explore' : 'Scroll to Explore'}</span>
                 </div>
             </section>
 
-            {/* ── BOATY FEATURED ── */}
+            {/* ── BOATY ── */}
             <section className="boaty-sec">
                 <div className="boaty-inner">
                     <div className="rv">
-                        <div className="b-tag">
-                            {lang === 'es' ? 'Producto Destacado · App Móvil & Web · Diseño de Producto' : 'Featured Product · Mobile & Web App · Product Design'}
-                        </div>
+                        <div className="b-tag">{lang === 'es' ? 'Producto Destacado · App Móvil & Web' : 'Featured Product · Mobile & Web'}</div>
                         <h2>BOATY</h2>
-                        <p className="b-sub">
-                            {lang === 'es' ? 'La plataforma náutica on-demand. Como Uber, en el mar.' : 'The on-demand nautical platform. Like Uber, on the water.'}
-                        </p>
+                        <p className="b-sub">{lang === 'es' ? 'La plataforma náutica on-demand. Como Uber, en el mar.' : 'The on-demand nautical platform. Like Uber, on the water.'}</p>
                         <p className="b-desc">
-                            {lang === 'es'
-                                ? 'Marketplace premium que conecta turistas de lujo con proveedores náuticos en tiempo real. Mapa interactivo en vivo, catálogo con precios y ratings, sistema de reservas on-demand, y registro de proveedores validado con MongoDB Atlas. Glassmorphism + parallax con Framer Motion. Deploy en Railway.'
-                                : 'Premium marketplace connecting luxury tourists with nautical providers in real time. Live interactive map, vessel catalog with pricing and ratings, on-demand booking system, MongoDB Atlas. Glassmorphism + parallax with Framer Motion. Railway deployment.'}
+                            {lang === 'es' ? 'Marketplace premium que conecta turistas de lujo con proveedores náuticos en tiempo real.' : 'Premium marketplace connecting luxury tourists with nautical providers in real time.'}
                         </p>
-                        <ul className="f-list">
-                            <li>{lang === 'es' ? 'Mapa interactivo con disponibilidad en vivo' : 'Interactive map with live availability'}</li>
-                            <li>{lang === 'es' ? 'Catálogo: yates, veleros, lanchas + precios' : 'Catalog: yachts, sailboats, speedboats + pricing'}</li>
-                            <li>{lang === 'es' ? 'Reservas on-demand en tiempo real' : 'On-demand real-time bookings'}</li>
-                            <li>{lang === 'es' ? 'Registro de proveedores con validación' : 'Provider registration with validation'}</li>
-                            <li>{lang === 'es' ? 'UI glassmorphism + parallax + Framer Motion' : 'Glassmorphism + parallax + Framer Motion UI'}</li>
-                            <li>{lang === 'es' ? 'API REST · MongoDB Atlas · Railway' : 'REST API · MongoDB Atlas · Railway'}</li>
-                        </ul>
-                        <div className="t-row">
-                            <span className="t-pill">React</span><span className="t-pill">Vite</span><span className="t-pill">Node.js</span>
-                            <span className="t-pill">Express</span><span className="t-pill">MongoDB Atlas</span>
-                            <span className="t-pill">Framer Motion</span><span className="t-pill">TailwindCSS</span><span className="t-pill">Railway</span>
-                        </div>
-                        <a href="https://github.com/mapube16/Boaty" target="_blank" rel="noopener noreferrer" className="b-link">
-                            {lang === 'es' ? 'Ver en GitHub →' : 'View on GitHub →'}
-                        </a>
-                    </div>
-                    <div className="ph-show rv">
-                        <div className="ph-glow"></div>
-                        <div className="ph-wrap">
-                            <div className="phone back">
-                                <div className="p-screen">
-                                    <div className="a-hdr">
-                                        <div>
-                                            <div className="a-greet">Buenos días</div>
-                                            <div className="a-title">Mis reservas</div>
-                                        </div>
-                                        <div className="a-av"></div>
-                                    </div>
-                                    <div style={{ padding: '0 10px 10px' }}>
-                                        <div style={{ background: 'rgba(200,82,42,.08)', border: '1px solid rgba(200,82,42,.15)', borderRadius: '10px', padding: '10px', marginBottom: '7px' }}>
-                                            <div style={{ fontSize: '7px', color: '#c8522a', fontFamily: 'Archivo,sans-serif', marginBottom: '3px', letterSpacing: '.1em' }}>HOY · 15:00</div>
-                                            <div style={{ fontSize: '9px', color: '#e0e4ee', fontFamily: 'Archivo,sans-serif', fontWeight: 600 }}>⛵ Velero Sunrise</div>
-                                            <div style={{ fontSize: '7px', color: 'rgba(255,255,255,.3)', fontFamily: 'Archivo,sans-serif', marginTop: '2px' }}>Bahía · 3 hrs · $285</div>
-                                        </div>
-                                        <div style={{ background: 'rgba(255,255,255,.02)', border: '1px solid rgba(255,255,255,.05)', borderRadius: '10px', padding: '10px' }}>
-                                            <div style={{ fontSize: '7px', color: 'rgba(255,255,255,.2)', fontFamily: 'Archivo,sans-serif', marginBottom: '3px', letterSpacing: '.1em' }}>MAÑANA · 10:00</div>
-                                            <div style={{ fontSize: '9px', color: 'rgba(255,255,255,.6)', fontFamily: 'Archivo,sans-serif', fontWeight: 600 }}>🛥️ Yate Luna</div>
-                                            <div style={{ fontSize: '7px', color: 'rgba(255,255,255,.2)', fontFamily: 'Archivo,sans-serif', marginTop: '2px' }}>Mar Abierto · 5 hrs</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="phone">
-                                <div className="p-screen">
-                                    <div className="a-hdr">
-                                        <div>
-                                            <div className="a-greet">Discover</div>
-                                            <div className="a-title">Near you</div>
-                                        </div>
-                                        <div className="a-av"></div>
-                                    </div>
-                                    <div className="a-map">
-                                        <div className="m-dot"></div>
-                                        <div className="m-boat">⛵</div>
-                                        <div className="m-boat2">🚤</div>
-                                    </div>
-                                    <div className="a-stitle">Disponibles ahora</div>
-                                    <div className="b-cards">
-                                        <div className="b-card">
-                                            <div className="b-cimg y">🛥️</div>
-                                            <div className="b-ci">
-                                                <div className="b-nm">Yate Luna</div>
-                                                <div className="b-pr">$280/hr</div>
-                                                <div className="b-rt">★★★★★ 4.9</div>
-                                            </div>
-                                        </div>
-                                        <div className="b-card">
-                                            <div className="b-cimg s">🚤</div>
-                                            <div className="b-ci">
-                                                <div className="b-nm">Speed X</div>
-                                                <div className="b-pr">$120/hr</div>
-                                                <div className="b-rt">★★★★☆ 4.7</div>
-                                            </div>
-                                        </div>
-                                        <div className="b-card">
-                                            <div className="b-cimg v">⛵</div>
-                                            <div className="b-ci">
-                                                <div className="b-nm">Vela Sur</div>
-                                                <div className="b-pr">$95/hr</div>
-                                                <div className="b-rt">★★★★★ 5.0</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="a-nav">
-                                        <div className="ni on">🗺️</div>
-                                        <div className="ni">🚢</div>
-                                        <div className="ni">📅</div>
-                                        <div className="ni">👤</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <a href="https://github.com/mapube16/Boaty" target="_blank" rel="noopener noreferrer" className="b-link">{lang === 'es' ? 'Ver en GitHub →' : 'View on GitHub →'}</a>
                     </div>
                 </div>
             </section>
@@ -610,79 +416,51 @@ export default function Portfolio() {
             {/* ── DETAILED PROJECTS ── */}
             <section id="work" className="proj-sec">
                 <div className="wrap">
-                    <div className="s-label rv" data-num="01">
-                        {lang === 'es' ? 'Proyectos' : 'Projects'}
-                    </div>
-                    <h2 className="rv">
-                        {lang === 'es' ? (
-                            <>CADA PRODUCTO,<br />CADA HISTORIA</>
-                        ) : (
-                            <>EVERY PRODUCT,<br />EVERY STORY</>
-                        )}
-                    </h2>
+                    <div className="s-label rv" data-num="01">{lang === 'es' ? 'Proyectos' : 'Projects'}</div>
+                    <h2 className="rv">{lang === 'es' ? <>CADA PRODUCTO,<br />CADA HISTORIA</> : <>EVERY PRODUCT,<br />EVERY STORY</>}</h2>
 
                     {/* VISION MEDIA 1.0 */}
                     <div className="proj-detail rv" style={{ marginTop: '4rem' }}>
-                        <div className="pd-accent-bar" style={{ background: 'linear-gradient(90deg,rgba(200,82,42,.6),rgba(232,133,26,.4))' }}></div>
                         <div className="pd-grid">
                             <div>
                                 <div className="p-num">02 — AI · Social Media Automation</div>
                                 <div className="p-ttl" style={{ fontSize: '2rem' }}>VISION MEDIA <span style={{ color: 'rgba(200,82,42,.7)' }}>1.0</span></div>
-                                <p style={{ fontSize: '.8rem', color: 'rgba(200,82,42,.7)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '1.2rem' }}>
-                                    {lang === 'es' ? 'Motor de contenido social impulsado por IA' : 'AI-powered social content engine'}
-                                </p>
                                 <p className="p-dsc">
-                                    {lang === 'es'
-                                        ? 'Plataforma end-to-end que genera, programa y publica contenido multi-formato (Posts, Stories, Reels) en Instagram de forma autónoma. LLMs (Gemini/GPT) alimentados por una Estrategia Maestra de marca producen captions e image prompts on-brand a escala. Clean Architecture, FastAPI async, adaptador social modular, PostgreSQL, Docker.'
-                                        : 'End-to-end platform that autonomously generates, schedules and publishes multi-format content on Instagram. LLMs fed by a Master Brand Strategy produce on-brand captions at scale. Clean Architecture, async FastAPI, modular social adapter, PostgreSQL, Docker.'}
+                                    {lang === 'es' ? 'Plataforma que genera y publica contenido en Instagram de forma autónoma.' : 'Platform that autonomously generates and publishes content on Instagram.'}
                                 </p>
-                                <div className="prod-canvas-wrap" id="vm1-wrap"><canvas id="vm1-canvas"></canvas></div>
-                                <div className="pd-arch">
-                                    <div className="pd-arch-lbl">{lang === 'es' ? 'Arquitectura' : 'Architecture'}</div>
-                                    <p className="pd-arch-txt">
-                                        Clean Architecture · Async generation · Social adapter (social_adapter.py) · API docs /docs · Roadmap: Runway/Luma Reels, Analytics Dashboard, Multi-Tenant
-                                    </p>
-                                </div>
-                            </div>
-                            <div>
-                                <div className="pd-feat">{lang === 'es' ? 'Características clave' : 'Key features'}</div>
-                                <ul className="pd-list">
-                                    <li className="pd-li">
-                                        <span className="pd-arrow" style={{ color: 'rgba(200,82,42,.5)' }}>→</span>
-                                        <span>{lang === 'es' ? 'Generación multi-formato: Feed Posts, Stories y Reels' : 'Multi-format generation: Feed Posts, Stories and Reels'}</span>
-                                    </li>
-                                    <li className="pd-li">
-                                        <span className="pd-arrow" style={{ color: 'rgba(200,82,42,.5)' }}>→</span>
-                                        <span>{lang === 'es' ? 'Dashboard React para gestión visual de campañas' : 'React dashboard for visual campaign management'}</span>
-                                    </li>
-                                    <li className="pd-li">
-                                        <span className="pd-arrow" style={{ color: 'rgba(200,82,42,.5)' }}>→</span>
-                                        <span>{lang === 'es' ? 'Adaptadores modulares: Instagram Graph API + Ayrshare' : 'Modular adapters: Instagram Graph API + Ayrshare'}</span>
-                                    </li>
-                                    <li className="pd-li">
-                                        <span className="pd-arrow" style={{ color: 'rgba(200,82,42,.5)' }}>→</span>
-                                        <span>{lang === 'es' ? 'Tasks asíncronas en background — UI siempre ágil' : 'Async background tasks — UI always responsive'}</span>
-                                    </li>
-                                    <li className="pd-li">
-                                        <span className="pd-arrow" style={{ color: 'rgba(200,82,42,.5)' }}>→</span>
-                                        <span>{lang === 'es' ? 'PostgreSQL para posts, campañas y tokens' : 'PostgreSQL for posts, campaigns and tokens'}</span>
-                                    </li>
-                                </ul>
-                                <div className="p-tags" style={{ marginBottom: '1.2rem' }}>
-                                    <span className="p-tag">Python</span><span className="p-tag">FastAPI</span><span className="p-tag">AsyncPG</span>
-                                    <span className="p-tag">React</span><span className="p-tag">Vite</span><span className="p-tag">TailwindCSS</span>
-                                    <span className="p-tag">PostgreSQL</span><span className="p-tag">Docker</span><span className="p-tag">Gemini API</span><span className="p-tag">Pydantic</span>
-                                </div>
-                                <a href="https://github.com/Juanfe29/Instagram-automation-AI-generated-content" target="_blank" rel="noopener noreferrer" className="p-lnk">
-                                    {lang === 'es' ? 'Ver en GitHub →' : 'View on GitHub →'}
-                                </a>
+                                <div className="prod-canvas-wrap"><canvas id="vm1-canvas"></canvas></div>
+                                <a href="https://github.com/Juanfe29/Instagram-automation-AI-generated-content" target="_blank" rel="noopener noreferrer" className="p-lnk">{lang === 'es' ? 'Ver en GitHub →' : 'View on GitHub →'}</a>
                             </div>
                         </div>
                     </div>
 
-                    {/* Add other projects similarly (omitting VM2/ML canvases implementation here to avoid size limits, 
-               but including HTML structure for them) */}
+                    {/* VISION MEDIA 2.0 */}
+                    <div className="proj-detail rv" style={{ marginTop: '1px' }}>
+                        <div className="pd-grid">
+                            <div>
+                                <div className="p-num">03 — AI · Email Marketing Automation</div>
+                                <div className="p-ttl" style={{ fontSize: '2rem' }}>VISION MEDIA <span style={{ color: 'rgba(58,138,184,.7)' }}>2.0</span></div>
+                                <p className="p-dsc">
+                                    {lang === 'es' ? 'Motor de email marketing generado por IA.' : 'AI-generated email marketing engine.'}
+                                </p>
+                                <div className="prod-canvas-wrap"><canvas id="vm2-canvas"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
 
+                    {/* PRECISION BANKING */}
+                    <div className="proj-detail rv" style={{ marginTop: '1px' }}>
+                        <div className="pd-grid">
+                            <div>
+                                <div className="p-num">04 — Machine Learning · Fintech</div>
+                                <div className="p-ttl" style={{ fontSize: '2rem' }}>PRECISION <span style={{ color: 'rgba(80,160,80,.7)' }}>BANKING</span></div>
+                                <p className="p-dsc">
+                                    {lang === 'es' ? 'Predictor de suscripciones bancarias con XGBoost.' : 'Banking subscription predictor with XGBoost.'}
+                                </p>
+                                <div className="prod-canvas-wrap"><canvas id="ml-canvas"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
