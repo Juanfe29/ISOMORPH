@@ -31,25 +31,25 @@ export default function GraphLandscape() {
         // --- CONFIG ---
         const CONFIG = {
             moonRadius: 100,
-            ffCount: 30,
+            ffCount: 45,
             starCount: 200,
             clearance: 0.35,
             breeze: 0.03
         };
 
-        // --- CLASSES (Ported from Final Edition) ---
+        // --- CLASSES ---
         class Star {
             x: number; y: number; z: number; size: number; phase: number;
             constructor() {
                 this.x = Math.random() * width;
-                this.y = Math.random() * (height * 0.6);
+                this.y = Math.random() * (height * 0.7);
                 this.z = Math.random();
-                this.size = 0.5 + this.z * 1.2;
+                this.size = 0.5 + this.z * 1.5;
                 this.phase = Math.random() * Math.PI * 2;
             }
             draw(ctx: CanvasRenderingContext2D, time: number) {
-                const twinkle = 0.2 + Math.abs(Math.sin(time * 2 + this.phase)) * 0.8;
-                ctx.globalAlpha = twinkle * this.z * 0.6;
+                const twinkle = 0.3 + Math.abs(Math.sin(time * 2 + this.phase)) * 0.7;
+                ctx.globalAlpha = twinkle * this.z * 0.5;
                 ctx.fillStyle = "#FFF";
                 ctx.fillRect(this.x, this.y, this.size, this.size);
             }
@@ -58,47 +58,119 @@ export default function GraphLandscape() {
         class Meteor {
             active: boolean = false;
             timer: number = 0;
-            x: number = 0; y: number = 0; vx: number = 0; vy: number = 0; len: number = 0;
+            x: number = 0; y: number = 0; vx: number = 0; vy: number = 0;
             history: { x: number, y: number }[] = [];
 
-            constructor() { this.init(); }
-            init() {
-                this.active = false;
-                this.timer = Math.random() * 500 + 200;
+            constructor(immediate = false) {
+                this.timer = immediate ? Math.random() * 100 : Math.random() * 800 + 400;
             }
             spawn() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * (height * 0.3);
-                this.vx = (Math.random() > 0.5 ? 1 : -1) * (15 + Math.random() * 10);
-                this.vy = 5 + Math.random() * 5;
-                this.len = 100 + Math.random() * 150;
+                this.x = -100;
+                this.y = Math.random() * (height * 0.4);
+                this.vx = 18 + Math.random() * 12;
+                this.vy = 2 + Math.random() * 4;
                 this.active = true;
                 this.history = [];
             }
             update() {
                 if (!this.active) {
-                    this.timer--;
-                    if (this.timer <= 0) this.spawn();
+                    if (this.timer > 0) this.timer--;
+                    else this.spawn();
                     return;
                 }
                 this.history.push({ x: this.x, y: this.y });
-                if (this.history.length > 15) this.history.shift();
+                if (this.history.length > 25) this.history.shift();
                 this.x += this.vx;
                 this.y += this.vy;
-                if (this.x < -200 || this.x > width + 200 || this.y > height) this.init();
+                if (this.x > width + 200 || this.y > height) {
+                    this.active = false;
+                    this.timer = Math.random() * 1200 + 600;
+                }
             }
             draw(ctx: CanvasRenderingContext2D) {
                 if (!this.active) return;
                 ctx.beginPath();
                 ctx.strokeStyle = "#FFF";
-                ctx.lineWidth = 0.5;
+                ctx.lineWidth = 1.2;
                 for (let i = 0; i < this.history.length - 1; i++) {
-                    ctx.globalAlpha = i / this.history.length;
+                    ctx.globalAlpha = (i / this.history.length) * 0.7;
                     ctx.moveTo(this.history[i].x, this.history[i].y);
                     ctx.lineTo(this.history[i + 1].x, this.history[i + 1].y);
-                    if (i % 4 === 0) ctx.fillRect(this.history[i].x, this.history[i].y, 1.5, 1.5);
                 }
                 ctx.stroke();
+            }
+        }
+
+        class MountainRange {
+            nodes: { x: number, y: number, isInternal?: boolean }[] = [];
+            yBase: number; opacity: number; color: string;
+
+            constructor(yBase: number, maxHeight: number, seed: number, opacity: number, color: string) {
+                this.yBase = yBase;
+                this.opacity = opacity;
+                this.color = color;
+                const steps = 30;
+                const stepW = width / steps;
+                for (let i = 0; i <= steps; i++) {
+                    const nx = i * stepW;
+                    const noise = Math.sin(i * 0.2 + seed) * (maxHeight * 0.5) + Math.sin(i * 0.6 + seed) * (maxHeight * 0.2);
+                    const ny = yBase - (maxHeight * 0.5 + noise);
+                    this.nodes.push({ x: nx, y: ny });
+                    for (let j = 1; j <= 2; j++) {
+                        this.nodes.push({ x: nx + (Math.random() - 0.5) * stepW, y: ny + (yBase - ny) * (j / 3), isInternal: true });
+                    }
+                }
+            }
+            draw(ctx: CanvasRenderingContext2D) {
+                ctx.strokeStyle = this.color;
+                ctx.beginPath();
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity * 0.15;
+                ctx.moveTo(0, this.yBase);
+                this.nodes.filter(n => !n.isInternal).forEach(n => ctx.lineTo(n.x, n.y));
+                ctx.lineTo(width, this.yBase);
+                ctx.fill();
+                ctx.lineWidth = 1.2;
+                for (let i = 0; i < this.nodes.length; i++) {
+                    for (let j = i + 1; j < Math.min(i + 12, this.nodes.length); j++) {
+                        const n1 = this.nodes[i], n2 = this.nodes[j];
+                        const d = Math.hypot(n1.x - n2.x, n1.y - n2.y);
+                        if (d < width / 6) {
+                            ctx.globalAlpha = (1 - d / (width / 6)) * this.opacity;
+                            ctx.beginPath(); ctx.moveTo(n1.x, n1.y); ctx.lineTo(n2.x, n2.y); ctx.stroke();
+                        }
+                    }
+                }
+            }
+        }
+
+        class Firefly {
+            x: number = 0; y: number = 0; a: number = 0; v: number = 0; size: number = 0;
+            constructor() { this.init(); }
+            init() {
+                this.x = Math.random() * width;
+                this.y = height * 0.3 + Math.random() * height * 0.7;
+                this.a = Math.random() * Math.PI * 2;
+                this.v = 0.5 + Math.random() * 0.8;
+                this.size = 1 + Math.random() * 1.5;
+            }
+            update() {
+                this.a += (Math.random() - 0.5) * 0.2;
+                this.x += Math.cos(this.a) * this.v;
+                this.y += Math.sin(this.a) * this.v;
+                if (this.x < 0 || this.x > width || this.y < height * 0.3 || this.y > height) this.init();
+            }
+            draw(ctx: CanvasRenderingContext2D, time: number) {
+                const pulse = 0.2 + Math.abs(Math.sin(time * 3 + this.x * 0.1)) * 0.8;
+                ctx.globalAlpha = pulse * 0.8;
+                ctx.fillStyle = "#FFF";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = pulse * 0.2;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 4, 0, Math.PI * 2);
+                ctx.fill();
             }
         }
 
@@ -119,14 +191,12 @@ export default function GraphLandscape() {
         class Plant {
             x: number; y: number; z: number; type: string; scale: number; opacity: number;
             root: PlantNode;
-            createdAt: number;
 
             constructor(x: number, y: number, z: number, type: string, scale: number) {
                 this.x = x; this.y = y; this.z = z;
                 this.type = type;
                 this.scale = scale * (0.4 + z * 1.6);
-                this.opacity = 0.08 + z * 0.8;
-                this.createdAt = Date.now();
+                this.opacity = 0.15 + z * 0.8;
                 this.root = this.generate();
             }
 
@@ -173,8 +243,7 @@ export default function GraphLandscape() {
             buildWillow(x: number, y: number, angle: number, len: number, depth: number): PlantNode {
                 const n = new PlantNode(x, y, depth, 'willow');
                 if (depth > 0) {
-                    const b = 2;
-                    for (let i = 0; i < b; i++) {
+                    for (let i = 0; i < 2; i++) {
                         const a = angle + (i - 0.5) * 1.2;
                         n.children.push(this.buildWillow(Math.cos(a) * len, Math.sin(a) * len, a, len * 0.8, depth - 1));
                     }
@@ -201,19 +270,16 @@ export default function GraphLandscape() {
                 return r;
             }
 
-            update(node: PlantNode, wind: number, mouseX: number, mouseY: number, cx: number, cy: number) {
-                // Combine global wind with cursor reactivity
+            update(node: PlantNode, wind: number, mouseX: number, mouseY: number) {
                 let mouseImpact = 0;
-                // Simple 2D distance for cursor reactivity in this model
                 const dx = mouseX - (this.x + node.relX);
                 const dy = mouseY - (this.y + node.relY);
                 const distSq = dx * dx + dy * dy;
                 if (distSq < 40000) {
                     mouseImpact = - (dx * 0.01) * (1 - Math.sqrt(distSq) / 200);
                 }
-
                 node.angleOffset = (wind + mouseImpact) * node.flex * (0.5 + this.z);
-                node.children.forEach(c => this.update(c, wind, mouseX, mouseY, cx, cy));
+                node.children.forEach(c => this.update(c, wind, mouseX, mouseY));
             }
 
             draw(ctx: CanvasRenderingContext2D, node: PlantNode, x: number, y: number, pAngle = 0) {
@@ -224,14 +290,14 @@ export default function GraphLandscape() {
                     const nx = x + Math.cos(a) * l, ny = y + Math.sin(a) * l;
                     if (c.depth > 0 || !c.isLeaf) {
                         ctx.beginPath();
-                        ctx.lineWidth = Math.max(0.3, node.depth * 0.7 * (0.4 + this.z));
+                        ctx.lineWidth = Math.max(0.4, node.depth * 0.8 * (0.4 + this.z));
                         ctx.globalAlpha = this.opacity * (node.depth === 0 ? 0.2 : 0.1 + node.depth / 15);
                         ctx.moveTo(x, y); ctx.lineTo(nx, ny); ctx.stroke();
                         this.draw(ctx, c, nx, ny, ang);
                     } else {
                         ctx.fillStyle = '#FFF';
-                        ctx.globalAlpha = this.opacity * 0.4;
-                        ctx.fillRect(nx, ny, 1.5, 1.5);
+                        ctx.globalAlpha = this.opacity * 0.5;
+                        ctx.fillRect(nx, ny, 2, 2);
                     }
                 });
             }
@@ -254,7 +320,7 @@ export default function GraphLandscape() {
                 }
             }
             draw(ctx: CanvasRenderingContext2D, time: number, w: number, h: number) {
-                const rx = time * 0.03, ry = time * 0.05, cx = w / 2, cy = h * 0.25;
+                const rx = time * 0.03, ry = time * 0.05, cx = w / 2, cy = h * 0.18;
                 const proj = this.pts.map(p => {
                     let x = p.ox * p.r, y = p.oy * p.r, z = p.oz * p.r;
                     let ty = y * Math.cos(rx) - z * Math.sin(rx), tz = y * Math.sin(rx) + z * Math.cos(rx);
@@ -277,34 +343,23 @@ export default function GraphLandscape() {
             }
         }
 
-        class Firefly {
-            x: number = 0; y: number = 0; a: number = 0; s: number = 0;
-            constructor() { this.init(); }
-            init() { this.x = Math.random() * width; this.y = Math.random() * height; this.a = Math.random() * 7; this.s = 0.2 + Math.random() * 0.4; }
-            update() {
-                this.a += (Math.random() - 0.5) * 0.1;
-                this.x += Math.cos(this.a) * this.s; this.y += Math.sin(this.a) * this.s;
-                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.init();
-            }
-            draw(ctx: CanvasRenderingContext2D, time: number) {
-                const b = Math.abs(Math.sin(time * 1.2 + this.x * 0.01));
-                ctx.globalAlpha = b * 0.4; ctx.fillStyle = '#FFF';
-                ctx.beginPath(); ctx.arc(this.x, this.y, 1, 0, 7); ctx.fill();
-            }
-        }
-
         // --- INITIALIZATION ---
         const starsFinal: Star[] = [];
+        const meteors: Meteor[] = [];
+        const mountains: MountainRange[] = [];
         const fireflies: Firefly[] = [];
         const plantsFinal: Plant[] = [];
         const moon = new Moon();
-        const shootingStar = new Meteor();
 
         for (let i = 0; i < CONFIG.starCount; i++) starsFinal.push(new Star());
+        for (let i = 0; i < 8; i++) meteors.push(new Meteor(true));
         for (let i = 0; i < CONFIG.ffCount; i++) fireflies.push(new Firefly());
 
+        mountains.push(new MountainRange(height, 650, 0, 0.55, "#888"));
+        mountains.push(new MountainRange(height, 380, 50, 0.65, "#AAA"));
+
         const species = ['oak', 'poplar', 'willow', 'bush'];
-        for (let i = 0; i < 24; i++) {
+        for (let i = 0; i < 25; i++) {
             const z = Math.random();
             const x = Math.random() * width;
             const gap = CONFIG.clearance * (1.2 - z);
@@ -330,9 +385,22 @@ export default function GraphLandscape() {
             // Stars
             starsFinal.forEach(s => s.draw(ctx, time));
 
-            // Shooting Star
-            shootingStar.update();
-            shootingStar.draw(ctx);
+            // Meteor Shower
+            meteors.forEach(m => {
+                m.update();
+                m.draw(ctx);
+            });
+
+            // Mountains
+            mountains.forEach(m => m.draw(ctx));
+
+            // Fog Gradient
+            const fog = ctx.createLinearGradient(0, height - 220, 0, height);
+            fog.addColorStop(0, "rgba(0,0,0,0)");
+            fog.addColorStop(1, "rgba(0,0,0,0.95)");
+            ctx.fillStyle = fog;
+            ctx.globalAlpha = 1;
+            ctx.fillRect(0, height - 220, width, 220);
 
             // Moon
             moon.draw(ctx, time, width, height);
@@ -346,7 +414,7 @@ export default function GraphLandscape() {
             // Plants
             const wind = Math.sin(time * 0.6) * CONFIG.breeze;
             plantsFinal.forEach(p => {
-                p.update(p.root, wind, mouseX, mouseY, width / 2, height / 2 + 100);
+                p.update(p.root, wind, mouseX, mouseY);
                 p.draw(ctx, p.root, p.x, p.y);
             });
 
