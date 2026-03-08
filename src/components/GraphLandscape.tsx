@@ -194,10 +194,25 @@ export default function GraphLandscape() {
             if (inCollisionPhase || inExplosionPhase) {
                 const drawCluster = (startX: number, color: string, isSun: boolean) => {
                     const nodes = isSun ? sunNodes : moonNodes;
-                    // They move from startX to x=0
                     const currentX = inCollisionPhase ? startX * (1 - collisionProgress) : 0;
-                    // Spread out a bit during collision
-                    const scatterMulti = inExplosionPhase ? 1 + explosionProgress * 20 : 1;
+                    const scatterMulti = inExplosionPhase ? 1 + explosionProgress * 40 : 1;
+
+                    // Draw a massive glowing halo around the colliding stars
+                    if (inCollisionPhase) {
+                        const clusterCenter = project(currentX, 0, 2500, cx, cy);
+                        if (clusterCenter) {
+                            const haloAlpha = collisionProgress * 0.8;
+                            const grd = ctx.createRadialGradient(clusterCenter.x, clusterCenter.y, 10, clusterCenter.x, clusterCenter.y, 400 * clusterCenter.scale);
+                            // Hacky rgb parse for halo
+                            const rgb = isSun ? '255, 157, 0' : '125, 224, 92';
+                            grd.addColorStop(0, `rgba(${rgb}, ${haloAlpha})`);
+                            grd.addColorStop(1, `rgba(${rgb}, 0)`);
+                            ctx.fillStyle = grd;
+                            ctx.beginPath();
+                            ctx.arc(clusterCenter.x, clusterCenter.y, 400 * clusterCenter.scale, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
 
                     nodes.forEach(sn => {
                         const p = project(
@@ -208,20 +223,40 @@ export default function GraphLandscape() {
                         );
                         if (p) {
                             ctx.fillStyle = color;
+                            // Make particles much larger and brighter during the chaos
+                            const sizeBoost = inExplosionPhase ? (1 - explosionProgress) * 5 + 1 : 2;
                             ctx.globalAlpha = Math.max(0, 1 - (inExplosionPhase ? explosionProgress : 0));
                             ctx.beginPath();
-                            ctx.arc(p.x, p.y, Math.max(0.1, 2 * p.scale), 0, Math.PI * 2);
+                            ctx.arc(p.x, p.y, Math.max(0.1, 2 * p.scale * sizeBoost), 0, Math.PI * 2);
                             ctx.fill();
                         }
                     });
                 };
 
-                // Draw the two colliding stars
                 let leftStart = -3000, rightStart = 3000;
-                drawCluster(leftStart, '#7de05c', false); // Greenish 'moon'
-                drawCluster(rightStart, '#ff9d00', true); // Orange 'sun'
+                drawCluster(leftStart, '#7de05c', false);
+                drawCluster(rightStart, '#ff9d00', true);
             }
 
+            // Draw expanding shockwave during explosion
+            if (inExplosionPhase) {
+                const shockCenterX = width / 2;
+                const shockCenterY = height / 2;
+                const maxRadius = Math.max(width, height) * 1.5;
+                const currentRadius = explosionProgress * maxRadius;
+
+                ctx.strokeStyle = `rgba(255, 157, 0, ${1 - explosionProgress})`;
+                ctx.lineWidth = 10 * (1 - explosionProgress);
+                ctx.beginPath();
+                ctx.arc(shockCenterX, shockCenterY, currentRadius, 0, Math.PI * 2);
+                ctx.stroke();
+
+                ctx.strokeStyle = `rgba(125, 224, 92, ${(1 - explosionProgress) * 0.5})`;
+                ctx.lineWidth = 20 * (1 - explosionProgress);
+                ctx.beginPath();
+                ctx.arc(shockCenterX, shockCenterY, currentRadius * 0.8, 0, Math.PI * 2);
+                ctx.stroke();
+            }
 
             // --- NORMAL LANDSCAPE RENDERING (Modified by introProgress) ---
             if (showLandscape) {
@@ -372,14 +407,17 @@ export default function GraphLandscape() {
 
                         if (!p) continue;
 
-                        // Fog / Depth mapping: Fade out lines far away
-                        const depthAlpha = Math.max(0, Math.min(1, (p.scale * 3) - 0.1)) * introProgress;
+                        // Make grid lines aggressively visible during formation, then settle
+                        const baseAlpha = Math.max(0, Math.min(1, (p.scale * 3) - 0.1));
+                        const explosionFlashGrid = (1 - introProgress); // high value right after explosion
+                        const depthAlpha = Math.min(1, baseAlpha * introProgress + explosionFlashGrid * 0.5);
+
                         // Height mapping: Paint mountains white, valleys green-ish
                         const isHigh = p.elevation > 150;
 
                         ctx.strokeStyle = isHigh
-                            ? `rgba(255, 255, 255, ${depthAlpha * 0.4})` // White peaks
-                            : `rgba(125, 224, 92, ${depthAlpha * 0.6})`; // Green valleys
+                            ? `rgba(255, 255, 255, ${depthAlpha * 0.8})` // White peaks
+                            : `rgba(125, 224, 92, ${depthAlpha * 1.0})`; // Green valleys
 
                         ctx.beginPath();
                         if (pRight) { ctx.moveTo(p.x, p.y); ctx.lineTo(pRight.x, pRight.y); }
