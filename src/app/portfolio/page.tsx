@@ -1,15 +1,28 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import './portfolio.css';
+import { AnimatePresence, motion } from 'framer-motion';
 import BoatyPhone3D from '../../components/BoatyPhone3D';
+import BoatyDesktopSlider, { DesktopSlide } from '../../components/BoatyDesktopSlider';
 import VisionMedia13D from '../../components/VisionMedia13D';
 import VisionMedia23D from '../../components/VisionMedia23D';
 import PrecisionBanking3D from '../../components/PrecisionBanking3D';
 
+// ── Agrega aquí tus videos/screenshots de Boaty ──────────────────────────
+// type: 'video' | 'image'
+// src:  ruta en /public  (ej. '/videos/boaty-dashboard.mp4')
+const boatyDesktopSlides: DesktopSlide[] = [
+    { type: 'video', src: '/boaty-demo.mp4', label: 'Demo',        caption: 'Demostración de la plataforma' },
+    { type: 'image', src: '/reservas.png',   label: 'Reservas',    caption: 'Gestión de reservas en tiempo real' },
+    { type: 'image', src: '/aaa.png',        label: 'Boaty',       caption: 'App cliente — experiencia náutica' },
+    { type: 'image', src: '/image.png',      label: 'Boaty Admin', caption: 'Panel de administración' },
+];
+
 export default function Portfolio() {
     const [lang, setLang] = useState<'es' | 'en'>('es');
+    const [boatyView, setBoatyView] = useState<'mobile' | 'desktop'>('mobile');
 
     const toggleLang = () => {
         setLang(prev => (prev === 'es' ? 'en' : 'es'));
@@ -306,6 +319,8 @@ export default function Portfolio() {
             {/* ── BOATY ── */}
             <section className="boaty-sec">
                 <div className="boaty-inner flex flex-col md:flex-row items-center gap-12 max-w-7xl mx-auto px-6 py-20">
+
+                    {/* Text */}
                     <div className="rv flex-1">
                         <div className="b-tag">{lang === 'es' ? 'Producto Destacado · App Móvil & Web' : 'Featured Product · Mobile & Web'}</div>
                         <h2>BOATY</h2>
@@ -313,10 +328,62 @@ export default function Portfolio() {
                         <p className="b-desc">
                             {lang === 'es' ? 'Marketplace premium que conecta turistas de lujo con proveedores náuticos en tiempo real.' : 'Premium marketplace connecting luxury tourists with nautical providers in real time.'}
                         </p>
-                        <a href="https://github.com/mapube16/Boaty" target="_blank" rel="noopener noreferrer" className="b-link">{lang === 'es' ? 'Ver en GitHub →' : 'View on GitHub →'}</a>
+                        <div className="flex flex-col gap-2">
+                            <a href="https://github.com/mapube16/Boaty" target="_blank" rel="noopener noreferrer" className="b-link">{lang === 'es' ? 'Ver en GitHub →' : 'View on GitHub →'}</a>
+                            <a href="https://innovative-possibility-production-b6f0.up.railway.app/" target="_blank" rel="noopener noreferrer" className="b-link">{lang === 'es' ? 'Ver proyecto en vivo →' : 'View live project →'}</a>
+                        </div>
                     </div>
-                    <div className="flex-1 w-full flex items-center justify-center">
-                        <BoatyPhone3D />
+
+                    {/* Device preview */}
+                    <div className="flex-1 w-full flex flex-col items-center gap-6">
+
+                        {/* Device toggle */}
+                        <div className="flex gap-1 p-1 rounded-full border border-white/10 bg-white/5">
+                            <button
+                                onClick={() => setBoatyView('mobile')}
+                                className="px-4 py-1.5 rounded-full text-[11px] font-mono tracking-widest uppercase transition-all duration-200"
+                                style={boatyView === 'mobile' ? { background: '#c8522a', color: '#fff' } : { color: 'rgba(255,255,255,0.4)' }}
+                            >
+                                Mobile
+                            </button>
+                            <button
+                                onClick={() => setBoatyView('desktop')}
+                                className="px-4 py-1.5 rounded-full text-[11px] font-mono tracking-widest uppercase transition-all duration-200"
+                                style={boatyView === 'desktop' ? { background: '#c8522a', color: '#fff' } : { color: 'rgba(255,255,255,0.4)' }}
+                            >
+                                Desktop
+                            </button>
+                        </div>
+
+                        {/* Animated swap — altura fija para evitar layout shift */}
+                        <div className="w-full min-h-[560px] flex items-center justify-center">
+                            <AnimatePresence mode="wait">
+                                {boatyView === 'mobile' ? (
+                                    <motion.div
+                                        key="mobile"
+                                        initial={{ opacity: 0, x: -40 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: 40 }}
+                                        transition={{ duration: 0.5, ease: 'easeInOut' }}
+                                        className="w-full flex justify-center"
+                                    >
+                                        <BoatyPhone3D />
+                                    </motion.div>
+                                ) : (
+                                    <motion.div
+                                        key="desktop"
+                                        initial={{ opacity: 0, x: 40 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -40 }}
+                                        transition={{ duration: 0.5, ease: 'easeInOut' }}
+                                        className="w-full"
+                                    >
+                                        <BoatyDesktopSlider slides={boatyDesktopSlides} accentColor="#c8522a" />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
                     </div>
                 </div>
             </section>

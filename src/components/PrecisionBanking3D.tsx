@@ -21,19 +21,14 @@ export default function PrecisionBanking3D() {
         };
     }, []);
 
-    // Generate static data points
+    // Generate static data points — valores redondeados para evitar hydration mismatch
     const points = Array.from({ length: 40 }).map((_, i) => {
-        // Pseudo-random but deterministic distribution
-        const x = ((Math.sin(i * 12.5) + 1) / 2) * 80 + 10; // 10% to 90%
-        const y = ((Math.cos(i * 17.5) + 1) / 2) * 80 + 10;
-
-        // Define a boundary line: y = x
-        // If y > x, it's class 1 (Subscription), else class 0 (No Subscription)
+        const x = parseFloat((((Math.sin(i * 12.5) + 1) / 2) * 80 + 10).toFixed(4));
+        const y = parseFloat((((Math.cos(i * 17.5) + 1) / 2) * 80 + 10).toFixed(4));
         const isTarget = y > x + (Math.sin(x / 10) * 10 - 5);
-
         return {
             id: i, x, y, isTarget,
-            size: (Math.sin(i * 5) + 1) * 2 + 2, // 2px to 6px
+            size: parseFloat(((Math.sin(i * 5) + 1) * 2 + 2).toFixed(4)),
             delay: i * 0.1
         };
     });
