@@ -60,7 +60,7 @@ export default function Home() {
             <a href="#" className="hover:text-white transition-colors">Technology</a>
           </div>
 
-          <div className="text-[10px] text-white/20 font-mono tracking-widest uppercase">
+          <div className="text-[10px] text-white/40 font-mono tracking-widest uppercase">
             © 2026 ANTIGRAVITY ENGINE. PREDICT CONTROL.
           </div>
         </div>

@@ -14,7 +14,7 @@
     --bg2: #060810;
     --bg3: #0c0f18;
     --ink: #e0e4ee;
-    --muted: rgba(200, 208, 225, 0.38);
+    --muted: rgba(200, 208, 225, 0.58);
     --accent: #c8522a;
     --blue: #3a8ab8;
     --green: rgba(120, 200, 100, 0.85);
@@ -760,7 +760,7 @@ html {
 .pd-arch-txt {
     font-size: .72rem;
     line-height: 1.85;
-    color: rgba(255, 255, 255, 0.22);
+    color: rgba(255, 255, 255, 0.45);
 }
 
 .pd-feat {
@@ -781,7 +781,7 @@ html {
     gap: .75rem;
     font-size: .76rem;
     line-height: 1.7;
-    color: rgba(255, 255, 255, 0.32);
+    color: rgba(255, 255, 255, 0.55);
     padding: .25rem 0;
     border-bottom: 1px solid var(--border);
 }
@@ -803,7 +803,7 @@ html {
     letter-spacing: .1em;
     text-transform: uppercase;
     border: 1px solid var(--border);
-    color: rgba(255, 255, 255, 0.20);
+    color: rgba(255, 255, 255, 0.40);
     padding: .28rem .65rem;
 }
 
@@ -951,14 +951,14 @@ html {
     letter-spacing: .1em;
     text-transform: uppercase;
     border: 1px solid var(--border);
-    color: rgba(255, 255, 255, 0.20);
+    color: rgba(255, 255, 255, 0.40);
     padding: .28rem .65rem;
     transition: border-color .2s, color .2s;
 }
 
 .s-tag:hover {
     border-color: var(--border2);
-    color: rgba(255, 255, 255, 0.45);
+    color: rgba(255, 255, 255, 0.65);
 }
 
 .tm-grid {
@@ -1090,7 +1090,7 @@ html {
     font-size: .55rem;
     letter-spacing: .18em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.30);
 }
 
 /* ── SCROLL REVEAL ── */
@@ -1137,6 +1137,7 @@ html {
     .pd-grid {
         grid-template-columns: 1fr;
         gap: 2rem;
+        padding: 2rem 1.5rem;
     }
 
     .ab-grid {

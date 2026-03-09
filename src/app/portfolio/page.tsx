@@ -15,9 +15,9 @@ import PrecisionBanking3D from '../../components/PrecisionBanking3D';
 // src:  ruta en /public  (ej. '/videos/boaty-dashboard.mp4')
 const boatyDesktopSlides: DesktopSlide[] = [
     { type: 'video', src: '/boaty-demo.mp4', label: 'Demo',        caption: 'Demostración de la plataforma' },
-    { type: 'image', src: '/reservas.png',   label: 'Reservas',    caption: 'Gestión de reservas en tiempo real' },
-    { type: 'image', src: '/aaa.png',        label: 'Boaty',       caption: 'App cliente — experiencia náutica' },
-    { type: 'image', src: '/image.png',      label: 'Boaty Admin', caption: 'Panel de administración' },
+    { type: 'image', src: '/reservas.webp',   label: 'Reservas',    caption: 'Gestión de reservas en tiempo real' },
+    { type: 'image', src: '/aaa.webp',        label: 'Boaty',       caption: 'App cliente — experiencia náutica' },
+    { type: 'image', src: '/image.webp',      label: 'Boaty Admin', caption: 'Panel de administración' },
 ];
 
 export default function Portfolio() {

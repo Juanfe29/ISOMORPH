@@ -16,7 +16,7 @@ export default function GlassCard({ children, className = "", delay = 0 }: Glass
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay, ease: "easeOut" }}
-            className={`glass glass-glow p-8 relative group overflow-hidden ${className}`}
+            className={`glass glass-glow p-5 md:p-8 relative group overflow-hidden ${className}`}
         >
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="relative z-10">

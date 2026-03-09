@@ -61,7 +61,7 @@ export default function BoatyDesktopSlider({
 
                     {/* Slide label in top bar */}
                     <div className="absolute top-[10px] left-1/2 -translate-x-1/2 z-10">
-                        <span className="text-[10px] text-white/30 font-mono tracking-widest uppercase">
+                        <span className="text-[10px] text-white/55 font-mono tracking-widest uppercase">
                             {slide?.label || 'Preview'}
                         </span>
                     </div>
@@ -173,7 +173,7 @@ export default function BoatyDesktopSlider({
                         ))}
                     </div>
                     {slide?.caption && (
-                        <p className="text-[11px] text-white/30 font-mono tracking-wide">{slide.caption}</p>
+                        <p className="text-[11px] text-white/55 font-mono tracking-wide">{slide.caption}</p>
                     )}
                 </div>
             )}

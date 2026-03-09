@@ -71,7 +71,7 @@ export default function InteractiveProducts() {
 
                 {/* Header */}
                 <div className="mb-16 md:mb-24">
-                    <span className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-display mb-4 block">Product Ecosystem</span>
+                    <span className="text-[10px] uppercase tracking-[0.4em] text-white/55 font-display mb-4 block">Product Ecosystem</span>
                     <h2 className="text-3xl md:text-5xl font-display font-bold leading-tight flex flex-wrap items-center gap-3 md:gap-4">
                         AUTONOMOUS
                         <span className="text-white/40 italic flex items-center gap-2">
@@ -136,7 +136,7 @@ export default function InteractiveProducts() {
                                 <div className="flex flex-wrap gap-4 md:gap-8 mb-8 pb-8 border-b border-white/10">
                                     {active.metrics.map((metric, i) => (
                                         <div key={i} className="flex flex-col gap-1">
-                                            <span className="text-[10px] uppercase tracking-widest font-display text-white/40">{metric.label}</span>
+                                            <span className="text-[10px] uppercase tracking-widest font-display text-white/55">{metric.label}</span>
                                             <span className="text-xl font-display font-bold text-white tracking-tight">{metric.value}</span>
                                         </div>
                                     ))}
