@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { Inter, Orbitron, DM_Mono, Barlow_Condensed } from "next/font/google";
+import { Figtree, Syne, DM_Mono, Barlow_Condensed, Bebas_Neue, Archivo } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const figtree = Figtree({
+  variable: "--font-figtree",
   subsets: ["latin"],
 });
 
-const orbitron = Orbitron({
-  variable: "--font-orbitron",
+const syne = Syne({
+  variable: "--font-syne",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const dmMono = DM_Mono({
@@ -22,6 +24,18 @@ const barlowCondensed = Barlow_Condensed({
   variable: "--font-barlow-condensed",
   subsets: ["latin"],
   weight: ["600", "700", "800"],
+});
+
+const bebasNeue = Bebas_Neue({
+  variable: "--font-bebas-neue",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const archivo = Archivo({
+  variable: "--font-archivo",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -37,8 +51,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${inter.variable} ${orbitron.variable} ${dmMono.variable} ${barlowCondensed.variable} font-sans antialiased`}
+        className={`${figtree.variable} ${syne.variable} ${dmMono.variable} ${barlowCondensed.variable} ${bebasNeue.variable} ${archivo.variable} font-sans antialiased`}
       >
+        {/* Three.js r134 — required by Vanta BIRDS (incompatible with r182 npm build) */}
+        <Script
+          src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"
+          strategy="beforeInteractive"
+        />
         {children}
       </body>
     </html>

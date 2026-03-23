@@ -299,8 +299,8 @@ export default function Portfolio() {
                 </div>
                 <ul className="n-links">
                     <li><a href="#work">{lang === 'es' ? 'Proyectos' : 'Projects'}</a></li>
-                    <li><a href="#svc">{lang === 'es' ? 'Servicios' : 'Services'}</a></li>
-                    <li><a href="#us">{lang === 'es' ? 'Nosotros' : 'About'}</a></li>
+                    <li><a href="/#services">{lang === 'es' ? 'Servicios' : 'Services'}</a></li>
+                    <li><a href="/#contact">{lang === 'es' ? 'Contacto' : 'Contact'}</a></li>
                 </ul>
             </nav>
 
@@ -308,11 +308,17 @@ export default function Portfolio() {
             <section className="hero">
                 <canvas id="hc"></canvas>
                 <div className="h-txt">
-                    <div className="h-eye">Graph Intelligence · Software Studio · AI</div>
-                    <h1>SYNTHESIZE<br /><em>{lang === 'es' ? 'caos → estructura → control' : 'chaos → structure → control'}</em>CONTROL</h1>
+                    <div className="h-eye">{lang === 'es' ? 'Studio de Software · IA Aplicada · 2024–2026' : 'Software Studio · Applied AI · 2024–2026'}</div>
+                    <h1>{lang === 'es' ? <>PROBLEMAS REALES.<br /><em>resueltos con IA</em>RESULTADOS.</> : <>REAL PROBLEMS.<br /><em>solved with AI</em>RESULTS.</>}</h1>
                     <p className="h-sub">
-                        {lang === 'es' ? 'ISOMORPH construye infraestructura de software con inteligencia artificial — productos digitales que piensan, se adaptan y escalan.' : 'ISOMORPH builds AI-powered software infrastructure — digital products that think, adapt, and scale.'}
+                        {lang === 'es'
+                            ? 'Cada proyecto aquí empezó como un problema de negocio concreto. Una startup náutica que necesitaba escalar. Una marca ahogada en contenido. Un banco adivinando el comportamiento de sus clientes. Los resolvimos con inteligencia artificial.'
+                            : 'Every project here started as a concrete business problem. A nautical startup that needed scale. A brand drowning in content. A bank guessing at customer behavior. We solved each one with AI.'}
                     </p>
+                </div>
+                <div className="h-scroll">
+                    <div className="s-line"></div>
+                    {lang === 'es' ? 'Ver proyectos' : 'See projects'}
                 </div>
             </section>
 
@@ -322,15 +328,22 @@ export default function Portfolio() {
 
                     {/* Text */}
                     <div className="rv flex-1">
-                        <div className="b-tag">{lang === 'es' ? 'Producto Destacado · App Móvil & Web' : 'Featured Product · Mobile & Web'}</div>
+                        <div className="b-tag">01 — {lang === 'es' ? 'Producto Propio · App Móvil & Web · En desarrollo' : 'Own Product · Mobile & Web · In development'}</div>
                         <h2>BOATY</h2>
-                        <p className="b-sub">{lang === 'es' ? 'La plataforma náutica on-demand. Como Uber, en el mar.' : 'The on-demand nautical platform. Like Uber, on the water.'}</p>
+                        <p className="b-sub">{lang === 'es' ? 'El problema: reservar un bote es un caos.' : 'The problem: booking a boat is a nightmare.'}</p>
                         <p className="b-desc">
-                            {lang === 'es' ? 'Marketplace premium que conecta turistas de lujo con proveedores náuticos en tiempo real.' : 'Premium marketplace connecting luxury tourists with nautical providers in real time.'}
+                            {lang === 'es'
+                                ? 'Los operadores náuticos en destinos turísticos gestionan sus reservas por WhatsApp, efectivo y hojas de cálculo. Los turistas no tienen forma de encontrarlos, compararlos ni pagarles online. Boaty resuelve ambos lados: marketplace premium con reserva instantánea, pagos seguros y gestión de flota para proveedores.'
+                                : 'Nautical operators at tourist destinations manage bookings via WhatsApp, cash and spreadsheets. Tourists have no way to find, compare or pay them online. Boaty solves both sides: a premium marketplace with instant booking, secure payments and fleet management for providers.'}
                         </p>
+                        <ul className="f-list">
+                            <li>{lang === 'es' ? 'React Native + Expo Router (iOS & Android)' : 'React Native + Expo Router (iOS & Android)'}</li>
+                            <li>{lang === 'es' ? 'Backend Node.js · PostgreSQL · Stripe' : 'Node.js backend · PostgreSQL · Stripe'}</li>
+                            <li>{lang === 'es' ? 'Geolocalización en tiempo real · Notificaciones push' : 'Real-time geolocation · Push notifications'}</li>
+                        </ul>
                         <div className="flex flex-col gap-2">
-                            <a href="https://github.com/mapube16/Boaty" target="_blank" rel="noopener noreferrer" className="b-link">{lang === 'es' ? 'Ver en GitHub →' : 'View on GitHub →'}</a>
                             <a href="https://innovative-possibility-production-b6f0.up.railway.app/" target="_blank" rel="noopener noreferrer" className="b-link">{lang === 'es' ? 'Ver proyecto en vivo →' : 'View live project →'}</a>
+                            <a href="https://github.com/mapube16/Boaty" target="_blank" rel="noopener noreferrer" className="b-link">{lang === 'es' ? 'Ver en GitHub →' : 'View on GitHub →'}</a>
                         </div>
                     </div>
 
@@ -391,8 +404,13 @@ export default function Portfolio() {
             {/* ── DETAILED PROJECTS ── */}
             <section id="work" className="proj-sec">
                 <div className="wrap">
-                    <div className="s-label rv" data-num="01">{lang === 'es' ? 'Proyectos' : 'Projects'}</div>
-                    <h2 className="rv">{lang === 'es' ? <>CADA PRODUCTO,<br />CADA HISTORIA</> : <>EVERY PRODUCT,<br />EVERY STORY</>}</h2>
+                    <div className="s-label rv" data-num="02">{lang === 'es' ? 'Proyectos' : 'Projects'}</div>
+                    <h2 className="rv">{lang === 'es' ? <>MÁS PROYECTOS,<br />MISMA FILOSOFÍA</> : <>MORE PROJECTS,<br />SAME PHILOSOPHY</>}</h2>
+                    <p className="rv" style={{ fontSize: '1rem', color: 'rgba(200,208,225,0.38)', lineHeight: '1.9', maxWidth: '560px', marginBottom: '1rem', borderLeft: '1px solid rgba(255,255,255,0.08)', paddingLeft: '1.2rem' }}>
+                        {lang === 'es'
+                            ? 'No construimos demos. Cada proyecto aquí tiene código en producción, usuarios reales y un problema de negocio específico que dejó de ser un problema.'
+                            : "We don't build demos. Every project here has production code, real users, and a specific business problem that stopped being a problem."}
+                    </p>
 
                     {/* VISION MEDIA 1.0 */}
                     <div className="proj-detail rv" style={{ marginTop: '4rem' }}>
@@ -400,14 +418,14 @@ export default function Portfolio() {
                         <div className="pd-grid">
                             <div>
                                 <div className="p-num">02 — AI · Social Media Automation</div>
-                                <div className="p-ttl" style={{ fontSize: '2rem' }}>VISION MEDIA <span style={{ color: 'rgba(200,82,42,.7)' }}>1.0</span></div>
-                                <p style={{ fontSize: '.8rem', color: 'rgba(200,82,42,.7)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '1.2rem' }}>
-                                    {lang === 'es' ? 'Motor de contenido social impulsado por IA' : 'AI-powered social content engine'}
+                                <div className="p-ttl" style={{ fontSize: '2.4rem' }}>VISION MEDIA <span style={{ color: 'rgba(200,82,42,.7)' }}>1.0</span></div>
+                                <p style={{ fontSize: '.95rem', color: 'rgba(200,82,42,.7)', letterSpacing: '.05em', textTransform: 'uppercase', marginBottom: '1.2rem' }}>
+                                    {lang === 'es' ? 'El problema: crear contenido toma demasiado tiempo' : 'The problem: content creation takes too much time'}
                                 </p>
                                 <p className="p-dsc">
                                     {lang === 'es'
-                                        ? 'Plataforma end-to-end que genera, programa y publica contenido multi-formato (Posts, Stories, Reels) en Instagram de forma autónoma. LLMs (Gemini/GPT) alimentados por una Estrategia Maestra de marca producen captions e image prompts on-brand a escala. Clean Architecture, FastAPI async, adaptador social modular, PostgreSQL, Docker.'
-                                        : 'End-to-end platform that autonomously generates, schedules and publishes multi-format content on Instagram. LLMs fed by a Master Brand Strategy produce on-brand captions at scale. Clean Architecture, async FastAPI, modular social adapter, PostgreSQL, Docker.'}
+                                        ? 'Un equipo de marketing invertía 40+ horas semanales generando contenido para Instagram — sin consistencia de marca y con resultados impredecibles. Vision Media 1.0 automatiza el pipeline completo: la IA lee la estrategia de marca y genera, programa y publica Posts, Stories y Reels en piloto automático.'
+                                        : 'A marketing team was spending 40+ hours per week creating Instagram content — with inconsistent branding and unpredictable results. Vision Media 1.0 automates the full pipeline: the AI reads the brand strategy and generates, schedules and publishes Posts, Stories and Reels on autopilot.'}
                                 </p>
                                 <div className="prod-canvas-wrap"><VisionMedia13D /></div>
                                 <div className="pd-arch">
@@ -459,14 +477,14 @@ export default function Portfolio() {
                         <div className="pd-grid">
                             <div>
                                 <div className="p-num">03 — AI · Email Marketing Automation</div>
-                                <div className="p-ttl" style={{ fontSize: '2rem' }}>VISION MEDIA <span style={{ color: 'rgba(58,138,184,.7)' }}>2.0</span></div>
-                                <p style={{ fontSize: '.8rem', color: 'rgba(58,138,184,.7)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '1.2rem' }}>
-                                    {lang === 'es' ? 'Segmentación dinámica y personalización a escala' : 'Dynamic segmentation & personalized outreach at scale'}
+                                <div className="p-ttl" style={{ fontSize: '2.4rem' }}>VISION MEDIA <span style={{ color: 'rgba(58,138,184,.7)' }}>2.0</span></div>
+                                <p style={{ fontSize: '.95rem', color: 'rgba(58,138,184,.7)', letterSpacing: '.05em', textTransform: 'uppercase', marginBottom: '1.2rem' }}>
+                                    {lang === 'es' ? 'El problema: el email masivo ya no convierte' : 'The problem: mass email no longer converts'}
                                 </p>
                                 <p className="p-dsc">
                                     {lang === 'es'
-                                        ? 'Evolución de la suite Vision Media enfocada en automatización de correos electrónicos fríos o newsletters hiper-segmentadas. El motor de IA analiza bases de datos de clientes y redacta emails únicos para cada lead, adaptando el tono y la oferta a su perfil psicológico.'
-                                        : 'Evolution of the Vision Media suite focused on cold email automation and hyper-segmented newsletters. The AI engine analyzes customer databases and writes unique emails for each lead, adapting tone and offer to their psychological profile.'}
+                                        ? 'Mandar el mismo email a miles de contactos genera tasas de apertura del 8% y spam. Vision Media 2.0 hace lo contrario: analiza cada lead individualmente — historial, industria, comportamiento — y redacta un email que parece escrito a mano. Resultado: outreach que escala sin perder el toque humano.'
+                                        : 'Blasting the same email to thousands of contacts yields 8% open rates and spam flags. Vision Media 2.0 does the opposite: it analyzes each lead individually — history, industry, behavior — and writes an email that feels handcrafted. Result: outreach that scales without losing the human touch.'}
                                 </p>
                                 <div className="prod-canvas-wrap"><VisionMedia23D /></div>
                                 <div className="pd-arch">
@@ -506,14 +524,14 @@ export default function Portfolio() {
                         <div className="pd-grid">
                             <div>
                                 <div className="p-num">04 — Machine Learning · Fintech</div>
-                                <div className="p-ttl" style={{ fontSize: '2rem' }}>PRECISION <span style={{ color: 'rgba(80,160,80,.7)' }}>BANKING</span></div>
-                                <p style={{ fontSize: '.8rem', color: 'rgba(80,160,80,.7)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '1.2rem' }}>
-                                    {lang === 'es' ? 'Predictor de Depósitos a Plazo Fijo' : 'Term Deposit Prediction Engine'}
+                                <div className="p-ttl" style={{ fontSize: '2.4rem' }}>PRECISION <span style={{ color: 'rgba(80,160,80,.7)' }}>BANKING</span></div>
+                                <p style={{ fontSize: '.95rem', color: 'rgba(80,160,80,.7)', letterSpacing: '.05em', textTransform: 'uppercase', marginBottom: '1.2rem' }}>
+                                    {lang === 'es' ? 'El problema: el banco llamaba a todos por igual' : 'The problem: the bank was calling everyone the same way'}
                                 </p>
                                 <p className="p-dsc">
                                     {lang === 'es'
-                                        ? 'Modelo de Machine Learning optimizado con XGBoost que predice con precisión si un cliente de banco se suscribirá a un depósito a plazo fijo tras una campaña de marketing. La aplicación completa incluye análisis exploratorio interactivo (EDA) y una UI predictiva construida en Streamlit.'
-                                        : 'XGBoost-optimized Machine Learning model that accurately predicts whether a bank client will subscribe to a term deposit following a marketing campaign. The full application includes interactive exploratory data analysis (EDA) and a predictive UI built in Streamlit.'}
+                                        ? 'Un banco ejecutaba campañas de marketing sin saber quién realmente convertiría. Llamadas en frío al 100% de la cartera, con una tasa de éxito del 11%. Precision Banking predice — antes del contacto — qué clientes tienen alta probabilidad de suscribirse a un depósito a plazo fijo, permitiendo enfocar los recursos donde importa.'
+                                        : 'A bank was running marketing campaigns without knowing who would actually convert. Cold-calling 100% of the portfolio with an 11% success rate. Precision Banking predicts — before contact — which clients are likely to subscribe to a term deposit, letting the team focus resources where they matter.'}
                                 </p>
                                 <div className="prod-canvas-wrap"><PrecisionBanking3D /></div>
                                 <div className="pd-arch">
@@ -552,10 +570,27 @@ export default function Portfolio() {
                 </div>
             </section>
 
+            {/* ── CTA ── */}
+            <section className="cta">
+                <h2>
+                    {lang === 'es' ? <>¿TU NEGOCIO<br />ES EL PRÓXIMO?<em>cuéntanos tu problema</em></> : <>IS YOUR BUSINESS<br />NEXT?<em>tell us your problem</em></>}
+                </h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}>
+                    <p style={{ fontSize: '.92rem', color: 'rgba(200,208,225,0.38)', lineHeight: '1.8', maxWidth: '340px' }}>
+                        {lang === 'es'
+                            ? 'Trabajamos con empresas que tienen una base de clientes establecida y necesitan que su tecnología esté a la altura. Si eso te suena familiar, hablemos.'
+                            : 'We work with companies that have an established customer base and need their technology to match it. If that sounds familiar, let\'s talk.'}
+                    </p>
+                    <a href="/#contact" className="c-btn">
+                        {lang === 'es' ? 'INICIAR CONVERSACIÓN →' : 'START A CONVERSATION →'}
+                    </a>
+                </div>
+            </section>
+
             {/* ── FOOTER ── */}
             <footer className="portfolio-footer">
-                <div className="f-logo">ISOMORPH</div>
-                <div className="f-copy">© 2026 ANTIGRAVITY ENGINE · PREDICT CONTROL</div>
+                <div className="f-logo">ISOMORPH AI</div>
+                <div className="f-copy">© 2026 ISOMORPH AI · ALL RIGHTS RESERVED</div>
             </footer>
         </div>
     );
