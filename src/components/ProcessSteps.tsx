@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useState } from "react";
+import SplitText from "./SplitText";
 
 interface ProcessStepsProps {
     lang: "es" | "en";
@@ -86,10 +87,19 @@ export default function ProcessSteps({ lang }: ProcessStepsProps) {
                         <span className="iso-eyebrow mb-5 inline-flex">
                             {lang === "es" ? "NUESTRO PROCESO" : "OUR PROCESS"}
                         </span>
-                        <h2 className="iso-h2 mt-2" style={{ maxWidth: "12ch" }}>
-                            {lang === "es" ? "Cómo " : "How we "}
-                            <em className="iso-grad">{lang === "es" ? "trabajamos." : "work."}</em>
-                        </h2>
+                        <SplitText
+                            text={lang === "es" ? "Cómo trabajamos." : "How we work."}
+                            tag="h2"
+                            className="iso-h2 mt-2"
+                            style={{ maxWidth: "12ch" }}
+                            delay={30}
+                            duration={0.8}
+                            ease="power3.out"
+                            from={{ opacity: 0, y: 30 }}
+                            to={{ opacity: 1, y: 0 }}
+                            splitType="words"
+                            textAlign="left"
+                        />
                         <p className="iso-body-lg mt-6" style={{ maxWidth: "440px" }}>
                             {lang === "es"
                                 ? "Un proceso probado en cuatro fases — desde entender el problema hasta escalar la solución."

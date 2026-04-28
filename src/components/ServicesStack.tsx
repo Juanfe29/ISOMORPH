@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { Code, Bot, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import SplitText from "./SplitText";
 
 interface ServicesStackProps {
     lang: "es" | "en";
@@ -22,7 +23,7 @@ const SERVICES: Service[] = [
             es: "Desarrollo empresarial sin plantillas. Arquitectura desde cero, ingeniería de alto nivel.",
             en: "Enterprise development without templates. Architecture from scratch, high-end engineering.",
         },
-        accent: "#c8522a",
+        accent: "#d00000",
         Icon: Code,
     },
     {
@@ -31,7 +32,7 @@ const SERVICES: Service[] = [
             es: "Sistemas autónomos que automatizan procesos críticos del negocio sin perder el toque humano.",
             en: "Autonomous systems that automate critical business processes without losing the human touch.",
         },
-        accent: "#e8851a",
+        accent: "#e85d04",
         Icon: Bot,
     },
     {
@@ -40,7 +41,7 @@ const SERVICES: Service[] = [
             es: "Desde la primera reunión hasta el lanzamiento, trabajamos como tu equipo de ingeniería externo.",
             en: "From the first meeting to launch, we work as your external engineering team.",
         },
-        accent: "#ffa050",
+        accent: "#ffba08",
         Icon: Users,
     },
 ];
@@ -60,12 +61,19 @@ export default function ServicesStack({ lang }: ServicesStackProps) {
                         <span className="iso-eyebrow mb-5 inline-flex">
                             {lang === "es" ? "SERVICIOS" : "SERVICES"}
                         </span>
-                        <h2 className="iso-h2 mt-2" style={{ maxWidth: "14ch" }}>
-                            {lang === "es" ? "Problemas reales, " : "Real problems, "}
-                            <em className="iso-grad">
-                                {lang === "es" ? "soluciones exactas." : "exact solutions."}
-                            </em>
-                        </h2>
+                        <SplitText
+                            text={lang === "es" ? "Problemas reales, soluciones exactas." : "Real problems, exact solutions."}
+                            tag="h2"
+                            className="iso-h2 mt-2"
+                            style={{ maxWidth: "14ch" }}
+                            delay={30}
+                            duration={0.8}
+                            ease="power3.out"
+                            from={{ opacity: 0, y: 30 }}
+                            to={{ opacity: 1, y: 0 }}
+                            splitType="words"
+                            textAlign="left"
+                        />
                         <p className="iso-body-lg mt-6" style={{ maxWidth: "440px" }}>
                             {lang === "es"
                                 ? "Tres líneas de trabajo, una sola disciplina: ingeniería rigurosa al servicio del negocio."

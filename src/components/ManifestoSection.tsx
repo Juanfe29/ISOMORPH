@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import AntigravityCanvas from "./AntigravityCanvas";
+import SplitText from "./SplitText";
 
 interface ManifestoSectionProps {
     lang: "es" | "en";
@@ -32,12 +33,19 @@ export default function ManifestoSection({ lang }: ManifestoSectionProps) {
                         <span className="iso-eyebrow mb-5 inline-flex">
                             {lang === "es" ? "CÓMO PENSAMOS" : "HOW WE THINK"}
                         </span>
-                        <h2 className="iso-h2 mt-2" style={{ maxWidth: "14ch" }}>
-                            {lang === "es" ? "Sintetizamos caos. " : "We synthesise chaos. "}
-                            <em className="iso-grad">
-                                {lang === "es" ? "Predict control." : "Predict control."}
-                            </em>
-                        </h2>
+                        <SplitText
+                            text={lang === "es" ? "Sintetizamos caos. Predict control." : "We synthesise chaos. Predict control."}
+                            tag="h2"
+                            className="iso-h2 mt-2"
+                            style={{ maxWidth: "14ch" }}
+                            delay={30}
+                            duration={0.8}
+                            ease="power3.out"
+                            from={{ opacity: 0, y: 30 }}
+                            to={{ opacity: 1, y: 0 }}
+                            splitType="words"
+                            textAlign="left"
+                        />
                         <p className="iso-body-lg mt-6" style={{ maxWidth: "520px" }}>
                             {lang === "es"
                                 ? "Cada proyecto empieza como un grafo de problemas — datos dispersos, decisiones manuales, procesos que no escalan. Lo descomponemos, mapeamos las conexiones críticas y diseñamos un sistema que vuela solo."

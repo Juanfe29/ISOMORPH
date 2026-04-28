@@ -9,9 +9,10 @@ import BoatyShowcase from "./BoatyShowcase";
 import ServicesStack from "./ServicesStack";
 import ProcessSteps from "./ProcessSteps";
 import ManifestoSection from "./ManifestoSection";
-import FinalCTA from "./FinalCTA";
+import ContactSection from "./ContactSection";
 import SiteNav from "./SiteNav";
 import SiteFooter from "./SiteFooter";
+import SplitText from "./SplitText";
 
 interface HomePageProps {
   initialLang?: "es" | "en";
@@ -44,10 +45,19 @@ export default function HomePage({ initialLang = "es" }: HomePageProps) {
           <span className="iso-eyebrow mb-5 inline-flex">
             {lang === "es" ? "PRODUCCIÓN" : "PRODUCTION"}
           </span>
-          <h2 className="iso-h2 mt-2" style={{ maxWidth: "16ch" }}>
-            {lang === "es" ? "Proyectos en " : "Projects in "}
-            <em className="iso-grad">{lang === "es" ? "producción." : "production."}</em>
-          </h2>
+          <SplitText
+            text={lang === "es" ? "Proyectos en producción." : "Projects in production."}
+            tag="h2"
+            className="iso-h2 mt-2"
+            style={{ maxWidth: "16ch" }}
+            delay={30}
+            duration={0.8}
+            ease="power3.out"
+            from={{ opacity: 0, y: 30 }}
+            to={{ opacity: 1, y: 0 }}
+            splitType="words"
+            textAlign="left"
+          />
           <p className="iso-body-lg mt-6" style={{ maxWidth: "560px" }}>
             {lang === "es"
               ? "Sistemas reales con usuarios reales y métricas en producción. Hacé click para ver el caso completo."
@@ -88,7 +98,7 @@ export default function HomePage({ initialLang = "es" }: HomePageProps) {
 
       <ManifestoSection lang={lang} />
 
-      <FinalCTA lang={lang} />
+      <ContactSection lang={lang} />
 
       <SiteFooter lang={lang} />
 
