@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { Figtree, Syne, DM_Mono, Barlow_Condensed, Bebas_Neue, Archivo, Inter, JetBrains_Mono } from "next/font/google";
+import { Figtree, Syne, DM_Mono, Barlow_Condensed, Bebas_Neue, Archivo, Inter, JetBrains_Mono, Geist } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const figtree = Figtree({
   variable: "--font-figtree",
@@ -64,7 +67,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={cn("dark", "font-sans", geist.variable)}>
       <body
         className={`${figtree.variable} ${syne.variable} ${inter.variable} ${jetbrainsMono.variable} ${dmMono.variable} ${barlowCondensed.variable} ${bebasNeue.variable} ${archivo.variable} font-sans antialiased`}
       >
