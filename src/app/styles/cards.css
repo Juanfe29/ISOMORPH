@@ -1,0 +1,351 @@
+/* =============================================================
+   ISOMORPH — Project cards & carousel
+   Spec: .planning/ISOMORPH_LANDING_REBUILD.md §5.5
+   No glassmorphism, no 3D tilt, no cursor:none.
+   ============================================================= */
+
+/* ─── Filter pills ─── */
+.iso-pg-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 2rem;
+  padding: 0.35rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  width: fit-content;
+}
+
+.iso-pg-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--ink-mute);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  transition: color var(--dur) var(--ease-in-out);
+  z-index: 1;
+}
+
+.iso-pg-pill:hover {
+  color: var(--ink-soft);
+}
+
+.iso-pg-pill-active {
+  color: var(--ink);
+}
+
+.iso-pg-pill-count {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-pill);
+  line-height: 1;
+}
+
+.iso-pg-pill-bg {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius-pill);
+  z-index: -1;
+}
+
+/* ─── Grid layout ─── */
+.iso-pg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ─── Card base ─── */
+.iso-pc {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  text-align: left;
+  color: inherit;
+  font-family: inherit;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease-in-out),
+    transform var(--dur) var(--ease-in-out),
+    background-color var(--dur) var(--ease-in-out),
+    box-shadow var(--dur) var(--ease-in-out);
+}
+
+.iso-pc:hover {
+  border-color: var(--border-accent);
+  background: var(--surface-hi);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Grid variant — uniform height */
+.iso-pc-grid {
+  min-height: 460px;
+}
+
+/* Carousel variant — fixed flex basis so marquee math works */
+.iso-pc-carousel {
+  flex: 0 0 360px;
+  height: 460px;
+}
+
+/* ─── Header bar ─── */
+.iso-pc-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.iso-pc-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink-soft);
+}
+
+.iso-pc-status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-card, var(--accent));
+  box-shadow: 0 0 6px var(--accent-card, var(--accent));
+}
+
+/* ─── Media area ─── */
+.iso-pc-media {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 60%;
+  background:
+    radial-gradient(120% 80% at 50% 30%, color-mix(in srgb, var(--accent-card, var(--accent)) 16%, transparent) 0%, transparent 60%),
+    var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.iso-pc-media-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, #000 30%, transparent 80%);
+  opacity: 0.5;
+}
+
+.iso-pc-media-icon {
+  position: relative;
+  z-index: 2;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-card, var(--accent));
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+  border: 1px solid color-mix(in srgb, var(--accent-card, var(--accent)) 30%, transparent);
+  transition:
+    transform var(--dur-slow) var(--ease-out),
+    box-shadow var(--dur-slow) var(--ease-out);
+}
+
+.iso-pc:hover .iso-pc-media-icon {
+  transform: translateY(-3px);
+  box-shadow: 0 0 60px -10px var(--accent-card, var(--accent));
+}
+
+/* ─── Body ─── */
+.iso-pc-body {
+  position: relative;
+  padding: 1rem 1.2rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.iso-pc-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0;
+}
+
+.iso-pc-title-accent {
+  color: var(--accent-card, var(--accent));
+}
+
+.iso-pc-problem {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.iso-pc-problem-lbl {
+  color: var(--accent-card, var(--accent));
+  font-weight: 500;
+}
+
+.iso-pc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.iso-pc-arrow {
+  color: var(--ink-mute);
+  transition:
+    transform var(--dur) var(--ease-in-out),
+    color var(--dur) var(--ease-in-out);
+}
+
+.iso-pc:hover .iso-pc-arrow {
+  color: var(--accent-card, var(--accent));
+  transform: translate(2px, -2px);
+}
+
+/* ─── Coming soon variant ─── */
+.iso-pc-soon {
+  border-style: dashed;
+  cursor: default;
+  background:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.012) 0 8px, transparent 8px 16px),
+    var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.iso-pc-soon:hover {
+  border-color: var(--border-hi);
+  transform: none;
+  background:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0 8px, transparent 8px 16px),
+    var(--surface);
+  box-shadow: none;
+}
+
+.iso-pc-soon-inner {
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  max-width: 260px;
+}
+
+.iso-pc-soon-icon {
+  color: var(--ink-mute);
+  margin-bottom: 0.35rem;
+  animation: iso-pc-soon-pulse 3s ease-in-out infinite;
+}
+
+@keyframes iso-pc-soon-pulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translateY(-3px);
+  }
+}
+
+/* ─── Carousel ─── */
+.iso-carousel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+}
+
+.iso-carousel-track {
+  display: flex;
+  gap: 1.5rem;
+  width: max-content;
+  animation: iso-marquee 60s linear infinite;
+}
+
+.iso-carousel:hover .iso-carousel-track {
+  animation-play-state: paused;
+}
+
+@keyframes iso-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .iso-carousel-track {
+    animation: none;
+  }
+  .iso-pc:hover {
+    transform: none;
+  }
+  .iso-pc-soon-icon {
+    animation: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .iso-pg-grid {
+    grid-template-columns: 1fr;
+  }
+  .iso-pc-grid {
+    min-height: 420px;
+  }
+  .iso-pc-carousel {
+    flex-basis: 280px;
+    height: 420px;
+  }
+}

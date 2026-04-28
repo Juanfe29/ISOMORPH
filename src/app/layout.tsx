@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Figtree, Syne, DM_Mono, Barlow_Condensed, Bebas_Neue, Archivo } from "next/font/google";
+import { Figtree, Syne, DM_Mono, Barlow_Condensed, Bebas_Neue, Archivo, Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
@@ -12,6 +12,21 @@ const syne = Syne({
   variable: "--font-syne",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
 });
 
 const dmMono = DM_Mono({
@@ -51,7 +66,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${figtree.variable} ${syne.variable} ${dmMono.variable} ${barlowCondensed.variable} ${bebasNeue.variable} ${archivo.variable} font-sans antialiased`}
+        className={`${figtree.variable} ${syne.variable} ${inter.variable} ${jetbrainsMono.variable} ${dmMono.variable} ${barlowCondensed.variable} ${bebasNeue.variable} ${archivo.variable} font-sans antialiased`}
       >
         {/* Three.js r134 — required by Vanta BIRDS (incompatible with r182 npm build) */}
         <Script

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(railway logs)",
+      "Bash(npx tsc *)",
+      "Bash(npx next *)",
+      "Bash(curl -sf -o /dev/null -m 2 http://localhost:3001/)",
+      "Bash(curl -sI -m 5 http://localhost:3001/)",
+      "Bash(curl -sI -m 5 http://localhost:3001/portfolio)",
+      "Bash(pnpm --version)",
+      "Bash(pnpm dlx *)",
+      "Bash(pnpm build *)",
+      "Bash(pnpm lint *)"
+    ]
+  }
+}
