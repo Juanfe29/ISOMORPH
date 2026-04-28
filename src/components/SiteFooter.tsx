@@ -8,63 +8,138 @@ interface SiteFooterProps {
 
 export default function SiteFooter({ lang }: SiteFooterProps) {
   return (
-    <footer className="w-full border-t" style={{ borderColor: "var(--border)", backgroundColor: "var(--bg-deep)" }}>
-      <div className="mx-auto grid w-full max-w-[var(--container)] gap-10 px-6 py-12 md:grid-cols-3 md:items-center md:px-8 md:py-16">
+    <footer
+      className="w-full relative overflow-hidden"
+      style={{
+        backgroundColor: "var(--bg-deep)",
+        borderTop: "1px solid rgba(244,140,6,0.10)",
+      }}
+    >
+      {/* Ember glow top */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)",
+          width: "60%", height: "1px",
+          background: "linear-gradient(90deg, transparent, rgba(244,140,6,0.4), transparent)",
+          pointerEvents: "none",
+        }}
+      />
+
+      <div
+        className="mx-auto grid w-full max-w-[var(--container)] gap-10 px-6 py-14 md:grid-cols-3 md:items-center md:px-8 md:py-16"
+        style={{ position: "relative", zIndex: 1 }}
+      >
+        {/* Brand */}
         <div className="flex items-center gap-4">
           <IsomorphLogo size={30} dark />
           <div>
-            <div className="font-display text-sm font-semibold tracking-[0.24em] uppercase" style={{ color: "var(--ink)" }}>
+            <div
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "0.85rem",
+                fontWeight: 700,
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                color: "var(--ink)",
+              }}
+            >
               ISOMORPH
+              <span style={{
+                background: "var(--fire-hot)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}>.</span>
             </div>
-            <div className="mt-1 text-xs uppercase tracking-[0.22em]" style={{ color: "var(--ink-faint)" }}>
-              {lang === "es" ? "ANTIGRAVITY ENGINE · PREDICT CONTROL" : "ANTIGRAVITY ENGINE · PREDICT CONTROL"}
+            <div
+              style={{
+                marginTop: "0.3rem",
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.6rem",
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                color: "var(--ink-faint)",
+              }}
+            >
+              ANTIGRAVITY ENGINE · PREDICT CONTROL
             </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-5 text-xs uppercase tracking-[0.18em] md:justify-center">
-          <Link href="#work" className="transition-colors duration-200" style={{ color: "var(--ink-soft)" }}>
-            {lang === "es" ? "Proyectos" : "Projects"}
-          </Link>
-          <Link href="#contact" className="transition-colors duration-200" style={{ color: "var(--ink-soft)" }}>
-            {lang === "es" ? "Contacto" : "Contact"}
-          </Link>
-          <Link href="/portfolio" className="transition-colors duration-200" style={{ color: "var(--ink-soft)" }}>
-            Portfolio
-          </Link>
+        {/* Nav */}
+        <div
+          className="flex flex-wrap gap-6 md:justify-center"
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.62rem",
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+          }}
+        >
+          {[
+            { href: "#proyectos", es: "Proyectos", en: "Projects" },
+            { href: "#servicios", es: "Servicios", en: "Services" },
+            { href: "#proceso", es: "Método", en: "Method" },
+            { href: "/portfolio", es: "Portfolio", en: "Portfolio" },
+          ].map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="footer-link"
+              style={{ color: "var(--ink-mute)" }}
+            >
+              {lang === "es" ? l.es : l.en}
+            </Link>
+          ))}
         </div>
 
+        {/* Socials */}
         <div className="flex items-center gap-3 md:justify-end">
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-full border p-3 transition-colors duration-200 hover:border-[var(--accent)] hover:text-[var(--accent)]"
-            style={{ borderColor: "var(--border-hi)", color: "var(--ink-soft)" }}
-            aria-label="GitHub"
-          >
-            <Github size={16} />
-          </a>
-          <a
-            href="https://www.linkedin.com"
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-full border p-3 transition-colors duration-200 hover:border-[var(--accent)] hover:text-[var(--accent)]"
-            style={{ borderColor: "var(--border-hi)", color: "var(--ink-soft)" }}
-            aria-label="LinkedIn"
-          >
-            <Linkedin size={16} />
-          </a>
-          <a
-            href="mailto:hello@isomorph.ai"
-            className="rounded-full border p-3 transition-colors duration-200 hover:border-[var(--accent)] hover:text-[var(--accent)]"
-            style={{ borderColor: "var(--border-hi)", color: "var(--ink-soft)" }}
-            aria-label="Email"
-          >
-            <Mail size={16} />
-          </a>
+          {[
+            { href: "https://github.com", Icon: Github, label: "GitHub" },
+            { href: "https://linkedin.com", Icon: Linkedin, label: "LinkedIn" },
+            { href: "mailto:hello@isomorph.lat", Icon: Mail, label: "Email" },
+          ].map(({ href, Icon, label }) => (
+            <a
+              key={label}
+              href={href}
+              target={label !== "Email" ? "_blank" : undefined}
+              rel="noreferrer"
+              className="social-icon rounded-full border p-3 transition-all duration-250"
+              style={{ borderColor: "rgba(244,140,6,0.12)", color: "var(--ink-mute)" }}
+              aria-label={label}
+            >
+              <Icon size={16} />
+            </a>
+          ))}
         </div>
       </div>
+
+      {/* Copyright */}
+      <div
+        style={{
+          borderTop: "1px solid rgba(244,140,6,0.06)",
+          padding: "1rem 2rem",
+          textAlign: "center",
+          fontFamily: "var(--font-mono)",
+          fontSize: "0.58rem",
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
+          color: "var(--ink-faint)",
+        }}
+      >
+        © 2026 ISOMORPH AI · FORGED IN FIRE
+      </div>
+
+      <style jsx>{`
+        .footer-link:hover { color: var(--accent) !important; }
+        .social-icon:hover {
+          border-color: rgba(244,140,6,0.4) !important;
+          color: var(--accent) !important;
+          box-shadow: 0 0 16px rgba(244,140,6,0.2);
+        }
+      `}</style>
     </footer>
   );
 }
