@@ -88,7 +88,7 @@ export const projects: Project[] = [
         ],
         techTags: ['React Native', 'Expo', 'Next.js', 'TypeScript', 'PostgreSQL', 'Stripe', 'WebSockets'],
         githubUrl: 'https://github.com/mapube16/Boaty',
-        liveUrl: 'https://innovative-possibility-production-b6f0.up.railway.app/',
+        liveUrl: 'https://boaty-production.up.railway.app/',
         media3D: () => <BoatyPhone3D />,
         desktopSlides: boatyDesktopSlides,
         span: 'lg',

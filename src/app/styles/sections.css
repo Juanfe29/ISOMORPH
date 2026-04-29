@@ -457,6 +457,179 @@
 .iso-iphone-notch { position: absolute; top: 9px; left: 50%; transform: translateX(-50%); width: 90px; height: 26px; background: #000; border-radius: 18px; z-index: 3; }
 .iso-iphone-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
 
+/* ── Browser frame (Desktop view) ── */
+.iso-browser {
+  width: 100%;
+  max-width: 620px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #1a1a1d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.55),
+    0 60px 120px color-mix(in srgb, var(--boaty-accent) 18%, transparent);
+}
+
+.iso-browser-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.65rem 0.85rem;
+  background: linear-gradient(180deg, #2a2a2e 0%, #1f1f22 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.iso-browser-dots {
+  display: inline-flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.iso-browser-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.iso-browser-url {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.7rem;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.02em;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.iso-browser-url svg {
+  color: #28c840;
+  flex-shrink: 0;
+}
+
+.iso-browser-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.5);
+  background: transparent;
+  transition: background-color 200ms ease, color 200ms ease;
+  flex-shrink: 0;
+}
+
+.iso-browser-open:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--boaty-accent);
+}
+
+.iso-browser-screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #0a0a0c;
+  overflow: hidden;
+}
+
+.iso-browser-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  z-index: 2;
+  background: #fff;
+}
+
+.iso-browser-img,
+.iso-browser-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+  z-index: 0;
+}
+
+.iso-browser-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.05) 0%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+  border: 0;
+  cursor: pointer;
+  z-index: 1;
+  transition: background-color 220ms ease;
+}
+
+.iso-browser-play:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+}
+
+.iso-browser-play-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.72);
+  border: 1px solid color-mix(in srgb, var(--boaty-accent) 50%, transparent);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  transition: transform 220ms ease, border-color 220ms ease;
+}
+
+.iso-browser-play:hover .iso-browser-play-pill {
+  transform: scale(1.04);
+  border-color: var(--boaty-accent);
+}
+
+.iso-browser-play-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--boaty-accent);
+  box-shadow: 0 0 12px var(--boaty-accent);
+  animation: iso-browser-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes iso-browser-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iso-browser-play-dot {
+    animation: none;
+  }
+}
+
 /* ── Boaty caption ── */
 .iso-boaty-caption {
   display: flex;

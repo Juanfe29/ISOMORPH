@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Github, Smartphone, Monitor } from "lucide-react";
+import { ArrowUpRight, Github, Smartphone, Monitor, Lock } from "lucide-react";
 import { projects } from "../data/projects";
-import BoatyPhone3D from "./BoatyPhone3D";
 
 interface BoatyShowcaseProps {
   lang: "es" | "en";
@@ -39,6 +38,7 @@ export default function BoatyShowcase({ lang }: BoatyShowcaseProps) {
   const reduce = useReducedMotion();
   const [device, setDevice] = useState<Device>("mobile");
   const [shot, setShot] = useState(0);
+  const [liveActive, setLiveActive] = useState(false);
 
   useEffect(() => {
     if (device !== "mobile" || reduce) return;
@@ -242,13 +242,69 @@ export default function BoatyShowcase({ lang }: BoatyShowcaseProps) {
                   exit={{ opacity: 0, y: reduce ? 0 : -16, scale: reduce ? 1 : 0.97 }}
                   transition={{ duration: reduce ? 0.15 : 0.5, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <div className="iso-boaty-3d">
-                    <BoatyPhone3D />
+                  <div className="iso-browser">
+                    <div className="iso-browser-bar">
+                      <div className="iso-browser-dots">
+                        <span className="iso-browser-dot" style={{ background: "#ff5f57" }} />
+                        <span className="iso-browser-dot" style={{ background: "#febc2e" }} />
+                        <span className="iso-browser-dot" style={{ background: "#28c840" }} />
+                      </div>
+                      <div className="iso-browser-url">
+                        <Lock size={11} strokeWidth={2} />
+                        <span>boaty-production.up.railway.app</span>
+                      </div>
+                      <a
+                        href={boaty.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="iso-browser-open"
+                        aria-label="Abrir en nueva pestaña"
+                      >
+                        <ArrowUpRight size={13} strokeWidth={2} />
+                      </a>
+                    </div>
+                    <div className="iso-browser-screen">
+                      <video
+                        src="/boaty-demo.mp4"
+                        className="iso-browser-video"
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                      />
+                      {liveActive && (
+                        <iframe
+                          src={boaty.liveUrl}
+                          title="Boaty live preview"
+                          loading="lazy"
+                          className="iso-browser-iframe"
+                          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                        />
+                      )}
+                      {!liveActive && (
+                        <button
+                          type="button"
+                          onClick={() => setLiveActive(true)}
+                          className="iso-browser-play"
+                          aria-label={lang === "es" ? "Cargar app en vivo" : "Load live app"}
+                        >
+                          <span className="iso-browser-play-pill">
+                            <span className="iso-browser-play-dot" />
+                            {lang === "es" ? "Cargar app en vivo" : "Load live app"}
+                          </span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <p className="iso-boaty-desktop-note">
-                    {lang === "es"
-                      ? "Render 3D interactivo · pasa el cursor para rotar"
-                      : "Interactive 3D render · hover to rotate"}
+                    {liveActive
+                      ? lang === "es"
+                        ? "Si no carga, abrí en pestaña nueva ↗"
+                        : "If it doesn't load, open in new tab ↗"
+                      : lang === "es"
+                        ? "Demo en loop · click para activar la app en vivo"
+                        : "Looping demo · click to load the live app"}
                   </p>
                 </motion.div>
               )}
