@@ -55,7 +55,7 @@ const ParticleField = ({ count = 5000 }) => {
 
 export default function AntigravityScene() {
     return (
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 pointer-events-none">
             <Canvas camera={{ position: [0, 0, 20], fov: 75 }}>
                 <color attach="background" args={['#050505']} />
                 <ambientLight intensity={0.2} />
