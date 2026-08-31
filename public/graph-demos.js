@@ -182,7 +182,11 @@
           cx = Math.cos(this.rot.x), sx = Math.sin(this.rot.x);
       var x1 = n.x * cy - n.z * sy, z1 = n.x * sy + n.z * cy;
       var y1 = n.y * cx - z1 * sx, z2 = n.y * sx + z1 * cx;
-      var f = 700, sc = f / (f + z2 + (this.fill ? 380 : 240));
+      // Plano cercano: sin el clamp, un nodo que rota detrás de la cámara vuelve
+      // negativo el denominador, y con él la escala y el radio -> arc() lanza
+      // IndexSizeError en cada frame. 120 acota el radio sin achatar el efecto
+      // de acercamiento (toca ~2,7% de las proyecciones).
+      var f = 700, sc = f / Math.max(120, f + z2 + (this.fill ? 380 : 240));
       n.sx = this.w / 2 + x1 * sc; n.sy = this.h / 2 + y1 * sc; n.sc = sc; n.zz = z2;
     }
 
@@ -343,7 +347,7 @@
         g.beginPath(); g.moveTo(a.sx, a.sy); g.lineTo(b.sx, b.sy);
         g.strokeStyle = lit ? ACCENT : (dim ? 'rgba(236,234,229,.08)' : MUTED);
         g.lineWidth = lit ? 1.4 : (k === 'force' ? 1.05 : 0.9);
-        g.globalAlpha = lit ? 1 : (dim ? 1 : 0.55 + Math.min(a.sc, b.sc) * 0.4);
+        g.globalAlpha = lit ? 1 : (dim ? 1 : Math.min(1, 0.55 + Math.min(a.sc, b.sc) * 0.4));
         g.stroke(); g.globalAlpha = 1;
 
         if (k === 'packets') {

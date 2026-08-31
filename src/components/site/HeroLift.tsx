@@ -64,13 +64,18 @@ export default function HeroLift({ lang }: { lang: Lang }) {
           flexDirection: 'column',
         }}
       >
-        {/* @ts-expect-error web component sin tipos */}
-        <graph-demo
-          kind="force"
-          areas={JSON.stringify(t.areaNodes)}
-          areas-title={t.areaTitle}
-          style={{ position: 'absolute', inset: 0, display: 'block' }}
-        />
+        {/* El telón va en un envoltorio posicionado: <graph-demo> se fija
+            `position:relative` a sí mismo al conectarse, así que si el absolute
+            se le pasa a él, lo pisa, entra en el flujo y aplasta el texto. */}
+        <div style={{ position: 'absolute', inset: 0 }}>
+          {/* @ts-expect-error web component sin tipos */}
+          <graph-demo
+            kind="force"
+            areas={JSON.stringify(t.areaNodes)}
+            areas-title={t.areaTitle}
+            style={{ width: '100%', height: '100%', display: 'block' }}
+          />
+        </div>
         <div
           style={{
             position: 'absolute',
