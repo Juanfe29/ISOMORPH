@@ -1,83 +1,43 @@
-import type { Metadata } from "next";
-import { Figtree, Syne, DM_Mono, Barlow_Condensed, Bebas_Neue, Archivo, Inter, JetBrains_Mono, Geist } from "next/font/google";
-import Script from "next/script";
-import "./globals.css";
-import { cn } from "@/lib/utils";
+import type { Metadata } from 'next';
+import { Newsreader, IBM_Plex_Mono } from 'next/font/google';
+import './globals.css';
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const figtree = Figtree({
-  variable: "--font-figtree",
-  subsets: ["latin"],
+const serif = Newsreader({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-serif',
+  display: 'swap',
 });
 
-const syne = Syne({
-  variable: "--font-syne",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  display: "swap",
-});
-
-const dmMono = DM_Mono({
-  variable: "--font-dm-mono",
-  subsets: ["latin"],
-  weight: ["300", "400"],
-});
-
-const barlowCondensed = Barlow_Condensed({
-  variable: "--font-barlow-condensed",
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-});
-
-const bebasNeue = Bebas_Neue({
-  variable: "--font-bebas-neue",
-  subsets: ["latin"],
-  weight: "400",
-});
-
-const archivo = Archivo({
-  variable: "--font-archivo",
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
+const mono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-mono',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "ISOMORPH AI | Synthesize Chaos. Predict Control.",
-  description: "Unified Data Intelligence & AI Forecasting for Enterprise.",
+  metadataBase: new URL('https://isomorph.lat'),
+  title: {
+    default: 'Isomorph — Ingeniería e IA aplicada',
+    template: '%s · Isomorph',
+  },
+  description:
+    'Diseñamos, integramos y operamos sistemas a la medida, con profundidad en telecomunicaciones y contact centers. Bogotá, Colombia.',
+  openGraph: {
+    type: 'website',
+    siteName: 'Isomorph',
+    locale: 'es_CO',
+    images: ['/og.png'],
+  },
+  icons: { icon: '/favicon.ico' },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={cn("dark", "font-sans", geist.variable)}>
-      <body
-        className={`${figtree.variable} ${syne.variable} ${inter.variable} ${jetbrainsMono.variable} ${dmMono.variable} ${barlowCondensed.variable} ${bebasNeue.variable} ${archivo.variable} font-sans antialiased`}
-      >
-        {/* Three.js r134 — required by Vanta BIRDS (incompatible with r182 npm build) */}
-        <Script
-          src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"
-          strategy="beforeInteractive"
-        />
-        {children}
-      </body>
+    <html lang="es" className={serif.variable + ' ' + mono.variable}>
+      <body>{children}</body>
     </html>
   );
 }

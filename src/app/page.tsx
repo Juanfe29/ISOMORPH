@@ -1,6 +1,10 @@
-import HomePage from "@/components/HomePage";
+import SiteShell from './SiteShell';
+import HomeScreen from '@/components/screens/HomeScreen';
 
-export default function Home() {
-    return <HomePage initialLang="es" />;
+export default function Page() {
+  return (
+    <SiteShell lang="es">
+      <HomeScreen lang="es" />
+    </SiteShell>
+  );
 }
-
